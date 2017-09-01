@@ -3,21 +3,29 @@
 #include "token.h"
 #include "ytab.h"
 
+// code help from Tovah Whitesell (SEL)
+
 int yylex(); // Forward declare this function for compiler
 // create a global that tokenlist *head here 
+// extern variables in clex.l
 struct tokenlist *YYTOKENLIST; 
-
-//filenodeptr file_stack = NULL; 
+char *filetext; 
+filenodeptr file_stack = NULL; 
 
 int main(int argc, char **argv)
 {
-	
-	int i;
-	int k; 
-	int eof;
+   int i;
+   int k; 
+   int eof;
    struct tokenlist* head;
    char *file_list[argc]; 
+   
    ++argv, --argc;  /* skip over program name */
+   
+   for (i = 0; i < argc; i++) 
+   {
+		file_list[i] = argv[i];
+   }
    
 
    if (argc >= 1)
@@ -27,17 +35,15 @@ int main(int argc, char **argv)
 	      construct_list_head();
 	      
 		  printf("Opening %s\n", argv[i]); 
-		  curr_filename = argv[i]; 
-		  
-		  //file_list[i] = argv[i]; 
-		 //strcpy( file_name, file_list[i]); 
 
-		  yyin = fopen(argv[i], "r");	
+		  yyin = fopen(file_list[i], "r"); 
 		  // push file onto stack 
-		  //push_file_node(&file_stack, file_name); 
-		  //yypush_buffer_state(yy_create_buffer(yyin, YY_BUF_SIZE));
+	      filetext = file_list[i]; 
+		  push_file_node(&file_stack, filetext); 
+		  yypush_buffer_state(yy_create_buffer(yyin, YY_BUF_SIZE));
+	   }
 		   while (1 && yyin) 
-		   {
+		   { 
 			   eof = yylex();
 			   if (eof == 0)
 			   {
@@ -49,24 +55,23 @@ int main(int argc, char **argv)
          if (yyin) 
          {
             fclose(yyin);
-			//yypop_buffer_state(); 
          }
          else
          {
-            printf("File %s not recognized.\n",argv[i]);
-            break;
+            printf("File Input/Output Error: %s. \nPlease check if this file exists or if there is an error within the file.\n", filetext);
+           // break;
+		   //return; 
          }
 	     
-	      printf("Category          Text         Line no           Filename      Ival/Sval\n"); 
-	      printf("---------------------------------------------------------------------------\n"); 
-	      print_token_list(); 
-	      head = YYTOKENLIST;
-	      clear_tokens(head); 
+	     printf("Category          Text         Line no           Filename      Ival        Sval\n"); 
+	     printf("-----------------------------------------------------------------------------------\n"); 
+	     print_token_list(); 
+	     head = YYTOKENLIST;
+	     clear_tokens(head); 
          
         }
      }
 
 
-	}
 	
      

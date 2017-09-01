@@ -20,19 +20,20 @@ int include;
 #endif /* __ia64__ */
 #endif
 
-// add define for string constant? 
-#define FOLLOWPTR 246
-#define THIS 247
-#define TRUE 248
-#define PUBLIC 249
-#define PROTECTED 250
-#define PRIVATE 251
-#define NEW 252
-#define DELETE 253
-#define BOOL 254
-#define CLASS 255
-#define SCON 256
-#define ELIPSIS 257
+// added for 120++
+#define FOLLOWPTR 342
+#define THIS 343
+#define TRUE 344
+#define PUBLIC 345
+#define PROTECTED 346
+#define PRIVATE 347
+#define NEW 348
+#define DELETE 349
+#define BOOL 350
+#define CLASS 351
+#define SCON 352
+#define ELIPSIS 353
+
 #define AUTO 258
 #define BREAK 259
 #define CASE 260

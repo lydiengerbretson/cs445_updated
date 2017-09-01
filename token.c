@@ -1,34 +1,40 @@
 #include "token.h"
  // ideas and some code snippets adapted from https://github.com/andschwa/partial-cpp-compiler
  // ideas and some code snippets adapted from https://github.com/park2331
- char *get_string(char *string) {
-  /* \n \t \' \\ \" and \0 */
-  int len = 0;
-  char* ptr = string;
-  char* strl = malloc(strlen(string)); 
+ // seg fault and pointer help from Tovah Whitesell
+ char *get_string(char *sval) {
 
-  /* Get past first quote */
-  while (*ptr++ != '\"') {
-    ptr++;
+  int len = 0;
+  char* inc = sval;
+  char* updated_sval = malloc(strlen(sval)); 
+
+  // increment pointer past first quote
+  while (*inc++ != '\"') 
+  {
+    inc++;
   }
 
-  /* Get to end quote */
-  while (*ptr != '\"') {
-    if (ptr[0] == '\\') {
-      char esc = ptr[1];
-      if (esc == 'n' || esc == 't' || esc == '\'' || esc == '\\' || esc == '\"' || esc == '\0') {
-	ptr++;
-	ptr++;
+  // increment pointer to the final quote
+  while (*inc != '\"') 
+  {
+    if (inc[0] == '\\') 
+	{
+      char esc = inc[1];
+      if (esc == 'n' || esc == 't' || esc == '\'' || esc == '\\' || esc == '\"' || esc == '\0') 
+	  {
+		inc++;
+		inc++;
       } 
-    } else {
-      strl[len] = *ptr;
+    } else 
+	{
+      updated_sval[len] = *inc;
       len++;
-      ptr++;
+      inc++;
     }
   }
-  strl[len] = '\0';
-  strl = realloc(strl, len);
-  return strl;
+  updated_sval[len] = '\0';
+  updated_sval = realloc(updated_sval, len);
+  return updated_sval;
 }
  // create a new token 
  // transferring ownership of memory to struct token members 
@@ -71,11 +77,6 @@ struct token* create_token(int category, char *text, int lineno, char *filename)
 				break; 
 		}
 		
-		//printf("%d %10s %10d %10s %10d", new_token->category, new_token->text, // testing purposes
-				//new_token->lineno, new_token->filename, 
-				//new_token->ival);
- 
-		// add print statement here 
 		return new_token; 
 		
 	}	
@@ -119,7 +120,7 @@ void print_token_list()
 	if(YYTOKENLIST != NULL)
 	{
 		struct tokenlist *curr = YYTOKENLIST;  
-		
+
 		while((curr != NULL) && (curr->t != NULL)) // Nobody likes a seg fault
 		{
 		   if (curr->t->text != NULL && curr->t->filename != NULL)

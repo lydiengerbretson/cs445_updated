@@ -1,6 +1,8 @@
 /*
  * Lydia Engerbretson
  * Fall 2017
+ * ideas and some code snippets adapted from https://github.com/andschwa/partial-cpp-compiler
+ * ideas and some code snippets adapted from https://github.com/park2331
  *
  */
 
@@ -31,12 +33,11 @@ FILE *saved_yyin;
 extern struct tokenlist *YYTOKENLIST; 
 extern struct token *YYTOKEN; 
 extern char* curr_filename; 
-extern char* prev_filename; 
 extern filenodeptr file_stack;
-extern char* file_name;  
+extern char* filetext;  
 extern int include; 
 
-void add_token(int category); // adapted from: https://github.com/andschwa/partial-cpp-compiler
+void add_token(int category); 
 void lexerr(char *s);
 void handle_include(char *s);
 
@@ -173,7 +174,19 @@ int included_iostream = 0;
 "|"                     { add_token(OR); return OR; }
 "?"                     { add_token(QUEST); return QUEST; }
 .                       { lexerr(yytext); return; }
+<<EOF>>                 {
+  yypop_buffer_state();
+  pop_file_node(&file_stack);
+  if (file_stack == NULL) {
+    yyterminate();    
+  }
 
+  yylineno = 1;
+  
+  if (!YY_CURRENT_BUFFER) {
+    yyterminate();
+  } 
+}
 
 %%
 
@@ -193,7 +206,8 @@ void lexerr(char *s)
 void add_token(int category)
 {
    // global YYTOKEN
-   	YYTOKEN = create_token(category, yytext, yylineno, curr_filename);  // used to be curr_filename
+    filetext = file_stack->filename;
+   	YYTOKEN = create_token(category, yytext, yylineno, filetext);  // used to be curr_filename
 	add_token_to_list(YYTOKEN);
    
   	
@@ -208,20 +222,21 @@ int yywrap()
 
 void handle_include(char *s)
 {
-   char *fname = malloc(strlen(s)+1-strlen("#include \"\""));
-   fname = strchr(s, '\"')+1;
-   fname[strlen(fname)-1] = '\0';
-   fprintf(stdout, "included filename '%s'\n", fname); fflush(stdout);
-   
-   strcpy(curr_filename, fname);  
-   yyin = fopen(fname,"r");
-   // push file onto stack 
-   //push_file_node(&file_stack, fname); 
-   //yypush_buffer_state(yy_create_buffer(yyin, YY_BUF_SIZE)); 
-   if (yyin == NULL) 
-   {
-     lexerr("cannot open include file");
-     exit(1);
-   }
+  // help from Clinton Jeffery
+  FILE *include_buffer;
+  YY_BUFFER_STATE incl_state;
+
+  char *fname = malloc(strlen(yytext)+1-strlen("#include \"\""));
+  fname = strchr(yytext, '\"')+1;
+  fname[strlen(fname)-1] = '\0';
+  printf("%s\n",fname);
+  yyin = fopen(fname,"r");
+  if(yyin == NULL)
+  {
+     printf("File %s is not recognized. \n", fname); 
+	 return; 
+  }
+  push_file_node(&file_stack, fname);
+  yypush_buffer_state(yy_create_buffer(yyin, YY_BUF_SIZE));
    
 }
