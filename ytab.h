@@ -2,8 +2,35 @@ FILE *yyin; // added this
 struct token *YYTOKEN; 
 char* curr_filename; // added this
 char* prev_filename;
+char* file_name; 
+char* temp_name; 
+int include; 
+
+/* Size of default input buffer. */
+/* Retrieved from lex.yy.c file */
+#ifndef YY_BUF_SIZE
+#ifdef __ia64__
+/* On IA-64, the buffer size is 16k, not 8k.
+ * Moreover, YY_BUF_SIZE is 2*YY_READ_BUF_SIZE in the general case.
+ * Ditto for the __ia64__ case accordingly.
+ */
+#define YY_BUF_SIZE 32768
+#else
+#define YY_BUF_SIZE 16384
+#endif /* __ia64__ */
+#endif
 
 // add define for string constant? 
+#define FOLLOWPTR 246
+#define THIS 247
+#define TRUE 248
+#define PUBLIC 249
+#define PROTECTED 250
+#define PRIVATE 251
+#define NEW 252
+#define DELETE 253
+#define BOOL 254
+#define CLASS 255
 #define SCON 256
 #define ELIPSIS 257
 #define AUTO 258

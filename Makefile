@@ -21,7 +21,7 @@ lex.yy.c: clex.l ytab.h
 	$(LEX) $<
 
 clean:
-	$(RM) $(BIN) $(OBJECTS) lex.yy.c clex.h
+	$(RM) $(BIN) $(OBJECTS) lex.yy.c 
 
 
 

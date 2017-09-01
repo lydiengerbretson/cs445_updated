@@ -1,6 +1,35 @@
 #include "token.h"
  // ideas and some code snippets adapted from https://github.com/andschwa/partial-cpp-compiler
- 
+ // ideas and some code snippets adapted from https://github.com/park2331
+ char *get_string(char *string) {
+  /* \n \t \' \\ \" and \0 */
+  int len = 0;
+  char* ptr = string;
+  char* strl = malloc(strlen(string)); 
+
+  /* Get past first quote */
+  while (*ptr++ != '\"') {
+    ptr++;
+  }
+
+  /* Get to end quote */
+  while (*ptr != '\"') {
+    if (ptr[0] == '\\') {
+      char esc = ptr[1];
+      if (esc == 'n' || esc == 't' || esc == '\'' || esc == '\\' || esc == '\"' || esc == '\0') {
+	ptr++;
+	ptr++;
+      } 
+    } else {
+      strl[len] = *ptr;
+      len++;
+      ptr++;
+    }
+  }
+  strl[len] = '\0';
+  strl = realloc(strl, len);
+  return strl;
+}
  // create a new token 
  // transferring ownership of memory to struct token members 
 struct token* create_token(int category, char *text, int lineno, char *filename)
@@ -18,6 +47,11 @@ struct token* create_token(int category, char *text, int lineno, char *filename)
 		new_token->filename = calloc(strlen(filename)+1, sizeof(char));
 		strcpy(new_token->filename, filename); 
 		
+		// default values
+		new_token->ival = 0; 
+		new_token->sval = calloc(8, sizeof(char));
+		strcpy(new_token->sval, "N/A"); 
+		
 	
 		switch (category)
 		{
@@ -30,6 +64,9 @@ struct token* create_token(int category, char *text, int lineno, char *filename)
 			case FCON: 
 				new_token->fval = atof(text);
 				break; 
+			case STRING:
+			    new_token->sval = malloc(strlen(text)+1); 
+				new_token->sval = get_string(text); 
 			default:  
 				break; 
 		}
@@ -87,9 +124,9 @@ void print_token_list()
 		{
 		   if (curr->t->text != NULL && curr->t->filename != NULL)
 		   {
-			   printf("%d %20s %10d %20s %10d \n", curr->t->category, curr->t->text, 
+			   printf("%d %20s %10d %20s %10d %10s\n", curr->t->category, curr->t->text, 
 					   curr->t->lineno, curr->t->filename, 
-					   curr->t->ival);
+					   curr->t->ival, curr->t->sval);
 			}							
 			curr = curr->next; 
 		}
@@ -133,4 +170,28 @@ void construct_list_head() // reallocate new head... constructor of the head
  	YYTOKENLIST = (struct tokenlist *)malloc(sizeof(struct tokenlist)); 
  	YYTOKENLIST->t = NULL;
  	YYTOKENLIST->next = NULL;  
+}
+
+// code snippets adapted from https://github.com/park2331
+void pop_file_node(filenodeptr *top)
+{
+  filenodeptr temp;
+  temp = *top;
+  *top = (*top)->next;
+  free(temp);
+}
+
+void push_file_node(filenodeptr *top, char *filename)
+{
+  filenodeptr temp = (filenodeptr)malloc(sizeof(struct file_node));
+  temp->filename = malloc(sizeof(filename)+1);
+  temp->next = NULL;
+  strcpy(temp->filename, filename);
+
+  if(top == NULL) {
+    *top = temp;
+  } else {
+    temp->next = *top;
+    *top = temp;
+  }
 }

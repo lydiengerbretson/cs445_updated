@@ -20,7 +20,15 @@ struct tokenlist {
    struct token *t;
    struct tokenlist *next;
    };
-   
+ 
+typedef struct file_node
+{
+	struct token *t; 
+	char *filename; 
+	struct file_node *next; 
+
+} *filenodeptr; 
+
 typedef struct tokenlist Token_Node;
 
 //Token_Node *token_list; // global variable 
@@ -38,3 +46,7 @@ void clear_tokens();
 void free_token(struct token *t); 
 
 void construct_list_head();
+
+void pop_file_node(filenodeptr*); 
+
+void push_file_node(filenodeptr*, char *filename); 

@@ -32,6 +32,9 @@ extern struct tokenlist *YYTOKENLIST;
 extern struct token *YYTOKEN; 
 extern char* curr_filename; 
 extern char* prev_filename; 
+extern filenodeptr file_stack;
+extern char* file_name;  
+extern int include; 
 
 void add_token(int category); // adapted from: https://github.com/andschwa/partial-cpp-compiler
 void lexerr(char *s);
@@ -59,21 +62,24 @@ int included_iostream = 0;
 "<iostream>"            { BEGIN(INITIAL); }
 "<fstream>"             { BEGIN(INITIAL); }
 "<cstdlib>"             { BEGIN(INITIAL); }
+"<cstring>"             { BEGIN(INITIAL); }
 "<string>"              { BEGIN(INITIAL); }
 "<ctime>" 				{ BEGIN(INITIAL); }
 "<cmath>"               { BEGIN(INITIAL); }
+"<iomanip>"             { BEGIN(INITIAL); }
 \"[^\"]+\"              { handle_include(yytext); BEGIN(INITIAL); }
 }
 
-"bool"
+"auto"                  { add_token(AUTO); return AUTO; }
+"bool"                  { add_token(BOOL); return BOOL; }
 "break"                 { add_token(BREAK); return BREAK; }
 "case"                  { add_token(CASE); return CASE; }
 "char"                  { add_token(CHAR); return CHAR; }
-"class"                 { /*return CLASS;*/ } // just added
+"class"                 { add_token(CLASS); return CLASS; } //  added
 "const"                 { add_token(CONST); return CONST; }
 "continue"              { add_token(CONTINUE); return CONTINUE; }
 "default"               { add_token(DEFAULT); return DEFAULT; }
-"delete"                { /*return DELETE;*/ } // just added
+"delete"                { add_token(DELETE); return DELETE; } //  added
 "do"                    { add_token(DO); return DO; }
 "double"                { add_token(DOUBLE); return DOUBLE; }
 "else"                  { add_token(ELSE); return ELSE; }
@@ -85,10 +91,10 @@ int included_iostream = 0;
 "if"                    { add_token(IF); return IF; }
 "int"                   { add_token(INT); return INT; } 
 "long"                  { add_token(LONG); return LONG; }
-"new"                   { /*return NEW;*/ } // just added 
-"private"               { /*return PRIVATE;*/ } // just added
-"protected"             { /*return PROTECTED;*/ } // just added
-"public"                 { /*return PUBLIC;*/ } // just added
+"new"                   { add_token(NEW); return NEW; } //  added 
+"private"               { add_token(PRIVATE); return PRIVATE; } //  added
+"protected"             { add_token(PROTECTED); return PROTECTED; } //  added
+"public"                { add_token(PUBLIC); return PUBLIC; } //  added
 "register"              { add_token(REGISTER); return REGISTER; } 
 "return"                { add_token(RETURN); return RETURN; }
 "short"                 { add_token(SHORT); return SHORT; }
@@ -99,7 +105,8 @@ int included_iostream = 0;
 "switch"                { add_token(SWITCH); return SWITCH; }
 "typedef"               { add_token(TYPEDEF); return TYPEDEF; } 
 "union"                 { add_token(UNION); return UNION; } 
-"true"                  { /*return TRUE;*/ } // just added 
+"this"                  { add_token(THIS); return THIS; } 
+"true"                  { add_token(TRUE); return TRUE; } //  added 
 "unsigned"              { add_token(UNSIGNED); return UNSIGNED; }
 "void"                  { add_token(VOID); return VOID; }
 "volatile"              { add_token(VOLATILE); return VOLATILE; } 
@@ -109,66 +116,64 @@ int included_iostream = 0;
 
 
 0[xX]{H}+{IS}?          { lexerr("Hex not supported\n"); }
-
 0{O}+{IS}?              { lexerr("Octal not supported\n"); }
 
 {D}+{IS}?               { add_token(ICON); return ICON; }
-
-'(\\.|[^\\'])+'         { add_token(CCON); return CCON; }
-
-{D}+{E}{FS}?            { add_token(FCON); return FCON; }
-{D}*"."{D}+({E})?{FS}?  { add_token(FCON); return FCON; }
-{D}+"."{D}*({E})?{FS}?  { add_token(FCON); return FCON; }
-
+'(\\.|[^\\'])+'         { add_token(CCON); return CCON;  }
+{D}+{E}{FS}?            { add_token(FCON); return FCON;  }
+{D}*"."{D}+({E})?{FS}?  { add_token(FCON); return FCON;  }
+{D}+"."{D}*({E})?{FS}?  { add_token(FCON); return FCON;  }
 {LIT}                   { add_token(STRING); return STRING; }
 
 
-">>="                   { return SRASN; }
-"<<="                   { return SLASN; }
-"+="                    { return PLASN; }
-"-="                    { return MIASN; }
-"*="                    { return MUASN; }
-"/="                    { return DIASN; }
-"%="                    { return MOASN; }
-"&="                    { return ANASN; }
-"^="                    { return ERASN; }
-"|="                    { return ORASN; }
-">>"                    { return SHR; }
-"<<"                    { return SHL; }
-"++"                    { return INCOP; }
-"--"                    { return DECOP; }
-"->"                    { return FOLLOW; }
-"->*"                   { /* return */} // just added
-"&&"                    { add_token(ANDAND); return ANDAND; }
-"||"                    { return OROR; }
-"<="                    { return LE; }
-">="                    { return GE; }
+">>="                   { add_token(SRASN); return SRASN;  }
+"<<="                   { add_token(SLASN); return SLASN; }
+"+="                    { add_token(PLASN); return PLASN;  }
+"-="                    { add_token(MIASN); return MIASN; }
+"*="                    { add_token(MUASN); return MUASN;  }
+"/="                    { add_token(DIASN); return DIASN;  }
+"%="                    { add_token(MOASN); return MOASN; }
+"&="                    { add_token(ANASN); return ANASN; }
+"^="                    { add_token(ERASN); return ERASN; }
+"|="                    { add_token(ORASN); return ORASN;  }
+">>"                    { add_token(SHR); return SHR;  }
+"<<"                    { add_token(SHL); return SHL; }
+"++"                    { add_token(INCOP); return INCOP; }
+"--"                    { add_token(DECOP); return DECOP; }
+"->"                    { add_token(FOLLOW); return FOLLOW; }
+"->*"                   { add_token(FOLLOWPTR); return FOLLOWPTR;} // just added
+"&&"                    { add_token(ANDAND); return ANDAND;  }
+"||"                    { add_token(OROR); return OROR; }
+"<="                    { add_token(LE); return LE; }
+">="                    { add_token(GE); return GE; }
 "=="                    { add_token(EQ); return EQ; }
 "!="                    { add_token(NE); return NE; }
-";"                     { return SM; }
-"{"                     { return LC; }
-"}"                     { return RC; }
-","                     { return CM; }
-":"                     { return COLON; }
-"="                     { return ASN; }
-"("                     { return LP; }
-")"                     { return RP; }
-"["                     { return LB; }
-"]"                     { return RB; }
-"."                     { return DOT; }
-"&"                     { return AND; }
-"!"                     { return BANG; }
-"~"                     { return NOT; }
-"-"                     { return MINUS; }
-"+"                     { return PLUS; }
-"*"                     { return MUL; }
-"/"                     { return DIV; }
-"%"                     { return MOD; }
-"<"                     { return LT; }
-">"                     { return GT; }
-"^"                     { return ER; }
-"|"                     { return OR; }
-"?"                     { return QUEST; }
+";"                     { add_token(SM); return SM; }
+"{"                     { add_token(LC); return LC; }
+"}"                     { add_token(RC); return RC; }
+","                     { add_token(CM); return CM; }
+":"                     { add_token(COLON); return COLON; }
+"="                     { add_token(ASN); return ASN; }
+"("                     { add_token(LP); return LP; }
+")"                     { add_token(RP); return RP; }
+"["                     { add_token(LB); return LB; }
+"]"                     { add_token(RB); return RB; }
+"."                     { add_token(DOT); return DOT; }
+"&"                     { add_token(AND); return AND; }
+"!"                     { add_token(BANG); return BANG; }
+"~"                     { add_token(NOT); return NOT; }
+"-"                     { add_token(MINUS); return MINUS; }
+"+"                     { add_token(PLUS); return PLUS; }
+"*"                     { add_token(MUL); return MUL; }
+"/"                     { add_token(DIV); return DIV; }
+"%"                     { add_token(MOD); return MOD; }
+"<"                     { add_token(LT); return LT; }
+">"                     { add_token(GT); return GT; }
+"^"                     { add_token(ER); return ER; }
+"|"                     { add_token(OR); return OR; }
+"?"                     { add_token(QUEST); return QUEST; }
+.                       { lexerr(yytext); return; }
+
 
 %%
 
@@ -179,16 +184,19 @@ void lexerr(char *s)
 	fprintf(stderr, "%s: lexical error", s);
 
 	/* to do: add mechanism for reporting file name and line number */
-
+   
 	fprintf(stderr, ", token = \"%s\"\n", yytext);
+	fprintf(stderr, ", filename = \"%s\"\n", curr_filename);
+	fprintf(stderr, ", line number = \"%d\"\n", yylineno);
 }
 
 void add_token(int category)
 {
-   //struct token * newtoken = NULL;
+   // global YYTOKEN
+   	YYTOKEN = create_token(category, yytext, yylineno, curr_filename);  // used to be curr_filename
+	add_token_to_list(YYTOKEN);
    
-	YYTOKEN = create_token(category, yytext, yylineno, curr_filename);  
-	add_token_to_list(YYTOKEN);  	
+  	
 }
 /*
  * Return 1 if done, 0 if yyin points at more input
@@ -200,21 +208,20 @@ int yywrap()
 
 void handle_include(char *s)
 {
-
-   char *fname = strchr(s, '\"')+1;
+   char *fname = malloc(strlen(s)+1-strlen("#include \"\""));
+   fname = strchr(s, '\"')+1;
    fname[strlen(fname)-1] = '\0';
    fprintf(stdout, "included filename '%s'\n", fname); fflush(stdout);
-   strcpy(curr_filename, fname); 
+   
+   strcpy(curr_filename, fname);  
    yyin = fopen(fname,"r");
+   // push file onto stack 
+   //push_file_node(&file_stack, fname); 
+   //yypush_buffer_state(yy_create_buffer(yyin, YY_BUF_SIZE)); 
    if (yyin == NULL) 
    {
      lexerr("cannot open include file");
      exit(1);
    }
-
-   // curr_filename = strdup(s); // this does not do anything
-	
-   //yypush_buffer_state(yy_create_buffer(yyin, YY_BUF_SIZE));
-   //yypop_buffer_state(); 
    
 }
