@@ -2,6 +2,7 @@
  // ideas and some code snippets adapted from https://github.com/andschwa/partial-cpp-compiler
  // ideas and some code snippets adapted from https://github.com/park2331
  // seg fault and pointer help from Tovah Whitesell
+ 
  char *get_string(char *sval) {
 
   int len = 0;

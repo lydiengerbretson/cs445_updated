@@ -38,8 +38,13 @@ extern char* filetext;
 extern int include; 
 
 void add_token(int category); 
-void lexerr(char *s);
 void handle_include(char *s);
+void lexerr(const char *s)
+{
+    filetext = file_stack->filename;
+	fprintf (stderr, "File %s line %d, token %s: %s\n", filetext, yylineno, yytext, s);
+    exit (1); 
+}
 
 /* #define DEBUG */
 
@@ -113,8 +118,6 @@ int included_iostream = 0;
 "volatile"              { add_token(VOLATILE); return VOLATILE; } 
 "while"                 { add_token(WHILE); return WHILE; }
 
-{L}({L}|{D})*           { add_token(IDENTIFIER); return IDENTIFIER; }
-
 
 0[xX]{H}+{IS}?          { lexerr("Hex not supported\n"); }
 0{O}+{IS}?              { lexerr("Octal not supported\n"); }
@@ -173,7 +176,11 @@ int included_iostream = 0;
 "^"                     { add_token(ER); return ER; }
 "|"                     { add_token(OR); return OR; }
 "?"                     { add_token(QUEST); return QUEST; }
-.                       { lexerr(yytext); return; }
+
+{L}({L}|{D})*           { add_token(IDENTIFIER); return IDENTIFIER; }
+
+.                       { lexerr("Unrecognized token\n");}
+
 <<EOF>>                 {
   yypop_buffer_state();
   pop_file_node(&file_stack);
@@ -190,18 +197,6 @@ int included_iostream = 0;
 
 %%
 
-void lexerr(char *s)
-{
-	errors++;
-
-	fprintf(stderr, "%s: lexical error", s);
-
-	/* to do: add mechanism for reporting file name and line number */
-   
-	fprintf(stderr, ", token = \"%s\"\n", yytext);
-	fprintf(stderr, ", filename = \"%s\"\n", curr_filename);
-	fprintf(stderr, ", line number = \"%d\"\n", yylineno);
-}
 
 void add_token(int category)
 {
