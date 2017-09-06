@@ -123,7 +123,7 @@ int included_iostream = 0;
 0{O}+{IS}?              { lexerr("Octal not supported\n"); }
 
 {D}+{IS}?               { add_token(ICON); return ICON; }
-'(\\.|[^\\'])+'         { add_token(CCON); return CCON;  }
+'(\\.|[^\\'])+'         { add_token(CCON); return CCON;  } // character literal
 {D}+{E}{FS}?            { add_token(FCON); return FCON;  }
 {D}*"."{D}+({E})?{FS}?  { add_token(FCON); return FCON;  }
 {D}+"."{D}*({E})?{FS}?  { add_token(FCON); return FCON;  }
@@ -157,6 +157,7 @@ int included_iostream = 0;
 "}"                     { add_token(RC); return RC; }
 ","                     { add_token(CM); return CM; }
 ":"                     { add_token(COLON); return COLON; }
+"::"					{ add_token(COLONCOLON); return COLONCOLON;}
 "="                     { add_token(ASN); return ASN; }
 "("                     { add_token(LP); return LP; }
 ")"                     { add_token(RP); return RP; }

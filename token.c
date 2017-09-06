@@ -3,7 +3,8 @@
  // ideas and some code snippets adapted from https://github.com/park2331
  // seg fault and pointer help from Tovah Whitesell
  
- char *get_string(char *sval) {
+
+ char *get_sval(char *sval) {
 
   int len = 0;
   char* inc = sval;
@@ -37,6 +38,31 @@
   updated_sval = realloc(updated_sval, len);
   return updated_sval;
 }
+
+ char *get_cval(char *cval) {
+
+  int len = 0;
+  //int i = 0; 
+  char* inc = cval;
+  char* updated_sval = malloc(strlen(cval)); 
+
+  // increment pointer past first tick
+  while (*inc++ != '\'') 
+  {
+    inc++;
+  }
+
+  // increment pointer to the final tick
+  while (*inc != '\'') 
+  {
+      updated_sval[len] = *inc;
+      len++;
+      inc++;
+  }
+  updated_sval[len] = '\0';
+  updated_sval = realloc(updated_sval, len);
+  return updated_sval;
+}
  // create a new token 
  // transferring ownership of memory to struct token members 
 struct token* create_token(int category, char *text, int lineno, char *filename)
@@ -57,8 +83,8 @@ struct token* create_token(int category, char *text, int lineno, char *filename)
 		// default values
 		new_token->ival = 0; 
 		new_token->sval = calloc(8, sizeof(char));
-		strcpy(new_token->sval, "N/A"); 
-		
+		strcpy(new_token->sval, "N/A");
+		char *c; 
 	
 		switch (category)
 		{
@@ -68,12 +94,17 @@ struct token* create_token(int category, char *text, int lineno, char *filename)
 			case SCON:
 				new_token->sval = malloc(strlen(text)+1); 
 				break; 
-			case FCON: 
-				new_token->fval = atof(text);
-				break; 
 			case STRING:
 			    new_token->sval = malloc(strlen(text)+1); 
-				new_token->sval = get_string(text); 
+				new_token->sval = get_sval(text); 
+				break; 
+			case CCON:
+				new_token->sval = malloc(strlen(text)+1); 
+				//new_token->sval = get_cval(text); 
+				c = get_cval(text); 
+
+				strcpy(new_token->sval, c); 
+				break; 
 			default:  
 				break; 
 		}
