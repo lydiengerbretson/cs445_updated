@@ -91,6 +91,7 @@ int included_iostream = 0;
 "else"                  { add_token(ELSE); return ELSE; }
 "enum"                  { add_token(ENUM); return ENUM; } 
 "extern"                { add_token(EXTERN); return EXTERN; } 
+"false"					{ add_token(FALSE); return FALSE; } // added 
 "float"                 { add_token(FLOAT); return FLOAT; }
 "for"                   { add_token(FOR); return FOR; }
 "goto"                  { add_token(GOTO); return GOTO; } 

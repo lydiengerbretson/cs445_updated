@@ -5,8 +5,9 @@
 
 // code help from Tovah Whitesell (SEL)
 
-int yylex(); // Forward declare this function for compiler
-// create a global that tokenlist *head here 
+// Forward declare this function for compiler
+int yylex(); 
+
 // extern variables in clex.l
 struct tokenlist *YYTOKENLIST; 
 char *filetext; 
@@ -33,8 +34,6 @@ int main(int argc, char **argv)
 	   for(i = 0; i < argc; i++)
 	   { 
 	      construct_list_head();
-	      
-		  printf("Opening %s\n", argv[i]); 
 
 		  yyin = fopen(file_list[i], "r"); 
 		  // push file onto stack 
@@ -58,9 +57,7 @@ int main(int argc, char **argv)
          }
          else
          {
-            printf("File Input/Output Error: %s. \nPlease check if this file exists or if there is an error within the file.\n", filetext);
-           // break;
-		   //return; 
+            printf("File Input/Output Error: %s. \nPlease check if this file exists or if there is an error within the file.\n", filetext); 
          }
 	     
 	     printf("Category          Text         Line no           Filename      Ival        Sval\n"); 

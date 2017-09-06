@@ -14,7 +14,7 @@ struct token {
    int ival;       /* if you had an integer constant, store its value here */
    char *sval;      /* if you had a string constant, malloc space and store */
    /* add char cval */ 
-   /* add double fval */
+   /* add double dval */
    };               /*    the string (less quotes and after escapes) here */ 
    
 struct tokenlist {
@@ -30,9 +30,6 @@ typedef struct file_node
 
 } *filenodeptr; 
 
-typedef struct tokenlist Token_Node;
-
-//Token_Node *token_list; // global variable 
   
  // create a new token 
 struct token* create_token(int category, char *text, int lineno, char *filename); 
@@ -42,12 +39,15 @@ void add_token_to_list(struct token *new_token);
 
 void print_token_list(); 
 
+// clear tokens in linked list 
 void clear_tokens(); 
 
 void free_token(struct token *t); 
 
 void construct_list_head();
 
+// pop file node from file stack 
 void pop_file_node(filenodeptr*); 
 
+// push file node onto file stack 
 void push_file_node(filenodeptr*, char *filename); 

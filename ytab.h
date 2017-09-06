@@ -34,6 +34,7 @@ int include;
 #define SCON 352
 #define ELIPSIS 353
 #define COLONCOLON 354
+#define FALSE 355
 
 #define AUTO 258
 #define BREAK 259

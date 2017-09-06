@@ -68,7 +68,8 @@
 struct token* create_token(int category, char *text, int lineno, char *filename)
 {
 	struct token *new_token =  (struct token*)malloc(sizeof(struct token)); // without *new_token I get a seg fault 
-
+	char *c;
+	
 	if(new_token != NULL)
 	{
 		
@@ -84,7 +85,7 @@ struct token* create_token(int category, char *text, int lineno, char *filename)
 		new_token->ival = 0; 
 		new_token->sval = calloc(8, sizeof(char));
 		strcpy(new_token->sval, "N/A");
-		char *c; 
+
 	
 		switch (category)
 		{
@@ -100,7 +101,6 @@ struct token* create_token(int category, char *text, int lineno, char *filename)
 				break; 
 			case CCON:
 				new_token->sval = malloc(strlen(text)+1); 
-				//new_token->sval = get_cval(text); 
 				c = get_cval(text); 
 
 				strcpy(new_token->sval, c); 
