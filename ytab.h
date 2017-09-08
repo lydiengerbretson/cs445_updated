@@ -1,3 +1,5 @@
+// Adapted From Clinton Jeffery's File: http://www2.cs.uidaho.edu/~jeffery/courses/445/ytab.h
+
 FILE *yyin; // added this 
 struct token *YYTOKEN; 
 char* curr_filename; // added this
@@ -21,7 +23,7 @@ int include;
 #endif
 
 // added for 120++
-#define FOLLOWPTR 342
+#define ARROWSTAR 342
 #define THIS 343
 #define TRUE 344
 #define PUBLIC 345
@@ -35,6 +37,27 @@ int include;
 #define ELIPSIS 353
 #define COLONCOLON 354
 #define FALSE 355
+#define CLASS_NAME 356
+#define ADDEQ 357
+#define SUBEQ 358
+#define MULEQ 359
+#define DIVEQ 360
+#define MODEQ 361
+#define XOREQ 362
+#define ANDEQ 363
+#define OREQ 364
+#define SL 365
+#define SR 366
+#define SLEQ 367
+#define SREQ 368
+#define NOTEQ 369
+#define LTEQ 370
+#define GTEQ 371
+#define PLUSPLUS 372
+#define MINUSMINUS 373  
+#define DOTSTAR 374
+#define ELLIPSIS 375
+
 
 #define AUTO 258
 #define BREAK 259
@@ -68,9 +91,9 @@ int include;
 #define VOID 287
 #define VOLATILE 288
 #define WHILE 289
-#define ICON 290
-#define CCON 291
-#define FCON 292
+#define INTEGER 290 // ICON
+#define CHARACTER 291 // CCON
+#define FLOATING 292 // FLOATING
 #define STRING 293
 #define SRASN 294
 #define PLASN 295
@@ -85,7 +108,7 @@ int include;
 #define SHL 304
 #define INCOP 305
 #define DECOP 306
-#define FOLLOW 307
+#define ARROW 307
 #define ANDAND 308
 #define OROR 309
 #define LE 310

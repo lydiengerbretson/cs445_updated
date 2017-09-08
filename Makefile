@@ -17,7 +17,7 @@ $(EXEC): $(OBJECTS)
 .c.o:
 	$(CC) $(CFLAGS) -c -g $< -o $@
 
-lex.yy.c: clex.l ytab.h
+lex.yy.c: 120lex_lydia.l ytab.h
 	$(LEX) $<
 
 clean:

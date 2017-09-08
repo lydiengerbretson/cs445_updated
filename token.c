@@ -1,9 +1,8 @@
 #include "token.h"
- // ideas and some code snippets adapted from https://github.com/andschwa/partial-cpp-compiler
- // ideas and some code snippets adapted from https://github.com/park2331
+
  // seg fault and pointer help from Tovah Whitesell
  
-
+ // adapted from https://github.com/park2331
  char *get_sval(char *sval) {
 
   int len = 0;
@@ -65,6 +64,7 @@
 }
  // create a new token 
  // transferring ownership of memory to struct token members 
+  // adapted from https://github.com/andschwa/partial-cpp-compiler
 struct token* create_token(int category, char *text, int lineno, char *filename)
 {
 	struct token *new_token =  (struct token*)malloc(sizeof(struct token)); // without *new_token I get a seg fault 
@@ -89,20 +89,16 @@ struct token* create_token(int category, char *text, int lineno, char *filename)
 	
 		switch (category)
 		{
-			case ICON: 
+			case INTEGER: 
 				new_token->ival = atoi(text); 
-				break; 
-			case SCON:
-				new_token->sval = malloc(strlen(text)+1); 
-				break; 
+				break;  
 			case STRING:
 			    new_token->sval = malloc(strlen(text)+1); 
 				new_token->sval = get_sval(text); 
 				break; 
-			case CCON:
+			case CHARACTER:
 				new_token->sval = malloc(strlen(text)+1); 
 				c = get_cval(text); 
-
 				strcpy(new_token->sval, c); 
 				break; 
 			default:  
@@ -205,7 +201,7 @@ void construct_list_head() // reallocate new head... constructor of the head
  	YYTOKENLIST->next = NULL;  
 }
 
-// code snippets adapted from https://github.com/park2331
+// adapted from https://github.com/park2331
 void pop_file_node(filenodeptr *top)
 {
   filenodeptr temp;

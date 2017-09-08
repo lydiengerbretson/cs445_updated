@@ -1,8 +1,7 @@
 /*
  * Lydia Engerbretson
  * Fall 2017
- * ideas and some code snippets adapted from https://github.com/andschwa/partial-cpp-compiler
- * ideas and some code snippets adapted from https://github.com/park2331
+ * Adapted From Clinton Jeffery's File: http://www2.cs.uidaho.edu/~jeffery/courses/445/clex.l
  *
  */
 
@@ -28,14 +27,10 @@ LIT      \"(\\.|[^\\"])*\"
 #include "token.h"
 #include "ytab.h"
 
-extern int yychar;
-FILE *saved_yyin;
 extern struct tokenlist *YYTOKENLIST; 
-extern struct token *YYTOKEN; 
-extern char* curr_filename; 
+extern struct token *YYTOKEN;  
 extern filenodeptr file_stack;
-extern char* filetext;  
-extern int include; 
+extern char* filetext;   
 
 void add_token(int category); 
 void handle_include(char *s);
@@ -184,8 +179,9 @@ int included_iostream = 0;
 .                       { lexerr("Unrecognized token\n");}
 
 <<EOF>>                 {
+
   yypop_buffer_state();
-  pop_file_node(&file_stack);
+  pop_file_node(&file_stack); // adapted from https://github.com/park2331
   if (file_stack == NULL) {
     yyterminate();    
   }
@@ -204,7 +200,7 @@ void add_token(int category)
 {
    // global YYTOKEN
     filetext = file_stack->filename;
-   	YYTOKEN = create_token(category, yytext, yylineno, filetext);  // used to be curr_filename
+   	YYTOKEN = create_token(category, yytext, yylineno, filetext);  
 	add_token_to_list(YYTOKEN);
    
   	

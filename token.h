@@ -22,6 +22,7 @@ struct tokenlist {
    struct tokenlist *next;
    };
  
+  // adapted from https://github.com/park2331
 typedef struct file_node
 {
 	struct token *t; 

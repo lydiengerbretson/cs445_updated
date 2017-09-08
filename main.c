@@ -38,7 +38,7 @@ int main(int argc, char **argv)
 		  yyin = fopen(file_list[i], "r"); 
 		  // push file onto stack 
 	      filetext = file_list[i]; 
-		  push_file_node(&file_stack, filetext); 
+		  push_file_node(&file_stack, filetext); // adapted from https://github.com/park2331
 		  yypush_buffer_state(yy_create_buffer(yyin, YY_BUF_SIZE));
 	   }
 		   while (1 && yyin) 
