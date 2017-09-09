@@ -21,11 +21,32 @@
     if (inc[0] == '\\') 
 	{
       char esc = inc[1];
-      if (esc == 'n' || esc == 't' || esc == '\'' || esc == '\\' || esc == '\"' || esc == '\0') 
+      if (esc == 'n' )
 	  {
+		updated_sval[len] = '\n';
+		// len++; // ?
 		inc++;
 		inc++;
       } 
+	  else if (esc == 't')
+	  {
+		updated_sval[len] = '\t';
+		// len++; // ?
+		inc++;
+		inc++;
+	  }
+	  else if (esc == '0')
+	  {
+		updated_sval[len] = '\0';
+		// len++; // ?
+		inc++;
+		inc++;
+	  }
+	  else
+	  {
+		inc++;
+		inc++;
+	  }
     } else 
 	{
       updated_sval[len] = *inc;
@@ -36,7 +57,7 @@
   updated_sval[len] = '\0';
   updated_sval = realloc(updated_sval, len);
   return updated_sval;
-}
+ }
 
  char *get_cval(char *cval) {
 

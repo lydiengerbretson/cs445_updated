@@ -62,7 +62,7 @@ int add_token(int category);
 void handle_include(char *s); 
 %}
 %option yylineno
-%x INCLUDE
+%x INCLUDE STR
 
 intsuffix				([uU][lL]?)|([lL][uU]?)
 fracconst				([0-9]*\.[0-9]+)|([0-9]+\.)
