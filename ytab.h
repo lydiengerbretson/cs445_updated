@@ -57,6 +57,27 @@ int include;
 #define MINUSMINUS 373  
 #define DOTSTAR 374
 #define ELLIPSIS 375
+#define ASM 376
+#define ENUM_NAME 377
+#define EXPLICIT 378
+#define EXPORT 379
+#define INLINE 380
+#define MUTABLE 381
+#define NAMESPACE 382
+#define DYNAMIC_CAST 383
+#define REINTERPRET_CAST 384
+#define STATIC_CAST 385
+#define WCHAR_T 386
+#define USING 387
+#define THROW 388
+#define FRIEND 389
+#define TEMPLATE 390
+#define CONST_CAST 391
+#define OPERATOR 392
+#define TRY 393
+#define TYPEID 394
+#define TYPENAME 395
+#define VIRTUAL 396
 
 
 #define AUTO 258

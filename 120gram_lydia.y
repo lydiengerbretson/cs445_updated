@@ -44,10 +44,10 @@
 %{
 #include <stdio.h>
 #include <string.h>
-#include "nonterm.h"
-#include "tree.h"
+#include "token.h"
+#include "120tree_lydia.h"
 
-extern int lineno;
+extern int yylineno;
 extern char *yytext;
 int yydebug=0;
 
@@ -58,48 +58,72 @@ static void yyerror(char *s);
  * warning, this %union is not what you need, it is for demonstration purposes.
  */
 %}
+
 %union {
-  char *text;
   nodeptr n;
   }
 
-%type < n > identifier literal integer_literal character_literal floating_literal 
-%type < n > string_literal boolean_literal translation_unit
-%type < n > primary_expression id_expression unqualified_id qualified_id nested_name_specifier 
-%type < n > postfix_expression expression_list unary_expression unary_operator  
-%type < n > new_expression new_placement new_type_id new_declarator direct_new_declarator
-%type < n > new_initializer delete_expression pm_expression multiplicative_expression
-%type < n > additive_expression shift_expression relational_expression equality_expression and_expression
-%type < n > exclusive_or_expression inclusive_or_expression logical_and_expression logical_or_expression
-%type < n > conditional_expression assignment_expression assignment_operator expression constant_expression
-%type < n > statement labeled_statement expression_statement compound_statement statement_seq selection_statement
-%type < n > condition iteration_statement for_init_statement jump_statement declaration_statement
-%type < n > declaration_seq declaration block_declaration simple_declaration 
-%type < n > decl_specifier decl_specifier_seq type_specifier simple_type_specifier elaborated_type_specifier 
-%type < n > init_declarator_list init_declarator declarator direct_declarator ptr_operator 
-%type < n > declarator_id type_id type_specifier_seq abstract_declarator direct_abstract_declarator
-%type < n > parameter_declaration_clause parameter_declaration_list parameter_declaration function_definition
-%type < n > function_body initializer initializer_clause initializer_list class_specifier class_head
-%type < n > class_key member_specification member_declaration member_declarator_list member_declarator 
-%type < n > constant_initializer access_specifier ctor_initializer mem_initializer_list mem_initializer 
-%type < n > mem_initializer_id declaration_seq_opt expression_list_opt new_placement_opt
-%type < n > new_initializer_opt new_declarator_opt expression_opt statement_seq_opt condition_opt
+%type < n > typedef_name namespace_name original_namespace_name class_name
+%type < n > enum_name template_name identifier literal integer_literal
+%type < n > character_literal floating_literal string_literal boolean_literal
+%type < n > translation_unit primary_expression id_expression unqualified_id
+%type < n > qualified_id nested_name_specifier postfix_expression expression_list
+%type < n > unary_expression unary_operator new_expression new_placement new_type_id
+%type < n > new_declarator direct_new_declarator new_initializer delete_expression
+%type < n > cast_expression pm_expression multiplicative_expression additive_expression
+%type < n > shift_expression relational_expression equality_expression and_expression
+%type < n > exclusive_or_expression inclusive_or_expression logical_and_expression 
+%type < n > logical_or_expression conditional_expression assignment_expression
+%type < n > assignment_operator expression constant_expression statement
+%type < n > labeled_statement expression_statement compound_statement statement_seq
+%type < n > selection_statement condition iteration_statement for_init_statement 
+%type < n > jump_statement declaration_statement declaration_seq declaration
+%type < n > block_declaration simple_declaration decl_specifier decl_specifier_seq
+%type < n > storage_class_specifier function_specifier type_specifier simple_type_specifier
+%type < n > type_name elaborated_type_specifier enum_name enum_specifier enumerator_list
+%type < n > enumerator_definition enumerator namespace_name original_namespace_name
+%type < n > namespace_definition named_namespace_definition original_namespace_definition
+%type < n > unnamed_namespace_definition namespace_body namespace_alias namespace_alias_definition
+%type < n > qualified_namespace_specifier using_declaration using_directive asm_definition
+%type < n > linkage_specification init_declarator_list init_declarator declarator 
+%type < n > direct_declarator ptr_operator cv_qualifier_seq cv_qualifier declarator_id
+%type < n > type_id type_specifier_seq abstract_declarator direct_abstract_declarator 
+%type < n > parameter_declaration_clause parameter_declaration_list parameter_declaration
+%type < n > function_definition function_body initializer initializer_clause initializer_list
+%type < n > class_specifier class_head class_key member_specification member_declaration
+%type < n > member_declarator_list member_declarator pure_specifier constant_initializer
+%type < n > base_clause base_specifier_list base_specifier access_specifier
+%type < n > conversion_function_id conversion_type_id conversion_declarator ctor_initializer
+%type < n > mem_initializer_list mem_initializer mem_initializer_id operator_function_id
+%type < n > operator template_declaration template_parameter_list template_parameter
+%type < n > type_parameter template_id template_argument_list template_argument
+%type < n > explicit_instantiation explicit_specialization try_block function_try_block
+%type < n > handler_seq handler exception_declaration throw_expression exception_specification
+%type < n > type_id_list declaration_seq_opt nested_name_specifier expression_list_opt
+%type < n > COLONCOLON_opt new_placement_opt new_initializer_opt new_declarator_opt
+%type < n > expression_opt statement_seq_opt condition_opt enumerator_list_opt
 %type < n > initializer_opt constant_expression_opt abstract_declarator_opt type_specifier_seq_opt
-%type < n > direct_abstract_declarator_opt ctor_initializer_opt COMMA_opt member_specification_opt SEMICOLON_opt
+%type < n > direct_abstract_declarator_opt ctor_initializer_opt COMMA_opt member_specification_opt
+%type < n > SEMICOLON_opt conversion_declarator_opt EXPORT_opt handler_seq_opt 
+%type < n > assignment_expression_opt type_id_list_opt
+ 
 
-%token < n >  IDENTIFIER INTEGER FLOATING CHARACTER STRING
-%token < n >  TYPEDEF_NAME CLASS_NAME
 
-%token < n >  ELLIPSIS COLONCOLON DOTSTAR ADDEQ SUBEQ MULEQ DIVEQ MODEQ
-%token < n >  XOREQ ANDEQ OREQ SL SR SREQ SLEQ EQ NOTEQ LTEQ GTEQ ANDAND OROR
-%token < n >  PLUSPLUS MINUSMINUS ARROWSTAR ARROW
+%token < n > IDENTIFIER INTEGER FLOATING CHARACTER STRING
+%token < n > TYPEDEF_NAME CLASS_NAME ENUM_NAME
 
-%token < n >  BOOL BREAK CASE CATCH CHAR CLASS CONTINUE
-%token < n >  DEFAULT DELETE DO DOUBLE  ELSE 
-%token < n >  FALSE FLOAT FOR GOTO IF INT LONG NEW
-%token < n >  PRIVATE PROTECTED PUBLIC  RETURN
-%token < n >  SHORT SIGNED SIZEOF STATIC STRUCT SWITCH 
-%token < n >  TRUE UNSIGNED VOID WHILE 
+%token < n > ELLIPSIS COLONCOLON DOTSTAR ADDEQ SUBEQ MULEQ DIVEQ MODEQ
+%token < n > XOREQ ANDEQ OREQ SL SR SREQ SLEQ EQ NOTEQ LTEQ GTEQ ANDAND OROR
+%token < n > PLUSPLUS MINUSMINUS ARROWSTAR ARROW
+
+%token < n > ASM AUTO BOOL BREAK CASE CATCH CHAR CLASS CONST CONST_CAST CONTINUE
+%token < n > DEFAULT DELETE DO DOUBLE DYNAMIC_CAST ELSE ENUM EXPLICIT EXPORT EXTERN
+%token < n > FALSE FLOAT FOR FRIEND GOTO IF INLINE INT LONG MUTABLE NAMESPACE NEW
+%token < n > OPERATOR PRIVATE PROTECTED PUBLIC REGISTER REINTERPRET_CAST RETURN
+%token < n > SHORT SIGNED SIZEOF STATIC STATIC_CAST STRUCT SWITCH TEMPLATE THIS
+%token < n > THROW TRUE TRY TYPEDEF TYPEID TYPENAME UNION UNSIGNED USING VIRTUAL
+%token < n > VOID VOLATILE WCHAR_T WHILE
+
 %token < n > ';' '{' '}' ',' ':' '=' '(' ')' '[' ']' '.' '&' '!' '~' '-'
 %token < n > '+' '*' '/' '%' '<' '>' '^' '|' '?'
 
@@ -107,6 +131,39 @@ static void yyerror(char *s);
 
 %%
 
+/*----------------------------------------------------------------------
+ * Context-dependent identifiers.
+ *----------------------------------------------------------------------*/
+
+typedef_name:
+	/* identifier */
+	TYPEDEF_NAME
+	;
+
+namespace_name:
+	original_namespace_name
+	;
+
+original_namespace_name:
+	/* identifier */
+	NAMESPACE_NAME
+	;
+
+class_name:
+	/* identifier */
+	CLASS_NAME
+	| template_id
+	;
+
+enum_name:
+	/* identifier */
+	ENUM_NAME
+	;
+
+template_name:
+	/* identifier */
+	TEMPLATE_NAME
+	;
 
 /*----------------------------------------------------------------------
  * Lexical elements.
@@ -117,32 +174,32 @@ identifier:
 	;
 
 literal:
-	integer_literal {$$ = $1;}
-	| character_literal {$$ = $1;}
-	| floating_literal {$$ = $1;}
-	| string_literal {$$ = $1;}
-	| boolean_literal {$$ = $1;}
+	integer_literal
+	| character_literal
+	| floating_literal
+	| string_literal
+	| boolean_literal
 	;
 
 integer_literal:
-	INTEGER {$$ = $1;}
+	INTEGER
 	;
 
 character_literal:
-	CHARACTER {$$ = $1;}
+	CHARACTER
 	;
 
 floating_literal:
-	FLOATING {$$ = $1;}
+	FLOATING
 	;
 
 string_literal:
-	STRING {$$ = $1;}
+	STRING
 	;
 
 boolean_literal:
-	TRUE {$$ = $1;}
-	| FALSE {$$ = $1;}
+	TRUE
+	| FALSE
 	;
 
 /*----------------------------------------------------------------------
@@ -150,7 +207,7 @@ boolean_literal:
  *----------------------------------------------------------------------*/
 
 translation_unit:
-	declaration_seq_opt /* alctree */
+	declaration_seq_opt
 	;
 
 /*----------------------------------------------------------------------
@@ -158,41 +215,60 @@ translation_unit:
  *----------------------------------------------------------------------*/
 
 primary_expression:
-	literal {$$ = $1;}
-	| '(' expression ')' /* alctree */
-	| id_expression {$$ = $1;}
+	literal
+	| THIS
+	| '(' expression ')'
+	| id_expression
 	;
 
 id_expression:
-	unqualified_id {$$ = $1;}
-	| qualified_id {$$ = $1;}
+	unqualified_id
+	| qualified_id
 	;
 
 unqualified_id:
-	identifier {$$ = $1;}
-	| '~' CLASS_NAME /* alctree */
+	identifier
+	| operator_function_id
+	| conversion_function_id
+	| '~' class_name
 	;
 
 qualified_id:
 	nested_name_specifier unqualified_id
+	| nested_name_specifier TEMPLATE unqualified_id
 	;
 
 nested_name_specifier:
-	CLASS_NAME COLONCOLON nested_name_specifier
-	| CLASS_NAME COLONCOLON
+	class_name COLONCOLON nested_name_specifier
+	namespace_name COLONCOLON nested_name_specifier
+	| class_name COLONCOLON
+	| namespace_name COLONCOLON
 	;
 
 postfix_expression:
 	primary_expression
-	| postfix_expression '[' expression ']' /* alctree */
-	| postfix_expression '(' expression_list_opt ')' /* alctree */
-	| simple_type_specifier '(' expression_list_opt ')'
+	| postfix_expression '[' expression ']'
+	| postfix_expression '(' expression_list_opt ')'
+	| DOUBLE '(' expression_list_opt ')'
+	| INT '(' expression_list_opt ')'
+	| CHAR '(' expression_list_opt ')'
+	| BOOL '(' expression_list_opt ')'
+	| postfix_expression '.' TEMPLATE COLONCOLON id_expression
+	| postfix_expression '.' TEMPLATE id_expression
 	| postfix_expression '.' COLONCOLON id_expression
 	| postfix_expression '.' id_expression
+	| postfix_expression ARROW TEMPLATE COLONCOLON id_expression
+	| postfix_expression ARROW TEMPLATE id_expression
 	| postfix_expression ARROW COLONCOLON id_expression
 	| postfix_expression ARROW id_expression
 	| postfix_expression PLUSPLUS
 	| postfix_expression MINUSMINUS
+	| DYNAMIC_CAST '<' type_id '>' '(' expression ')'
+	| STATIC_CAST '<' type_id '>' '(' expression ')'
+	| REINTERPRET_CAST '<' type_id '>' '(' expression ')'
+	| CONST_CAST '<' type_id '>' '(' expression ')'
+	| TYPEID '(' expression ')'
+	| TYPEID '(' type_id ')'
 	;
 
 expression_list:
@@ -202,11 +278,11 @@ expression_list:
 
 unary_expression:
 	postfix_expression
-	| PLUSPLUS unary_expression
-	| MINUSMINUS unary_expression
-	| '*' unary_expression
-	| '&' unary_expression
-	| unary_operator unary_expression
+	| PLUSPLUS cast_expression
+	| MINUSMINUS cast_expression
+	| '*' cast_expression
+	| '&' cast_expression
+	| unary_operator cast_expression
 	| SIZEOF unary_expression
 	| SIZEOF '(' type_id ')'
 	| new_expression
@@ -250,16 +326,21 @@ new_initializer:
 	;
 
 delete_expression:
-	  DELETE unary_expression
-	| COLONCOLON DELETE unary_expression
-	| DELETE '[' ']' unary_expression
-	| COLONCOLON DELETE '[' ']' unary_expression
+	  DELETE cast_expression
+	| COLONCOLON DELETE cast_expression
+	| DELETE '[' ']' cast_expression
+	| COLONCOLON DELETE '[' ']' cast_expression
+	;
+
+cast_expression:
+	unary_expression
+	| '(' type_id ')' cast_expression
 	;
 
 pm_expression:
-	unary_expression
-	| pm_expression DOTSTAR unary_expression
-	| pm_expression ARROWSTAR unary_expression
+	cast_expression
+	| pm_expression DOTSTAR cast_expression
+	| pm_expression ARROWSTAR cast_expression
 	;
 
 multiplicative_expression:
@@ -328,6 +409,7 @@ conditional_expression:
 assignment_expression:
 	conditional_expression
 	| logical_or_expression assignment_operator assignment_expression
+	| throw_expression
 	;
 
 assignment_operator:
@@ -365,6 +447,7 @@ statement:
 	| iteration_statement
 	| jump_statement
 	| declaration_statement
+	| try_block
 	;
 
 labeled_statement:
@@ -431,10 +514,19 @@ declaration_seq:
 declaration:
 	block_declaration
 	| function_definition
+	| template_declaration
+	| explicit_instantiation
+	| explicit_specialization
+	| linkage_specification
+	| namespace_definition
 	;
 
 block_declaration:
 	simple_declaration
+	| asm_definition
+	| namespace_alias_definition
+	| using_declaration
+	| using_directive
 	;
 
 simple_declaration:
@@ -443,8 +535,11 @@ simple_declaration:
 	;
 
 decl_specifier:
+	storage_class_specifier
 	| type_specifier
-
+	| function_specifier { $$ = NULL; }
+	| FRIEND { $$ = NULL; }
+	| TYPEDEF { $$ = NULL; }
 	;
 
 decl_specifier_seq:
@@ -452,18 +547,34 @@ decl_specifier_seq:
 	| decl_specifier_seq decl_specifier
 	;
 
+storage_class_specifier:
+	AUTO { $$ = NULL; }
+	| REGISTER { $$ = NULL; }
+	| STATIC { $$ = NULL; }
+	| EXTERN { $$ = NULL; }
+	| MUTABLE { $$ = NULL; }
+	;
+
+function_specifier:
+	INLINE
+	| VIRTUAL
+	| EXPLICIT
+	;
 
 type_specifier:
 	simple_type_specifier
 	| class_specifier { $$ = NULL; }
+	| enum_specifier { $$ = NULL; }
 	| elaborated_type_specifier { $$ = NULL; }
-
+	| cv_qualifier { $$ = NULL; }
 	;
 
 simple_type_specifier:
-	CLASS_NAME
-	| nested_name_specifier CLASS_NAME { $$ = NULL; }
+	  type_name { $$ = NULL; }
+	| nested_name_specifier type_name { $$ = NULL; }
+	| COLONCOLON nested_name_specifier_opt type_name { $$ = NULL; }
 	| CHAR { $$ = NULL; }
+	| WCHAR_T { $$ = NULL; }
 	| BOOL { $$ = NULL; }
 	| SHORT { $$ = NULL; }
 	| INT { $$ = NULL; }
@@ -475,13 +586,123 @@ simple_type_specifier:
 	| VOID { $$ = NULL; }
 	;
 
+type_name:
+	class_name
+	| enum_name
+	| typedef_name
+	;
 
 elaborated_type_specifier:
 	  class_key COLONCOLON nested_name_specifier identifier
 	| class_key COLONCOLON identifier
-	
+	| ENUM COLONCOLON nested_name_specifier identifier
+	| ENUM COLONCOLON identifier
+	| ENUM nested_name_specifier identifier
+	| TYPENAME COLONCOLON_opt nested_name_specifier identifier
+	| TYPENAME COLONCOLON_opt nested_name_specifier identifier '<' template_argument_list '>'
 	;
 
+/*
+enum_name:
+	identifier
+	;
+*/
+
+enum_specifier:
+	ENUM identifier '{' enumerator_list_opt '}'
+	;
+
+enumerator_list:
+	enumerator_definition
+	| enumerator_list ',' enumerator_definition
+	;
+
+enumerator_definition:
+	enumerator
+	| enumerator '=' constant_expression
+	;
+
+enumerator:
+	identifier
+	;
+
+/*
+namespace_name:
+	original_namespace_name
+	| namespace_alias
+	;
+
+original_namespace_name:
+	identifier
+	;
+*/
+
+namespace_definition:
+	named_namespace_definition
+	| unnamed_namespace_definition
+	;
+
+named_namespace_definition:
+	original_namespace_definition
+	| extension_namespace_definition
+	;
+
+original_namespace_definition:
+	NAMESPACE identifier '{' namespace_body '}'
+	;
+
+extension_namespace_definition:
+	NAMESPACE original_namespace_name '{' namespace_body '}'
+	;
+
+unnamed_namespace_definition:
+	NAMESPACE '{' namespace_body '}'
+	;
+
+namespace_body:
+	declaration_seq_opt
+	;
+
+/*
+namespace_alias:
+	identifier
+	;
+*/
+
+namespace_alias_definition:
+	NAMESPACE identifier '=' qualified_namespace_specifier ';'
+	;
+
+qualified_namespace_specifier:
+	  COLONCOLON nested_name_specifier namespace_name
+	| COLONCOLON namespace_name
+	| nested_name_specifier namespace_name
+	| namespace_name
+	;
+
+using_declaration:
+	  USING TYPENAME COLONCOLON nested_name_specifier unqualified_id ';'
+	| USING TYPENAME nested_name_specifier unqualified_id ';'
+	| USING COLONCOLON nested_name_specifier unqualified_id ';'
+	| USING nested_name_specifier unqualified_id ';'
+	| USING COLONCOLON unqualified_id ';'
+	;
+
+using_directive:
+	USING NAMESPACE COLONCOLON nested_name_specifier namespace_name ';'
+	| USING NAMESPACE COLONCOLON namespace_name ';'
+	| USING NAMESPACE nested_name_specifier namespace_name ';'
+	| USING NAMESPACE namespace_name ';'
+	;
+
+asm_definition:
+	ASM '(' string_literal ')' ';'
+	;
+
+linkage_specification:
+	EXTERN string_literal '{' declaration_seq_opt '}'
+	| EXTERN string_literal declaration
+	;
 
 /*----------------------------------------------------------------------
  * Declarators.
@@ -503,9 +724,9 @@ declarator:
 
 direct_declarator:
 	  declarator_id { $$ = NULL; }
-	| direct_declarator '(' parameter_declaration_clause ')'   
-	| direct_declarator '(' parameter_declaration_clause ')' 
-	| direct_declarator '(' parameter_declaration_clause ')'  { $$ = NULL; }
+	| direct_declarator '(' parameter_declaration_clause ')' cv_qualifier_seq exception_specification { $$ = NULL; }
+	| direct_declarator '(' parameter_declaration_clause ')' cv_qualifier_seq { $$ = NULL; }
+	| direct_declarator '(' parameter_declaration_clause ')' exception_specification { $$ = NULL; }
 	| direct_declarator '(' parameter_declaration_clause ')' { $$ = alctree(DIRECTDECLARATOR_5, 2, $1, $3); }
 	| CLASS_NAME '(' parameter_declaration_clause ')' { $$ = NULL; }
 	| CLASS_NAME COLONCOLON declarator_id '(' parameter_declaration_clause ')' { $$ = NULL; }
@@ -516,20 +737,29 @@ direct_declarator:
 
 ptr_operator:
 	'*' { $$ = NULL; }
-	| '*'  { $$ = NULL; }
+	| '*' cv_qualifier_seq { $$ = NULL; }
 	| '&' { $$ = NULL; }
 	| nested_name_specifier '*' { $$ = NULL; }
-	| nested_name_specifier '*'  { $$ = NULL; }
+	| nested_name_specifier '*' cv_qualifier_seq { $$ = NULL; }
 	| COLONCOLON nested_name_specifier '*' { $$ = NULL; }
-	| COLONCOLON nested_name_specifier '*'  { $$ = NULL; }
+	| COLONCOLON nested_name_specifier '*' cv_qualifier_seq { $$ = NULL; }
 	;
 
+cv_qualifier_seq:
+	cv_qualifier
+	| cv_qualifier cv_qualifier_seq
+	;
+
+cv_qualifier:
+	CONST
+	| VOLATILE
+	;
 
 declarator_id:
 	  id_expression
 	| COLONCOLON id_expression
-	| COLONCOLON nested_name_specifier CLASS_NAME
-	| COLONCOLON CLASS_NAME
+	| COLONCOLON nested_name_specifier type_name
+	| COLONCOLON type_name
 	;
 
 type_id:
@@ -546,9 +776,9 @@ abstract_declarator:
 	;
 
 direct_abstract_declarator:
-	  direct_abstract_declarator_opt '(' parameter_declaration_clause ')'  
-	| direct_abstract_declarator_opt '(' parameter_declaration_clause ')' 
-	| direct_abstract_declarator_opt '(' parameter_declaration_clause ')' 
+	  direct_abstract_declarator_opt '(' parameter_declaration_clause ')' cv_qualifier_seq exception_specification
+	| direct_abstract_declarator_opt '(' parameter_declaration_clause ')' cv_qualifier_seq
+	| direct_abstract_declarator_opt '(' parameter_declaration_clause ')' exception_specification
 	| direct_abstract_declarator_opt '(' parameter_declaration_clause ')'
 	| direct_abstract_declarator_opt '[' constant_expression_opt ']'
 	| '(' abstract_declarator ')'
@@ -577,7 +807,8 @@ parameter_declaration:
 function_definition:
 	  declarator ctor_initializer_opt function_body
 	| decl_specifier_seq declarator ctor_initializer_opt function_body
-
+	| declarator function_try_block
+	| decl_specifier_seq declarator function_try_block
 	;
 
 function_body:
@@ -610,12 +841,15 @@ class_specifier:
 
 class_head:
 	  class_key identifier { typenametable_insert($2, CLASS_NAME); }
+	| class_key identifier base_clause
 	| class_key nested_name_specifier identifier
+	| class_key nested_name_specifier identifier base_clause
 	;
 
 class_key:
 	CLASS
 	| STRUCT
+	| UNION
 	;
 
 member_specification:
@@ -630,6 +864,8 @@ member_declaration:
 	| ';'
 	| function_definition SEMICOLON_opt
 	| qualified_id ';'
+	| using_declaration
+	| template_declaration
 	;
 
 member_declarator_list:
@@ -639,6 +875,7 @@ member_declarator_list:
 
 member_declarator:
 	  declarator
+	| declarator pure_specifier
 	| declarator constant_initializer
 	| identifier ':' constant_expression
 	;
@@ -648,7 +885,9 @@ member_declarator:
  * 0 is returned as an ``INTEGER'' by the lexical analyzer but in this
  * context is different.
  */
-
+pure_specifier:
+	'=' '0'
+	;
 
 constant_initializer:
 	'=' constant_expression
@@ -657,6 +896,30 @@ constant_initializer:
 /*----------------------------------------------------------------------
  * Derived classes.
  *----------------------------------------------------------------------*/
+
+base_clause:
+	':' base_specifier_list
+	;
+
+base_specifier_list:
+	base_specifier
+	| base_specifier_list ',' base_specifier
+	;
+
+base_specifier:
+	  COLONCOLON nested_name_specifier class_name
+	| COLONCOLON class_name
+	| nested_name_specifier class_name
+	| class_name
+	| VIRTUAL access_specifier COLONCOLON nested_name_specifier_opt class_name
+	| VIRTUAL access_specifier nested_name_specifier_opt class_name
+	| VIRTUAL COLONCOLON nested_name_specifier_opt class_name
+	| VIRTUAL nested_name_specifier_opt class_name
+	| access_specifier VIRTUAL COLONCOLON nested_name_specifier_opt class_name
+	| access_specifier VIRTUAL nested_name_specifier_opt class_name
+	| access_specifier COLONCOLON nested_name_specifier_opt class_name
+	| access_specifier nested_name_specifier_opt class_name
+	;
 
 access_specifier:
 	PRIVATE
@@ -668,6 +931,17 @@ access_specifier:
  * Special member functions.
  *----------------------------------------------------------------------*/
 
+conversion_function_id:
+	OPERATOR conversion_type_id
+	;
+
+conversion_type_id:
+	type_specifier_seq conversion_declarator_opt
+	;
+
+conversion_declarator:
+	ptr_operator conversion_declarator_opt
+	;
 
 ctor_initializer:
 	':' mem_initializer_list
@@ -690,6 +964,148 @@ mem_initializer_id:
 	| identifier
 	;
 
+/*----------------------------------------------------------------------
+ * Overloading.
+ *----------------------------------------------------------------------*/
+
+operator_function_id:
+	OPERATOR operator
+	;
+
+operator:
+	NEW
+	| DELETE
+	| NEW '[' ']'
+	| DELETE '[' ']'
+	| '+'
+	| '_'
+	| '*'
+	| '/'
+	| '%'
+	| '^'
+	| '&'
+	| '|'
+	| '~'
+	| '!'
+	| '='
+	| '<'
+	| '>'
+	| ADDEQ
+	| SUBEQ
+	| MULEQ
+	| DIVEQ
+	| MODEQ
+	| XOREQ
+	| ANDEQ
+	| OREQ
+	| SL
+	| SR
+	| SREQ
+	| SLEQ
+	| EQ
+	| NOTEQ
+	| LTEQ
+	| GTEQ
+	| ANDAND
+	| OROR
+	| PLUSPLUS
+	| MINUSMINUS
+	| ','
+	| ARROWSTAR
+	| ARROW
+	| '(' ')'
+	| '[' ']'
+	;
+
+/*----------------------------------------------------------------------
+ * Templates.
+ *----------------------------------------------------------------------*/
+
+template_declaration:
+	EXPORT_opt TEMPLATE '<' template_parameter_list '>' declaration
+	;
+
+template_parameter_list:
+	template_parameter
+	| template_parameter_list ',' template_parameter
+	;
+
+template_parameter:
+	type_parameter
+	| parameter_declaration
+	;
+
+type_parameter:
+	  CLASS identifier
+	| CLASS identifier '=' type_id
+	| TYPENAME identifier
+	| TYPENAME identifier '=' type_id
+	| TEMPLATE '<' template_parameter_list '>' CLASS identifier
+	| TEMPLATE '<' template_parameter_list '>' CLASS identifier '=' template_name
+	;
+
+template_id:
+	template_name '<' template_argument_list '>'
+	;
+
+template_argument_list:
+	template_argument
+	| template_argument_list ',' template_argument
+	;
+
+template_argument:
+	assignment_expression
+	| type_id
+	| template_name
+	;
+
+explicit_instantiation:
+	TEMPLATE declaration
+	;
+
+explicit_specialization:
+	TEMPLATE '<' '>' declaration
+	;
+
+/*----------------------------------------------------------------------
+ * Exception handling.
+ *----------------------------------------------------------------------*/
+
+try_block:
+	TRY compound_statement handler_seq
+	;
+
+function_try_block:
+	TRY ctor_initializer_opt function_body handler_seq
+	;
+
+handler_seq:
+	handler handler_seq_opt
+	;
+
+handler:
+	CATCH '(' exception_declaration ')' compound_statement
+	;
+
+exception_declaration:
+	type_specifier_seq declarator
+	| type_specifier_seq abstract_declarator
+	| type_specifier_seq
+	| ELLIPSIS
+	;
+
+throw_expression:
+	THROW assignment_expression_opt
+	;
+
+exception_specification:
+	THROW '(' type_id_list_opt ')'
+	;
+
+type_id_list:
+	type_id
+	| type_id_list ',' type_id
+	;
 
 /*----------------------------------------------------------------------
  * Epsilon (optional) definitions.
@@ -700,11 +1116,20 @@ declaration_seq_opt:
 	| declaration_seq
 	;
 
+nested_name_specifier_opt:
+	/* epsilon */
+	| nested_name_specifier
+	;
+
 expression_list_opt:
 	/* epsilon */
 	| expression_list
 	;
 
+COLONCOLON_opt:
+	/* epsilon */
+	| COLONCOLON
+	;
 
 new_placement_opt:
 	/* epsilon */
@@ -736,6 +1161,10 @@ condition_opt:
 	| condition
 	;
 
+enumerator_list_opt:
+	/* epsilon */
+	| enumerator_list
+	;
 
 initializer_opt:
 	/* epsilon */
@@ -782,10 +1211,34 @@ SEMICOLON_opt:
 	| ';'
 	;
 
+conversion_declarator_opt:
+	/* epsilon */
+	| conversion_declarator
+	;
+
+EXPORT_opt:
+	/* epsilon */
+	| EXPORT
+	;
+
+handler_seq_opt:
+	/* epsilon */
+	| handler_seq
+	;
+
+assignment_expression_opt:
+	/* epsilon */
+	| assignment_expression
+	;
+
+type_id_list_opt:
+	/* epsilon */
+	| type_id_list
+	;
+
 %%
 
-static void
-yyerror(char *s)
+static void yyerror(char *s)
 {
 	fprintf(stderr, "%d: %s\n", lineno, s);
 }
