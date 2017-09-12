@@ -4,29 +4,39 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <string.h>
 
 #include "120tree_lydia.h"
 
 void print_tree(Treeptr t, int depth)
 {
   int i;
-
-  printf("%*s %s: %d\n", depth*2, " ", t->prodrule_name, t->nkids);
   
-  for(i=0; i<t->nkids; i++)
+  if(!t)
   {
-	  print_tree(t->kids[i], depth+1);
+      // do nothing
+  }
+  else
+  {
+	printf("%*s %s: %d\n", depth*2, " ", t->prodrule_name, t->nkids);
+  
+	for(i=0; i<t->nkids; i++)
+	{
+		print_tree(t->kid[i], depth+1);
+	}
   }
 }
 
-Treeptr create_tree(char* prod_name, int category, int num_kids, ...)
+Treeptr create_tree(char* prod_name, int num_kids, ...)
 {
 	Treeptr T = malloc(sizeof(struct tree) + (num_kids-1)*sizeof(Treeptr)); 
 	
 	int j;
+	// type that holds variable arguments
 	va_list args;
-	char* prod_name_t = malloc(strlen(prod_name) + 1); 
-	strcpy(prod_name_t, prod_name); 
+	// product rule name 
+	char* prod_name_t = strdup(prod_name); 
+	//strcpy(prod_name_t, prod_name); 
 	
 	printf("%s\n", prod_name); 
 	
@@ -35,11 +45,28 @@ Treeptr create_tree(char* prod_name, int category, int num_kids, ...)
 		printf("Tree is out of memory.\n"); 
 		exit(1); 
 	}
-	
+	// product rule name 
 	T->prodrule_name = prod_name_t; 
-	T->prodrule = category; 
+	// product rule number 
+	// T->prodrule = category; // ????
+	// number of kids
 	T->nkids = num_kids; 
+
+	// add any children to tree
+	if(num_kids > 0)
+	{
+		// initialize variable argument list 
+		va_start(args, num_kids); 
+		
+		for(j=0; j < num_kids; j++)
+		{
+			// assign child to value of current argument in variable list 
+			T->kid[j] = va_arg(args, struct tree *); 
+		}
+		
+		va_end(args); 
+	}
 	
-	
+	return T; 	
 
 }

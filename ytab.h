@@ -2,11 +2,8 @@
 
 FILE *yyin; // added this 
 struct token *YYTOKEN; 
-char* curr_filename; // added this
-char* prev_filename;
 char* file_name; 
 char* temp_name; 
-int include; 
 
 /* Size of default input buffer. */
 /* Retrieved from lex.yy.c file */
@@ -78,6 +75,8 @@ int include;
 #define TYPEID 394
 #define TYPENAME 395
 #define VIRTUAL 396
+#define NAMESPACE_NAME 397
+#define TEMPLATE_NAME 398
 
 
 #define AUTO 258

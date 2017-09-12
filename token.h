@@ -1,7 +1,20 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include "ytab.h"
+
+/* Size of default input buffer. */
+/* Retrieved from lex.yy.c file */
+#ifndef YY_BUF_SIZE
+#ifdef __ia64__
+/* On IA-64, the buffer size is 16k, not 8k.
+ * Moreover, YY_BUF_SIZE is 2*YY_READ_BUF_SIZE in the general case.
+ * Ditto for the __ia64__ case accordingly.
+ */
+#define YY_BUF_SIZE 32768
+#else
+#define YY_BUF_SIZE 16384
+#endif /* __ia64__ */
+#endif
 
 extern struct tokenlist *YYTOKENLIST; 
 

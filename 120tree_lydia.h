@@ -1,4 +1,4 @@
-#include "token.h"
+//#include "token.h"
 
 // structure adapted from http://www2.cs.uidaho.edu/~jeffery/courses/445/hw2.html
 typedef struct tree {
@@ -6,7 +6,7 @@ typedef struct tree {
    char* prodrule_name; 
    int prodrule;
    int nkids;
-   struct tree *kids[9];
+   struct tree *kid[9];
    struct token *leaf;
 } * Treeptr;
 

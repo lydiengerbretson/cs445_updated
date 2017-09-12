@@ -40,22 +40,30 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "ytab.h"
+
+#include "120gram_lydia.tab.h"
 #include "token.h"
+#include "120tree_lydia.h"
 
 int lineno;
 int saw_iostream, saw_string, saw_std;
-
-// extern variables
-extern struct tokenlist *YYTOKENLIST; 
-extern struct token *YYTOKEN;  
-extern filenodeptr file_stack;
-extern char* filetext; 
 
 static int yywrap(void);
 static void skip_until_eol(void);
 static void skip_comment(void);
 static int check_identifier(char *);
+
+// extern variables
+extern YYSTYPE yylval; 
+extern filenodeptr file_stack;
+extern char* filetext; 
+extern FILE *yyin; 
+
+// global variables
+struct token *YYTOKEN; 
+struct tokenlist *YYTOKENLIST; 
+char* file_name; 
+char* temp_name; 
 
 void lexerr(const char *s); 
 int add_token(int category);
