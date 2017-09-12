@@ -277,7 +277,10 @@ int add_token(int category)
    // global YYTOKEN
     filetext = file_stack->filename;
    	YYTOKEN = create_token(category, yytext, yylineno, filetext);  
-	add_token_to_list(YYTOKEN); // add token to tree 
+	
+	//add_token_to_list(YYTOKEN); 
+	
+	yylval.t = create_tree(yytext, 0); 
 	
 	return category; 
    

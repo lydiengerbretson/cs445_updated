@@ -10,5 +10,7 @@ typedef struct tree {
    struct token *leaf;
 } * Treeptr;
 
-Treeptr create_tree(char*, int,  ...); 
+
 void print_tree(Treeptr t, int r); 
+
+Treeptr create_tree(char*, int,  ...); 

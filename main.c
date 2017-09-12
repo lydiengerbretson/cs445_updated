@@ -16,7 +16,7 @@ extern struct tokenlist *YYTOKENLIST;
 extern struct token *YYTOKEN; 
 extern int yyparse(); 
 extern YYSTYPE yylval;
-extern struct tree *YYPROGRAM; 
+extern Treeptr YYPROGRAM; 
 
 char *filetext; 
 filenodeptr file_stack = NULL; 
@@ -76,10 +76,10 @@ int main(int argc, char **argv)
 	     //print_token_list(); 
 	    // head = YYTOKENLIST;
 	     //clear_tokens(head); 
-		 
-		 //print_tree(YYPROGRAM, 0);  
+		   
          
         }
+		print_tree(YYPROGRAM, 0); 
      }
 
 

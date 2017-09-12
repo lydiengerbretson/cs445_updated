@@ -47,7 +47,7 @@
 #include "token.h"
 #include "120tree_lydia.h"
 
-struct tree *YYPROGRAM; 
+Treeptr YYPROGRAM; 
 extern int yylineno;
 extern char *yytext;
 

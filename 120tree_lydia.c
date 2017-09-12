@@ -8,25 +8,6 @@
 
 #include "120tree_lydia.h"
 
-void print_tree(Treeptr t, int depth)
-{
-  int i;
-  
-  if(!t)
-  {
-      // do nothing
-  }
-  else
-  {
-	printf("%*s %s: %d\n", depth*2, " ", t->prodrule_name, t->nkids);
-  
-	for(i=0; i<t->nkids; i++)
-	{
-		print_tree(t->kid[i], depth+1);
-	}
-  }
-}
-
 Treeptr create_tree(char* prod_name, int num_kids, ...)
 {
 	Treeptr T = malloc(sizeof(struct tree) + (num_kids-1)*sizeof(Treeptr)); 
@@ -70,3 +51,31 @@ Treeptr create_tree(char* prod_name, int num_kids, ...)
 	return T; 	
 
 }
+
+void print_tree(Treeptr t, int depth)
+{
+  int i;
+  /*if(t == NULL)
+  {
+	  printf("Empty tree.\n"); 
+	  exit(1); 
+  } */
+  
+  if(!t)
+  {
+      // do nothing
+	  printf("exit 1\n"); 
+  }
+  else
+  {
+	printf("%*s %s: %d\n", depth*2, " ", t->prodrule_name, t->nkids);
+    printf("exit 2\n"); 
+	for(i=0; i<t->nkids; i++)
+	{
+		printf("exit 3\n"); 
+		print_tree(t->kid[i], depth+1);
+
+	}
+  }
+}
+
