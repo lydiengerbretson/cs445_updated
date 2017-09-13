@@ -11,6 +11,6 @@ typedef struct tree {
 } * Treeptr;
 
 
-void print_tree(Treeptr t, int r); 
+void print_tree(Treeptr, int); 
 
 Treeptr create_tree(char*, int,  ...); 

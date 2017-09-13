@@ -51,8 +51,6 @@ Treeptr YYPROGRAM;
 extern int yylineno;
 extern char *yytext;
 
-// insert struct tree * to start of program
-
 int yydebug=0;
 
 static void yyerror(char *s);

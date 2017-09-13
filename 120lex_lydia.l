@@ -281,6 +281,7 @@ int add_token(int category)
 	//add_token_to_list(YYTOKEN); 
 	
 	yylval.t = create_tree(yytext, 0); 
+	yylval.t->leaf = YYTOKEN; 
 	
 	return category; 
    

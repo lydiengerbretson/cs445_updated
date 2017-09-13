@@ -7,6 +7,7 @@
 #include <string.h>
 
 #include "120tree_lydia.h"
+#include "token.h"
 
 Treeptr create_tree(char* prod_name, int num_kids, ...)
 {
@@ -52,19 +53,18 @@ Treeptr create_tree(char* prod_name, int num_kids, ...)
 
 }
 
-void print_tree(Treeptr t, int depth)
+void print_tree(struct tree *t, int depth)
 {
   int i;
-  /*if(t == NULL)
-  {
-	  printf("Empty tree.\n"); 
-	  exit(1); 
-  } */
   
   if(!t)
   {
       // do nothing
 	  printf("exit 1\n"); 
+  }
+  else if(t->nkids == 0)
+  {
+	 printf("%*s  %s\n", depth*2, " ", t->leaf->text); 
   }
   else
   {
