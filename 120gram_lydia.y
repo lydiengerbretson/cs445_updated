@@ -45,12 +45,13 @@
 #include <stdio.h>
 #include <string.h>
 #include "token.h"
-#include "120tree_lydia.h"
+#include "tree_lydia.h"
 
-Treeptr YYPROGRAM; 
 extern int yylineno;
 extern char *yytext;
 
+// tree pointer to the start of the program
+Treeptr YYPROGRAM; 
 int yydebug=0;
 
 static void yyerror(char *s);
@@ -63,7 +64,26 @@ static void yyerror(char *s);
 
 %union {
   struct tree *t;
-  }
+}
+
+
+%token <t> IDENTIFIER INTEGER FLOATING CHARACTER STRING
+%token <t> TYPEDEF_NAME CLASS_NAME ENUM_NAME NAMESPACE_NAME TEMPLATE_NAME
+
+%token <t> ELLIPSIS COLONCOLON DOTSTAR ADDEQ SUBEQ MULEQ DIVEQ MODEQ
+%token <t> XOREQ ANDEQ OREQ SL SR SREQ SLEQ EQ NOTEQ LTEQ GTEQ ANDAND OROR
+%token <t> PLUSPLUS MINUSMINUS ARROWSTAR ARROW
+
+%token <t> ASM AUTO BOOL BREAK CASE CATCH CHAR CLASS CONST CONST_CAST CONTINUE
+%token <t> DEFAULT DELETE DO DOUBLE DYNAMIC_CAST ELSE ENUM EXPLICIT EXPORT EXTERN
+%token <t> FALSE FLOAT FOR FRIEND GOTO IF INLINE INT LONG MUTABLE NAMESPACE NEW
+%token <t> OPERATOR PRIVATE PROTECTED PUBLIC REGISTER REINTERPRET_CAST RETURN
+%token <t> SHORT SIGNED SIZEOF STATIC STATIC_CAST STRUCT SWITCH TEMPLATE THIS
+%token <t> THROW TRUE TRY TYPEDEF TYPEID TYPENAME UNION UNSIGNED USING VIRTUAL
+%token <t> VOID VOLATILE WCHAR_T WHILE
+
+%token <t> ';' '{' '}' ',' ':' '=' '(' ')' '[' ']' '.' '&' '!' '~' '-'
+%token <t> '+' '*' '/' '%' '<' '>' '^' '|' '?' '_'
 
 %type <t> typedef_name class_name
 %type <t> template_name identifier literal integer_literal
@@ -106,29 +126,10 @@ static void yyerror(char *s);
 %type <t> expression_opt statement_seq_opt condition_opt enumerator_list_opt
 %type <t> initializer_opt constant_expression_opt abstract_declarator_opt type_specifier_seq_opt
 %type <t> direct_abstract_declarator_opt ctor_initializer_opt COMMA_opt member_specification_opt
-%type <t> SEMICOLON_opt conversion_declarator_opt EXPORT_opt handler_seq_opt 
-%type <t> assignment_expression_opt type_id_list_opt
-%type <t> namespace_name original_namespace_name
- 
+%type <t> SEMICOLON_opt conversion_declarator_opt handler_seq_opt EXPORT_opt
+%type <t> assignment_expression_opt type_id_list_opt nested_name_specifier_opt
+%type <t> namespace_name original_namespace_name extension_namespace_definition
 
-
-%token <t> IDENTIFIER INTEGER FLOATING CHARACTER STRING
-%token <t> TYPEDEF_NAME CLASS_NAME ENUM_NAME NAMESPACE_NAME TEMPLATE_NAME
-
-%token <t> ELLIPSIS COLONCOLON DOTSTAR ADDEQ SUBEQ MULEQ DIVEQ MODEQ
-%token <t> XOREQ ANDEQ OREQ SL SR SREQ SLEQ EQ NOTEQ LTEQ GTEQ ANDAND OROR
-%token <t> PLUSPLUS MINUSMINUS ARROWSTAR ARROW
-
-%token <t> ASM AUTO BOOL BREAK CASE CATCH CHAR CLASS CONST CONST_CAST CONTINUE
-%token <t> DEFAULT DELETE DO DOUBLE DYNAMIC_CAST ELSE ENUM EXPLICIT EXPORT EXTERN
-%token <t> FALSE FLOAT FOR FRIEND GOTO IF INLINE INT LONG MUTABLE NAMESPACE NEW
-%token <t> OPERATOR PRIVATE PROTECTED PUBLIC REGISTER REINTERPRET_CAST RETURN
-%token <t> SHORT SIGNED SIZEOF STATIC STATIC_CAST STRUCT SWITCH TEMPLATE THIS
-%token <t> THROW TRUE TRY TYPEDEF TYPEID TYPENAME UNION UNSIGNED USING VIRTUAL
-%token <t> VOID VOLATILE WCHAR_T WHILE
-
-%token <t> ';' '{' '}' ',' ':' '=' '(' ')' '[' ']' '.' '&' '!' '~' '-'
-%token <t> '+' '*' '/' '%' '<' '>' '^' '|' '?'
 
 %start translation_unit
 
@@ -155,7 +156,7 @@ original_namespace_name:
 class_name:
 	/* identifier */
 	CLASS_NAME {$$ = $1;}
-	| template_id /* to do: unsupport error */
+	| template_id {$$ = $1;} /* to do: unsupport error */
 	;
 
 enum_name:
@@ -165,7 +166,7 @@ enum_name:
 
 template_name:
 	/* identifier */
-	TEMPLATE_NAME /* to do: unsupport error */
+	TEMPLATE_NAME {$$ = $1;} /* to do: unsupport error */
 	;
 
 /*----------------------------------------------------------------------
@@ -237,8 +238,8 @@ unqualified_id:
 	;
 
 qualified_id:
-	nested_name_specifier unqualified_id { $$ = create_tree("qualified_id", 2, $1, $2);}
-	| nested_name_specifier TEMPLATE unqualified_id /* to do: unsupport error */
+	nested_name_specifier unqualified_id { $$ = create_tree("qualified_id_1", 2, $1, $2);}
+	| nested_name_specifier TEMPLATE unqualified_id { $$ = create_tree("qualified_id_2", 3, $1, $2, $3);}
 	;
 
 nested_name_specifier:
@@ -249,193 +250,193 @@ nested_name_specifier:
 	;
 
 postfix_expression:
-	primary_expression
-	| postfix_expression '[' expression ']'
-	| postfix_expression '(' expression_list_opt ')'
-	| DOUBLE '(' expression_list_opt ')'
-	| INT '(' expression_list_opt ')'
-	| CHAR '(' expression_list_opt ')'
-	| BOOL '(' expression_list_opt ')'
-	| postfix_expression '.' TEMPLATE COLONCOLON id_expression /* to do: unsupport error */
-	| postfix_expression '.' TEMPLATE id_expression
-	| postfix_expression '.' COLONCOLON id_expression
-	| postfix_expression '.' id_expression
-	| postfix_expression ARROW TEMPLATE COLONCOLON id_expression
-	| postfix_expression ARROW TEMPLATE id_expression
-	| postfix_expression ARROW COLONCOLON id_expression
-	| postfix_expression ARROW id_expression
-	| postfix_expression PLUSPLUS
-	| postfix_expression MINUSMINUS
-	| DYNAMIC_CAST '<' type_id '>' '(' expression ')'
-	| STATIC_CAST '<' type_id '>' '(' expression ')'
-	| REINTERPRET_CAST '<' type_id '>' '(' expression ')'
-	| CONST_CAST '<' type_id '>' '(' expression ')'
-	| TYPEID '(' expression ')'
-	| TYPEID '(' type_id ')'
+	primary_expression {$$ = $1;}
+	| postfix_expression '[' expression ']' {$$ = create_tree("postfix_expression_1", 4, $1, $2, $3, $4);}
+	| postfix_expression '(' expression_list_opt ')' {$$ = create_tree("postfix_expression_2", 4, $1, $2, $3, $4);}
+	| DOUBLE '(' expression_list_opt ')' {$$ = create_tree("postfix_expression_3", 4, $1, $2, $3, $4);}
+	| INT '(' expression_list_opt ')' {$$ = create_tree("postfix_expression_4", 4, $1, $2, $3, $4);}
+	| CHAR '(' expression_list_opt ')' {$$ = create_tree("postfix_expression_5", 4, $1, $2, $3, $4);}
+	| BOOL '(' expression_list_opt ')' {$$ = create_tree("postfix_expression_6", 4, $1, $2, $3, $4);}
+	| postfix_expression '.' TEMPLATE COLONCOLON id_expression {$$ = create_tree("postfix_expression_7", 5, $1, $2, $3, $4, $5);}
+	| postfix_expression '.' TEMPLATE id_expression {$$ = create_tree("postfix_expression_8", 4, $1, $2, $3, $4);}
+	| postfix_expression '.' COLONCOLON id_expression {$$ = create_tree("postfix_expression_9", 4, $1, $2, $3, $4);}
+	| postfix_expression '.' id_expression {$$ = create_tree("postfix_expression_10", 3, $1, $2, $3);}
+	| postfix_expression ARROW TEMPLATE COLONCOLON id_expression {$$ = create_tree("postfix_expression_11", 5, $1, $2, $3, $4, $5);}
+	| postfix_expression ARROW TEMPLATE id_expression {$$ = create_tree("postfix_expression_12", 4, $1, $2, $3, $4);}
+	| postfix_expression ARROW COLONCOLON id_expression {$$ = create_tree("postfix_expression_13", 4, $1, $2, $3, $4);}
+	| postfix_expression ARROW id_expression {$$ = create_tree("postfix_expression_14", 3, $1, $2, $3);}
+	| postfix_expression PLUSPLUS {$$ = create_tree("postfix_expression_15", 2, $1, $2);}
+	| postfix_expression MINUSMINUS {$$ = create_tree("postfix_expression_16", 2, $1, $2);}
+	| DYNAMIC_CAST '<' type_id '>' '(' expression ')' {$$ = create_tree("postfix_expression_17", 7, $1, $2, $3, $4, $5, $6, $7);}
+	| STATIC_CAST '<' type_id '>' '(' expression ')' {$$ = create_tree("postfix_expression_18", 7, $1, $2, $3, $4, $5, $6, $7);}
+	| REINTERPRET_CAST '<' type_id '>' '(' expression ')' {$$ = create_tree("postfix_expression_19", 7, $1, $2, $3, $4, $5, $6, $7);}
+	| CONST_CAST '<' type_id '>' '(' expression ')' {$$ = create_tree("postfix_expression_20", 7, $1, $2, $3, $4, $5, $6, $7);}
+	| TYPEID '(' expression ')' {$$ = create_tree("postfix_expression_21", 4, $1, $2, $3, $4);}
+	| TYPEID '(' type_id ')' {$$ = create_tree("postfix_expression_22", 4, $1, $2, $3, $4);}
 	;
 
 expression_list:
-	assignment_expression
-	| expression_list ',' assignment_expression
+	assignment_expression { $$ = $1; }
+	| expression_list ',' assignment_expression {$$ = create_tree("expression_list_1", 3, $1, $2, $3);}
 	;
 
 unary_expression:
-	postfix_expression
-	| PLUSPLUS cast_expression
-	| MINUSMINUS cast_expression
-	| '*' cast_expression
-	| '&' cast_expression
-	| unary_operator cast_expression
-	| SIZEOF unary_expression
-	| SIZEOF '(' type_id ')'
-	| new_expression
-	| delete_expression
+	postfix_expression { $$ = $1; } 
+	| PLUSPLUS cast_expression {$$ = create_tree("unary_expression_1", 2, $1, $2);}
+	| MINUSMINUS cast_expression {$$ = create_tree("unary_expression_2", 2, $1, $2);}
+	| '*' cast_expression {$$ = create_tree("unary_expression_3", 2, $1, $2);}
+	| '&' cast_expression {$$ = create_tree("unary_expression_4", 2, $1, $2);}
+	| unary_operator cast_expression {$$ = create_tree("unary_expression_5", 2, $1, $2);}
+	| SIZEOF unary_expression {$$ = create_tree("unary_expression_6", 2, $1, $2);}
+	| SIZEOF '(' type_id ')' {$$ = create_tree("unary_expression_7", 4, $1, $2, $3, $4);}
+	| new_expression { $$ = $1; } 
+	| delete_expression { $$ = $1; } 
 	;
 
 unary_operator:
-	  '+'
-	| '-'
-	| '!'
-	| '~'
+	  '+' { $$ = $1; }
+	| '-' { $$ = $1; }
+	| '!' { $$ = $1; }
+	| '~' { $$ = $1; }
 	;
 
 new_expression:
-	  NEW new_placement_opt new_type_id new_initializer_opt
-	| COLONCOLON NEW new_placement_opt new_type_id new_initializer_opt
-	| NEW new_placement_opt '(' type_id ')' new_initializer_opt
-	| COLONCOLON NEW new_placement_opt '(' type_id ')' new_initializer_opt
+	  NEW new_placement_opt new_type_id new_initializer_opt {$$ = create_tree("new_expression_1", 4, $1, $2, $3, $4);}
+	| COLONCOLON NEW new_placement_opt new_type_id new_initializer_opt {$$ = create_tree("new_expression_2", 5, $1, $2, $3, $4, $5);}
+	| NEW new_placement_opt '(' type_id ')' new_initializer_opt {$$ = create_tree("new_expression_3", 6, $1, $2, $3, $4, $5, $6);}
+	| COLONCOLON NEW new_placement_opt '(' type_id ')' new_initializer_opt {$$ = create_tree("new_expression_4", 7, $1, $2, $3, $4, $5, $6, $7);}
 	;
 
 new_placement:
-	'(' expression_list ')'
+	'(' expression_list ')' {$$ = create_tree("new_placement_1", 3, $1, $2, $3);}
 	;
 
 new_type_id:
-	type_specifier_seq new_declarator_opt
+	type_specifier_seq new_declarator_opt {$$ = create_tree("new_type_id", 2, $1, $2);}
 	;
 
 new_declarator:
-	ptr_operator new_declarator_opt
-	| direct_new_declarator
+	ptr_operator new_declarator_opt {$$ = create_tree("new_declarator_1", 2, $1, $2);}
+	| direct_new_declarator { $$ = $1 ;}
 	;
 
 direct_new_declarator:
-	'[' expression ']'
-	| direct_new_declarator '[' constant_expression ']'
+	'[' expression ']' {$$ = create_tree("direct_new_declarator_1", 3, $1, $2, $3);}
+	| direct_new_declarator '[' constant_expression ']'{$$ = create_tree("direct_new_declarator_2", 4, $1, $2, $3, $4);}
 	;
 
 new_initializer:
-	'(' expression_list_opt ')'
+	'(' expression_list_opt ')' {$$ = create_tree("new_initializer_1", 3, $1, $2, $3);}
 	;
 
 delete_expression:
-	  DELETE cast_expression
-	| COLONCOLON DELETE cast_expression
-	| DELETE '[' ']' cast_expression
-	| COLONCOLON DELETE '[' ']' cast_expression
+	  DELETE cast_expression {$$ = create_tree("delete_expression_1", 2, $1, $2);}
+	| COLONCOLON DELETE cast_expression {$$ = create_tree("delete_expression_2", 3, $1, $2, $3);}
+	| DELETE '[' ']' cast_expression {$$ = create_tree("delete_expression_3", 4, $1, $2, $3, $4);}
+	| COLONCOLON DELETE '[' ']' cast_expression {$$ = create_tree("delete_expression_4", 5, $1, $2, $3, $4, $5);}
 	;
 
 cast_expression:
-	unary_expression
-	| '(' type_id ')' cast_expression
+	unary_expression { $$ = $1 ;}
+	| '(' type_id ')' cast_expression {$$ = create_tree("cast_expression_1", 4, $1, $2, $3, $4);}
 	;
 
 pm_expression:
-	cast_expression
-	| pm_expression DOTSTAR cast_expression
-	| pm_expression ARROWSTAR cast_expression
+	cast_expression { $$ = $1 ;}
+	| pm_expression DOTSTAR cast_expression {$$ = create_tree("pm_expression_1", 3, $1, $2, $3);}
+	| pm_expression ARROWSTAR cast_expression {$$ = create_tree("pm_expression_2", 3, $1, $2, $3);}
 	;
 
 multiplicative_expression:
-	pm_expression
-	| multiplicative_expression '*' pm_expression
-	| multiplicative_expression '/' pm_expression
-	| multiplicative_expression '%' pm_expression
+	pm_expression { $$ = $1 ;}
+	| multiplicative_expression '*' pm_expression {$$ = create_tree("mult_expression_1", 3, $1, $2, $3);}
+	| multiplicative_expression '/' pm_expression {$$ = create_tree("mult_expression_2", 3, $1, $2, $3);}
+	| multiplicative_expression '%' pm_expression {$$ = create_tree("mult_expression_3", 3, $1, $2, $3);}
 	;
 
 additive_expression:
-	multiplicative_expression
-	| additive_expression '+' multiplicative_expression
-	| additive_expression '-' multiplicative_expression
+	multiplicative_expression { $$ = $1 ;}
+	| additive_expression '+' multiplicative_expression {$$ = create_tree("add_expression_1", 3, $1, $2, $3);}
+	| additive_expression '-' multiplicative_expression {$$ = create_tree("add_expression_2", 3, $1, $2, $3);}
 	;
 
 shift_expression:
-	additive_expression
-	| shift_expression SL additive_expression
-	| shift_expression SR additive_expression
+	additive_expression { $$ = $1 ;}
+	| shift_expression SL additive_expression {$$ = create_tree("shift_expression_1", 3, $1, $2, $3);}
+	| shift_expression SR additive_expression {$$ = create_tree("shift_expression_2", 3, $1, $2, $3);}
 	;
 
 relational_expression:
-	shift_expression
-	| relational_expression '<' shift_expression
-	| relational_expression '>' shift_expression
-	| relational_expression LTEQ shift_expression
-	| relational_expression GTEQ shift_expression
+	shift_expression { $$ = $1 ;}
+	| relational_expression '<' shift_expression {$$ = create_tree("relational_expression_1", 3, $1, $2, $3);}
+	| relational_expression '>' shift_expression {$$ = create_tree("relational_expression_2", 3, $1, $2, $3);}
+	| relational_expression LTEQ shift_expression {$$ = create_tree("relational_expression_3", 3, $1, $2, $3);}
+	| relational_expression GTEQ shift_expression {$$ = create_tree("relational_expression_4", 3, $1, $2, $3);}
 	;
 
 equality_expression:
-	relational_expression
-	| equality_expression EQ relational_expression
-	| equality_expression NOTEQ relational_expression
+	relational_expression { $$ = $1 ;}
+	| equality_expression EQ relational_expression {$$ = create_tree("equality_expression_1", 3, $1, $2, $3);}
+	| equality_expression NOTEQ relational_expression {$$ = create_tree("equality_expression_2", 3, $1, $2, $3);}
 	;
 
 and_expression:
-	equality_expression
-	| and_expression '&' equality_expression
+	equality_expression { $$ = $1 ;}
+	| and_expression '&' equality_expression {$$ = create_tree("and_expression_1", 3, $1, $2, $3);}
 	;
 
 exclusive_or_expression:
-	and_expression
-	| exclusive_or_expression '^' and_expression
+	and_expression { $$ = $1; }
+	| exclusive_or_expression '^' and_expression {$$ = create_tree("excl_or_expression_1", 3, $1, $2, $3);}
 	;
 
 inclusive_or_expression:
-	exclusive_or_expression
-	| inclusive_or_expression '|' exclusive_or_expression
+	exclusive_or_expression { $$ = $1; }
+	| inclusive_or_expression '|' exclusive_or_expression {$$ = create_tree("incl_or_expression_1", 3, $1, $2, $3);}
 	;
 
 logical_and_expression:
-	inclusive_or_expression
-	| logical_and_expression ANDAND inclusive_or_expression
+	inclusive_or_expression { $$ = $1; }
+	| logical_and_expression ANDAND inclusive_or_expression {$$ = create_tree("logical_and_expression_1", 3, $1, $2, $3);}
 	;
 
 logical_or_expression:
-	logical_and_expression
-	| logical_or_expression OROR logical_and_expression
+	logical_and_expression { $$ = $1; }
+	| logical_or_expression OROR logical_and_expression {$$ = create_tree("logical_or_expression_1", 3, $1, $2, $3);}
 	;
 
 conditional_expression:
-	logical_or_expression
-	| logical_or_expression  '?' expression ':' assignment_expression
+	logical_or_expression { $$ = $1; }
+	| logical_or_expression  '?' expression ':' assignment_expression {$$ = create_tree("conditional_expression_1", 5, $1, $2, $3, $4, $5);}
 	;
 
 assignment_expression:
-	conditional_expression
-	| logical_or_expression assignment_operator assignment_expression
-	| throw_expression
+	conditional_expression { $$ = $1; }
+	| logical_or_expression assignment_operator assignment_expression {$$ = create_tree("assignment_expression_1", 3, $1, $2, $3);} 
+	| throw_expression { $$ = $1; }
 	;
 
 assignment_operator:
-	'='
-	| MULEQ
-	| DIVEQ
-	| MODEQ
-	| ADDEQ
-	| SUBEQ
-	| SREQ
-	| SLEQ
-	| ANDEQ
-	| XOREQ
-	| OREQ
+	'=' { $$ = $1; }
+	| MULEQ { $$ = $1; }
+	| DIVEQ { $$ = $1; }
+	| MODEQ { $$ = $1; }
+	| ADDEQ { $$ = $1; }
+	| SUBEQ { $$ = $1; }
+	| SREQ { $$ = $1; }
+	| SLEQ { $$ = $1; }
+	| ANDEQ { $$ = $1; }
+	| XOREQ { $$ = $1; }
+	| OREQ { $$ = $1; }
 	;
 
 expression:
-	assignment_expression
-	| expression ',' assignment_expression
+	assignment_expression { $$ = $1; }
+	| expression ',' assignment_expression {$$ = create_tree("expression_1", 3, $1, $2, $3);} 
 	;
 
 constant_expression:
-	conditional_expression
+	conditional_expression { $$ = $1; }
 	;
 
 /*----------------------------------------------------------------------
@@ -443,66 +444,66 @@ constant_expression:
  *----------------------------------------------------------------------*/
 
 statement:
-	labeled_statement
-	| expression_statement
-	| compound_statement
-	| selection_statement
-	| iteration_statement
-	| jump_statement
-	| declaration_statement
-	| try_block
+	labeled_statement { $$ = $1; }
+	| expression_statement { $$ = $1; }
+	| compound_statement { $$ = $1; }
+	| selection_statement { $$ = $1; }
+	| iteration_statement { $$ = $1; }
+	| jump_statement { $$ = $1; }
+	| declaration_statement { $$ = $1; }
+	| try_block { $$ = $1; }
 	;
 
 labeled_statement:
-	identifier ':' statement
-	| CASE constant_expression ':' statement
-	| DEFAULT ':' statement
+	identifier ':' statement {$$ = create_tree("labeled_statement_1", 3, $1, $2, $3);} 
+	| CASE constant_expression ':' statement {$$ = create_tree("labeled_statement_2", 4, $1, $2, $3, $4);} 
+	| DEFAULT ':' statement {$$ = create_tree("labeled_statement_3", 3, $1, $2, $3);} 
 	;
 
 expression_statement:
-	expression_opt ';'
+	expression_opt ';' {$$ = create_tree("expression_statement_1", 2, $1, $2);} 
 	;
 
 compound_statement:
-	'{' statement_seq_opt '}'
+	'{' statement_seq_opt '}' {$$ = create_tree("compound_statement_1", 3, $1, $2, $3);} 
 	;
 
 statement_seq:
-	statement
-	| statement_seq statement
+	statement { $$ = $1; }
+	| statement_seq statement {$$ = create_tree("statement_seq_1", 2, $1, $2);} 
 	;
 
 selection_statement:
-	IF '(' condition ')' statement
-	| IF '(' condition ')' statement ELSE statement
-	| SWITCH '(' condition ')' statement
+	IF '(' condition ')' statement {$$ = create_tree("selection_statement_1", 5, $1, $2, $3, $4, $5);} 
+	| IF '(' condition ')' statement ELSE statement { $$ = create_tree("selection_statement_2", 7, $1, $2, $3, $4, $5, $6, $7);} 
+	| SWITCH '(' condition ')' statement {$$ = create_tree("selection_statement_3", 5, $1, $2, $3, $4, $5);} 
 	;
 
 condition:
-	expression
-	| type_specifier_seq declarator '=' assignment_expression
+	expression { $$ = $1; }
+	| type_specifier_seq declarator '=' assignment_expression {$$ = create_tree("condition_1", 4, $1, $2, $3, $4);} 
 	;
 
 iteration_statement:
-	WHILE '(' condition ')' statement
-	| DO statement WHILE '(' expression ')' ';'
-	| FOR '(' for_init_statement condition_opt ';' expression_opt ')' statement
+	WHILE '(' condition ')' statement {$$ = create_tree("iteration_statement_1", 5, $1, $2, $3, $4, $5);} 
+	| DO statement WHILE '(' expression ')' ';' {$$ = create_tree("iteration_statement_2", 7, $1, $2, $3, $4, $5, $6, $7);} 
+	| FOR '(' for_init_statement condition_opt ';' expression_opt ')' statement {$$ = create_tree("iteration_statement_3", 8, $1, $2, $3, $4, $5, $6, $7, $8);} 
 	;
 
 for_init_statement:
-	expression_statement
-	| simple_declaration
+	expression_statement { $$ = $1; }
+	| simple_declaration { $$ = $1; }
 	;
 
 jump_statement:
-	BREAK ';'
-	| CONTINUE ';'
-	| RETURN expression_opt ';'
-	| GOTO identifier ';'
+	BREAK ';' {$$ = create_tree("jump_statement_1", 2, $1, $2);} 
+	| CONTINUE ';' {$$ = create_tree("jump_statement_2", 2, $1, $2);} 
+	| RETURN expression_opt ';' {$$ = create_tree("jump_statement_3", 3, $1, $2, $3);} 
+	| GOTO identifier ';' {$$ = create_tree("jump_statement_4", 3, $1, $2, $3);} 
 	;
 
 declaration_statement:
-	block_declaration
+	block_declaration { $$ = $1; }
 	;
 
 /*----------------------------------------------------------------------
@@ -510,99 +511,99 @@ declaration_statement:
  *----------------------------------------------------------------------*/
 
 declaration_seq:
-	declaration
-	| declaration_seq declaration
+	declaration { $$ = $1; }
+	| declaration_seq declaration {$$ = create_tree("declaration_seq_1", 2, $1, $2);} 
 	;
 
 declaration:
-	block_declaration
-	| function_definition
-	| template_declaration
-	| explicit_instantiation
-	| explicit_specialization
-	| linkage_specification
-	| namespace_definition
+	block_declaration { $$ = $1; }
+	| function_definition { $$ = $1; }
+	| template_declaration { $$ = $1; }
+	| explicit_instantiation { $$ = $1; }
+	| explicit_specialization { $$ = $1; }
+	| linkage_specification { $$ = $1; }
+	| namespace_definition { $$ = $1; }
 	;
 
 block_declaration:
-	simple_declaration
-	| asm_definition
-	| namespace_alias_definition
-	| using_declaration
-	| using_directive
+	simple_declaration { $$ = $1; }
+	| asm_definition { $$ = $1; }
+	| namespace_alias_definition { $$ = $1; }
+	| using_declaration { $$ = $1; }
+	| using_directive { $$ = $1; }
 	;
 
 simple_declaration:
-	  decl_specifier_seq init_declarator_list ';'
-	|  decl_specifier_seq ';'
+	  decl_specifier_seq init_declarator_list ';' {$$ = create_tree("simple_declaration_1", 3, $1, $2, $3);}
+	|  decl_specifier_seq ';' {$$ = create_tree("simple_declaration_2", 2, $1, $2);}
 	;
 
 decl_specifier:
-	storage_class_specifier
-	| type_specifier
-	| function_specifier { $$ = NULL; }
-	| FRIEND { $$ = NULL; }
-	| TYPEDEF { $$ = NULL; }
+	storage_class_specifier { $$ = $1; }
+	| type_specifier { $$ = $1; }
+	| function_specifier { $$ = $1; }
+	| FRIEND { $$ = $1; }
+	| TYPEDEF { $$ = $1; }
 	;
 
 decl_specifier_seq:
-	  decl_specifier
-	| decl_specifier_seq decl_specifier
+	  decl_specifier { $$ = $1; } 
+	| decl_specifier_seq decl_specifier {$$ = create_tree("decl_specifier_seq_1", 2, $1, $2);}
 	;
 
 storage_class_specifier:
-	AUTO { $$ = NULL; }
-	| REGISTER { $$ = NULL; }
-	| STATIC { $$ = NULL; }
-	| EXTERN { $$ = NULL; }
-	| MUTABLE { $$ = NULL; }
+	AUTO { $$ = $1; }
+	| REGISTER { $$ = $1; }
+	| STATIC { $$ = $1; }
+	| EXTERN { $$ = $1; }
+	| MUTABLE { $$ = $1; }
 	;
 
 function_specifier:
-	INLINE
-	| VIRTUAL
-	| EXPLICIT
+	INLINE { $$ = $1; }
+	| VIRTUAL { $$ = $1; }
+	| EXPLICIT { $$ = $1; }
 	;
 
 type_specifier:
-	simple_type_specifier
-	| class_specifier { $$ = NULL; }
-	| enum_specifier { $$ = NULL; }
-	| elaborated_type_specifier { $$ = NULL; }
-	| cv_qualifier { $$ = NULL; }
+	simple_type_specifier { $$ = $1; }
+	| class_specifier { $$ = $1; }
+	| enum_specifier { $$ = $1; }
+	| elaborated_type_specifier { $$ = $1; }
+	| cv_qualifier { $$ = $1; }
 	;
 
 simple_type_specifier:
-	  type_name { $$ = NULL; }
-	| nested_name_specifier type_name { $$ = NULL; }
-	| COLONCOLON nested_name_specifier_opt type_name { $$ = NULL; }
-	| CHAR { $$ = NULL; }
-	| WCHAR_T { $$ = NULL; }
-	| BOOL { $$ = NULL; }
-	| SHORT { $$ = NULL; }
-	| INT { $$ = NULL; }
-	| LONG { $$ = NULL; }
-	| SIGNED { $$ = NULL; }
-	| UNSIGNED { $$ = NULL; }
-	| FLOAT { $$ = NULL; }
-	| DOUBLE { $$ = NULL; }
-	| VOID { $$ = NULL; }
+	  type_name { $$ = $1; }
+	| nested_name_specifier type_name {$$ = create_tree("simple_type_specifier_1", 2, $1, $2);}
+	| COLONCOLON nested_name_specifier_opt type_name { $$ = $1; }
+	| CHAR { $$ = $1; }
+	| WCHAR_T { $$ = $1; }
+	| BOOL { $$ = $1; }
+	| SHORT { $$ = $1; }
+	| INT { $$ = $1; }
+	| LONG { $$ = $1; }
+	| SIGNED { $$ = $1; }
+	| UNSIGNED { $$ = $1; }
+	| FLOAT { $$ = $1; }
+	| DOUBLE { $$ = $1; }
+	| VOID { $$ = $1; }
 	;
 
 type_name:
-	class_name
-	| enum_name
-	| typedef_name
+	class_name { $$ = $1; }
+	| enum_name { $$ = $1; }
+	| typedef_name { $$ = $1; }
 	;
 
 elaborated_type_specifier:
-	  class_key COLONCOLON nested_name_specifier identifier
-	| class_key COLONCOLON identifier
-	| ENUM COLONCOLON nested_name_specifier identifier
-	| ENUM COLONCOLON identifier
-	| ENUM nested_name_specifier identifier
-	| TYPENAME COLONCOLON_opt nested_name_specifier identifier
-	| TYPENAME COLONCOLON_opt nested_name_specifier identifier '<' template_argument_list '>'
+	  class_key COLONCOLON nested_name_specifier identifier {$$ = create_tree("elaborated_type_specifier_1", 4, $1, $2, $3, $4);}
+	| class_key COLONCOLON identifier {$$ = create_tree("elaborated_type_specifier_2", 3, $1, $2, $3);}
+	| ENUM COLONCOLON nested_name_specifier identifier {$$ = create_tree("elaborated_type_specifier_3", 4, $1, $2, $3, $4);}
+	| ENUM COLONCOLON identifier {$$ = create_tree("elaborated_type_specifier_4", 3, $1, $2, $3);}
+	| ENUM nested_name_specifier identifier {$$ = create_tree("elaborated_type_specifier_5", 3, $1, $2, $3);}
+	| TYPENAME COLONCOLON_opt nested_name_specifier identifier {$$ = create_tree("elaborated_type_specifier_6", 4, $1, $2, $3, $4);}
+	| TYPENAME COLONCOLON_opt nested_name_specifier identifier '<' template_argument_list '>'{$$ = create_tree("elaborated_type_specifier_7", 7, $1, $2, $3, $4, $5, $6, $7);}
 	;
 
 /*
@@ -612,97 +613,98 @@ enum_name:
 */
 
 enum_specifier:
-	ENUM identifier '{' enumerator_list_opt '}'
+	ENUM identifier '{' enumerator_list_opt '}' {$$ = create_tree("enum_specifier_1", 5, $1, $2, $3, $4, $5);}
 	;
 
 enumerator_list:
-	enumerator_definition
-	| enumerator_list ',' enumerator_definition
+	enumerator_definition {$$ = $1;}
+	| enumerator_list ',' enumerator_definition {$$ = create_tree("enumerator_list_1", 3, $1, $2, $3);}
 	;
 
 enumerator_definition:
-	enumerator
-	| enumerator '=' constant_expression
+	enumerator { $$ = $1; }
+	| enumerator '=' constant_expression {$$ = create_tree("enumerator_definition", 3, $1, $2, $3);}
 	;
 
 enumerator:
-	identifier
+	identifier { $$ = $1; }
 	;
 
-/*
+
 namespace_name:
-	original_namespace_name
-	| namespace_alias
+	original_namespace_name { $$ = $1; } 
+	| namespace_alias { $$ = $1; } 
 	;
 
 original_namespace_name:
-	identifier
+	identifier { $$ = $1; }
 	;
-*/
+
 
 namespace_definition:
-	named_namespace_definition
-	| unnamed_namespace_definition
+	named_namespace_definition { $$ = $1; }
+	| unnamed_namespace_definition { $$ = $1; }
 	;
 
 named_namespace_definition:
-	original_namespace_definition
-	| extension_namespace_definition
+	original_namespace_definition { $$ = $1; }
+	| extension_namespace_definition { $$ = $1; }
 	;
 
 original_namespace_definition:
-	NAMESPACE identifier '{' namespace_body '}'
+	NAMESPACE identifier '{' namespace_body '}' {$$ = create_tree("original_namespace_definition_1", 5, $1, $2, $3, $4, $5);}
 	;
 
 extension_namespace_definition:
-	NAMESPACE original_namespace_name '{' namespace_body '}'
+	NAMESPACE original_namespace_name '{' namespace_body '}' {$$ = create_tree("extension_namespace_definition_1", 5, $1, $2, $3, $4, $5);}
 	;
 
 unnamed_namespace_definition:
-	NAMESPACE '{' namespace_body '}'
+	NAMESPACE '{' namespace_body '}' {$$ = create_tree("unnamed_namespace_definition_1", 4, $1, $2, $3, $4);}
 	;
 
 namespace_body:
-	declaration_seq_opt
+	declaration_seq_opt { $$ = $1; }
 	;
 
 namespace_alias:
-	identifier
+	identifier { $$ = $1; }
 	;
 
+
 namespace_alias_definition:
-	NAMESPACE identifier '=' qualified_namespace_specifier ';'
+	NAMESPACE identifier '=' qualified_namespace_specifier ';' {$$ = create_tree("namespace_alias_definition_1", 5, $1, $2, $3, $4, $5);}
 	;
 
 qualified_namespace_specifier:
-	  COLONCOLON nested_name_specifier namespace_name
-	| COLONCOLON namespace_name
-	| nested_name_specifier namespace_name
-	| namespace_name
+	  COLONCOLON nested_name_specifier namespace_name {$$ = create_tree("qualified_namespace_specifier_1", 3, $1, $2, $3);}
+	| COLONCOLON namespace_name {$$ = create_tree("qualified_namespace_specifier_2", 2, $1, $2);}
+	| nested_name_specifier namespace_name {$$ = create_tree("qualified_namespace_specifier_3", 2, $1, $2);}
+	| namespace_name { $$ = $1; }
 	;
 
 using_declaration:
-	  USING TYPENAME COLONCOLON nested_name_specifier unqualified_id ';'
-	| USING TYPENAME nested_name_specifier unqualified_id ';'
-	| USING COLONCOLON nested_name_specifier unqualified_id ';'
-	| USING nested_name_specifier unqualified_id ';'
-	| USING COLONCOLON unqualified_id ';'
+	  USING TYPENAME COLONCOLON nested_name_specifier unqualified_id ';' {$$ = create_tree("using_declaration_1", 6, $1, $2, $3, $4, $5, $6);}
+	| USING TYPENAME nested_name_specifier unqualified_id ';' {$$ = create_tree("using_declaration_2", 5, $1, $2, $3, $4, $5);}
+	| USING COLONCOLON nested_name_specifier unqualified_id ';' {$$ = create_tree("using_declaration_3", 5, $1, $2, $3, $4, $5);}
+	| USING nested_name_specifier unqualified_id ';' {$$ = create_tree("using_declaration_4", 4, $1, $2, $3, $4);}
+	| USING COLONCOLON unqualified_id ';' {$$ = create_tree("using_declaration_5", 4, $1, $2, $3, $4);}
 	;
 
 using_directive:
-	USING NAMESPACE COLONCOLON nested_name_specifier namespace_name ';'
-	| USING NAMESPACE COLONCOLON namespace_name ';'
-	| USING NAMESPACE nested_name_specifier namespace_name ';'
-	| USING NAMESPACE namespace_name ';'
+	USING NAMESPACE COLONCOLON nested_name_specifier namespace_name ';' {$$ = create_tree("using_directive_1", 6, $1, $2, $3, $4, $5, $6);}
+	| USING NAMESPACE COLONCOLON namespace_name ';' {$$ = create_tree("using_directive_2", 5, $1, $2, $3, $4, $5);}
+	| USING NAMESPACE nested_name_specifier namespace_name ';' {$$ = create_tree("using_directive_3", 5, $1, $2, $3, $4, $5);}
+	| USING NAMESPACE namespace_name ';' {$$ = create_tree("using_directive_4", 4, $1, $2, $3, $4);}
 	;
 
 asm_definition:
-	ASM '(' string_literal ')' ';'
+	ASM '(' string_literal ')' ';' {$$ = create_tree("asm_definition_1", 5, $1, $2, $3, $4, $5);}
 	;
 
 linkage_specification:
-	EXTERN string_literal '{' declaration_seq_opt '}'
-	| EXTERN string_literal declaration
+	EXTERN string_literal '{' declaration_seq_opt '}' {$$ = create_tree("linkage_specification_1", 5, $1, $2, $3, $4, $5);}
+	| EXTERN string_literal declaration {$$ = create_tree("linkage_specification_2", 3, $1, $2, $3);}
 	;
 
 /*----------------------------------------------------------------------
@@ -710,126 +712,126 @@ linkage_specification:
  *----------------------------------------------------------------------*/
 
 init_declarator_list:
-	init_declarator
-	| init_declarator_list ',' init_declarator
+	init_declarator { $$ = $1; }
+	| init_declarator_list ',' init_declarator {$$ = create_tree("init_declarator_list_1", 3, $1, $2, $3);}
 	;
 
 init_declarator:
-	declarator initializer_opt
+	declarator initializer_opt { $$ = $1; }
 	;
 
 declarator:
-	direct_declarator
-	| ptr_operator declarator
+	direct_declarator { $$ = $1; }
+	| ptr_operator declarator {$$ = create_tree("declarator_1", 2, $1, $2);}
 	;
 
 direct_declarator:
-	  declarator_id { $$ = NULL; }
-	| direct_declarator '(' parameter_declaration_clause ')' cv_qualifier_seq exception_specification { $$ = NULL; }
-	| direct_declarator '(' parameter_declaration_clause ')' cv_qualifier_seq { $$ = NULL; }
-	| direct_declarator '(' parameter_declaration_clause ')' exception_specification { $$ = NULL; }
-	| direct_declarator '(' parameter_declaration_clause ')' { $$ = create_tree("direct_declarator", 2, $1, $3); }
-	| CLASS_NAME '(' parameter_declaration_clause ')' { $$ = NULL; }
-	| CLASS_NAME COLONCOLON declarator_id '(' parameter_declaration_clause ')' { $$ = NULL; }
-	| CLASS_NAME COLONCOLON CLASS_NAME '(' parameter_declaration_clause ')' { $$ = NULL; }
-	| direct_declarator '[' constant_expression_opt ']' { $$ = NULL; }
-	| '(' declarator ')' { $$ = NULL; }
+	  declarator_id { $$ = $1; }
+	| direct_declarator '(' parameter_declaration_clause ')' cv_qualifier_seq exception_specification {$$ = create_tree("direct_declarator_1", 6, $1, $2, $3, $4, $5, $6);}
+	| direct_declarator '(' parameter_declaration_clause ')' cv_qualifier_seq { {$$ = create_tree("direct_declarator_2", 5, $1, $2, $3, $4, $5);}}
+	| direct_declarator '(' parameter_declaration_clause ')' exception_specification {$$ = create_tree("direct_declarator_3", 5, $1, $2, $3, $5);}
+	| direct_declarator '(' parameter_declaration_clause ')' { $$ = create_tree("direct_declarator_4", 4, $1, $2, $3, $4); }
+	| CLASS_NAME '(' parameter_declaration_clause ')' {$$ = create_tree("direct_declarator_5", 4, $1, $2, $3, $4);}
+	| CLASS_NAME COLONCOLON declarator_id '(' parameter_declaration_clause ')' {$$ = create_tree("direct_declarator_6", 6, $1, $2, $3, $4, $5, $6);}
+	| CLASS_NAME COLONCOLON CLASS_NAME '(' parameter_declaration_clause ')' {$$ = create_tree("direct_declarator_7", 6, $1, $2, $3, $4, $5, $6);}
+	| direct_declarator '[' constant_expression_opt ']' {$$ = create_tree("direct_declarator_8", 4, $1, $2, $3, $4);}
+	| '(' declarator ')' {$$ = create_tree("direct_declarator_9", 3, $1, $2, $3);}
 	;
 
 ptr_operator:
-	'*' { $$ = NULL; }
-	| '*' cv_qualifier_seq { $$ = NULL; }
-	| '&' { $$ = NULL; }
-	| nested_name_specifier '*' { $$ = NULL; }
-	| nested_name_specifier '*' cv_qualifier_seq { $$ = NULL; }
-	| COLONCOLON nested_name_specifier '*' { $$ = NULL; }
-	| COLONCOLON nested_name_specifier '*' cv_qualifier_seq { $$ = NULL; }
+	'*' { $$ = $1; }
+	| '*' cv_qualifier_seq {$$ = create_tree("ptr_operator_1", 2, $1, $2);}
+	| '&' { $$ = $1; }
+	| nested_name_specifier '*' {$$ = create_tree("ptr_operator_2", 2, $1, $2);}
+	| nested_name_specifier '*' cv_qualifier_seq {$$ = create_tree("ptr_operator_3", 3, $1, $2, $3);}
+	| COLONCOLON nested_name_specifier '*' {$$ = create_tree("ptr_operator_4", 3, $1, $2, $3);}
+	| COLONCOLON nested_name_specifier '*' cv_qualifier_seq {$$ = create_tree("ptr_operator_5", 4, $1, $2, $3, $4);}
 	;
 
 cv_qualifier_seq:
-	cv_qualifier
-	| cv_qualifier cv_qualifier_seq
+	cv_qualifier { $$ = $1; }
+	| cv_qualifier cv_qualifier_seq {$$ = create_tree("cv_qualifier_1", 2, $1, $2);}
 	;
 
 cv_qualifier:
-	CONST
-	| VOLATILE
+	CONST { $$ = $1; }
+	| VOLATILE { $$ = $1; }
 	;
 
 declarator_id:
-	  id_expression
-	| COLONCOLON id_expression
-	| COLONCOLON nested_name_specifier type_name
-	| COLONCOLON type_name
+	id_expression {$$ = $1;}
+	| COLONCOLON id_expression {$$ = create_tree("declarator_id_1",  2, $1, $2);}
+	| COLONCOLON nested_name_specifier type_name {$$ = create_tree("declarator_id_2", 3, $1, $2, $3);}
+	| COLONCOLON type_name {$$ = create_tree("declarator_id_3", 2, $1, $2);}
 	;
 
 type_id:
-	type_specifier_seq abstract_declarator_opt
+	type_specifier_seq abstract_declarator_opt {$$ = create_tree("type_id_1", 2, $1, $2);}
 	;
 
 type_specifier_seq:
-	type_specifier type_specifier_seq_opt
+	type_specifier type_specifier_seq_opt {$$ = create_tree("type_specifier_seq_1", 2, $1, $2);}
 	;
 
 abstract_declarator:
-	ptr_operator abstract_declarator_opt
-	| direct_abstract_declarator
+	ptr_operator abstract_declarator_opt {$$ = create_tree("abstract_declarator_1", 2, $1, $2);}
+	| direct_abstract_declarator {$$ = $1;}
 	;
 
 direct_abstract_declarator:
-	  direct_abstract_declarator_opt '(' parameter_declaration_clause ')' cv_qualifier_seq exception_specification
-	| direct_abstract_declarator_opt '(' parameter_declaration_clause ')' cv_qualifier_seq
-	| direct_abstract_declarator_opt '(' parameter_declaration_clause ')' exception_specification
-	| direct_abstract_declarator_opt '(' parameter_declaration_clause ')'
-	| direct_abstract_declarator_opt '[' constant_expression_opt ']'
-	| '(' abstract_declarator ')'
+	direct_abstract_declarator_opt '(' parameter_declaration_clause ')' cv_qualifier_seq exception_specification {$$ = create_tree("direct_abstract_declarator_1", 6, $1, $2, $3, $4, $5, $6);}
+	| direct_abstract_declarator_opt '(' parameter_declaration_clause ')' cv_qualifier_seq {$$ = create_tree("direct_abstract_declarator_2", 5, $1, $2, $3, $4, $5);}
+	| direct_abstract_declarator_opt '(' parameter_declaration_clause ')' exception_specification {$$ = create_tree("direct_abstract_declarator_3", 5, $1, $2, $3, $4, $5);}
+	| direct_abstract_declarator_opt '(' parameter_declaration_clause ')' {$$ = create_tree("direct_abstract_declarator_4", 4, $1, $2, $3, $4);}
+	| direct_abstract_declarator_opt '[' constant_expression_opt ']' {$$ = create_tree("direct_abstract_declarator_5", 4, $1, $2, $3, $4);}
+	| '(' abstract_declarator ')' {$$ = create_tree("direct_abstract_declarator_6", 3, $1, $2, $3);}
 	;
 
 parameter_declaration_clause:
-	  parameter_declaration_list ELLIPSIS { $$ = NULL; }
-	| parameter_declaration_list
-	| ELLIPSIS { $$ = NULL; }
-	| { $$ = NULL; }
-	| parameter_declaration_list ',' ELLIPSIS { $$ = NULL; }
+    parameter_declaration_list { $$ = $1; }
+    | parameter_declaration_list ELLIPSIS { $$ = NULL; }
+	| ELLIPSIS {$$ = NULL;}
+    | parameter_declaration_list ',' ELLIPSIS { $$ = NULL; }
+	| { $$ = NULL; } 
 	;
 
 parameter_declaration_list:
-	parameter_declaration
-	| parameter_declaration_list ',' parameter_declaration
+	parameter_declaration {$$ = $1;}
+	| parameter_declaration_list ',' parameter_declaration {$$ = create_tree("parameter_declaration_list_1", 3, $1, $2, $3);}
 	;
 
 parameter_declaration:
-	decl_specifier_seq declarator
-	| decl_specifier_seq declarator '=' assignment_expression
-	| decl_specifier_seq abstract_declarator_opt
-	| decl_specifier_seq abstract_declarator_opt '=' assignment_expression
+	decl_specifier_seq declarator {$$ = create_tree("parameter_declaration_1", 2, $1, $2);}
+	| decl_specifier_seq declarator '=' assignment_expression {$$ = create_tree("parameter_declaration_2", 4, $1, $2, $3, $4);}
+	| decl_specifier_seq abstract_declarator_opt {$$ = create_tree("parameter_declaration_3", 2, $1, $2);}
+	| decl_specifier_seq abstract_declarator_opt '=' assignment_expression {$$ = create_tree("parameter_declaration_4", 4, $1, $2, $3, $4);}
 	;
 
 function_definition:
-	  declarator ctor_initializer_opt function_body
-	| decl_specifier_seq declarator ctor_initializer_opt function_body
-	| declarator function_try_block
-	| decl_specifier_seq declarator function_try_block
+	declarator ctor_initializer_opt function_body {$$ = create_tree("function_definition_1", 3, $1, $2, $3);}
+    | decl_specifier_seq declarator ctor_initializer_opt function_body {$$ = create_tree("function_definition_2", 4, $1, $2, $3, $4);}
+	| declarator function_try_block {$$ = create_tree("function_definition_3",  2, $1, $2);}
+	| decl_specifier_seq declarator function_try_block {$$ = create_tree("function_definition_4", 3, $1, $2, $3);}
 	;
 
 function_body:
-	compound_statement
+	compound_statement {$$ = $1;}
 	;
 
 initializer:
-	'=' initializer_clause
-	| '(' expression_list ')'
+	'=' initializer_clause {$$ = create_tree("initializer_1", 2, $1, $2);}
+	| '(' expression_list ')' {$$ = create_tree("initializer_2", 3, $1, $2, $3);}
 	;
 
 initializer_clause:
-	assignment_expression
-	| '{' initializer_list COMMA_opt '}'
-	| '{' '}'
+	assignment_expression {$$ = $1;}
+	| '{' initializer_list COMMA_opt '}' {$$ = create_tree("initializer_clause_1", 3, $1, $2, $3);}
+	| '{' '}' {$$ = create_tree("initializer_clause_2", 2, $1, $2);}
 	;
 
 initializer_list:
-	initializer_clause
-	| initializer_list ',' initializer_clause
+	initializer_clause {$$ = $1;}
+	| initializer_list ',' initializer_clause {$$ = create_tree("initializer_list_1", 3, $1, $2, $3);}
 	;
 
 /*----------------------------------------------------------------------
@@ -837,61 +839,55 @@ initializer_list:
  *----------------------------------------------------------------------*/
 
 class_specifier:
-	class_head '{' member_specification_opt '}'
+    class_head '{' member_specification_opt '}' { $$ = create_tree("class_specifier_1", 4, $1, $2, $3, $4); }
 	;
 
-class_head:
-	  class_key identifier { typenametable_insert($2, CLASS_NAME); }
-	| class_key identifier base_clause
-	| class_key nested_name_specifier identifier
-	| class_key nested_name_specifier identifier base_clause
+class_head:       
+    class_key identifier { $$ = create_tree("class_head_1", 2, $1, $2); } 
+	| class_key identifier base_clause {$$ = create_tree("class_head_2", 3, $1, $2, $3);}
+	| class_key nested_name_specifier identifier {$$ = create_tree("class_head_3", 3, $1, $2, $3);}
+	| class_key nested_name_specifier identifier base_clause {$$ = create_tree("class_head_4", 4, $1, $2, $3, $4);}
 	;
 
 class_key:
-	CLASS
-	| STRUCT
-	| UNION
+    CLASS {$$ = $1;} 
+	| STRUCT {$$ = $1;}
+	| UNION {$$ = $1;}
 	;
 
 member_specification:
-	member_declaration member_specification_opt
-	| access_specifier ':' member_specification_opt
+	member_declaration member_specification_opt {$$ = create_tree("member_specification_1", 2, $1, $2);}
+	| access_specifier ':' member_specification_opt {$$ = create_tree("member_specification_2", 3, $1, $2, $3);}
 	;
 
 member_declaration:
-	  decl_specifier_seq member_declarator_list ';'
-	| decl_specifier_seq ';'
-	| member_declarator_list ';'
-	| ';'
-	| function_definition SEMICOLON_opt
-	| qualified_id ';'
-	| using_declaration
-	| template_declaration
+	decl_specifier_seq member_declarator_list ';' {$$ = create_tree("member_declaration_1",  3, $1, $2, $3);}
+	| decl_specifier_seq ';' {$$ = create_tree("member_declaration_2",  2, $1, $2);}
+	| member_declarator_list ';' {$$ = create_tree("member_declaration_3",  2, $1, $2);}
+	| ';' {$$ = $1;}
+	| function_definition SEMICOLON_opt {$$ = create_tree("member_declaration_1",  2, $1, $2);}
+	| qualified_id ';' {$$ = create_tree("member_declaration_2", 2, $1, $2);}
+	| using_declaration { $$ = $1; }
 	;
 
 member_declarator_list:
-	member_declarator
-	| member_declarator_list ',' member_declarator
+	member_declarator {$$ = $1;}
+	| member_declarator_list ',' member_declarator {$$ = create_tree("member_declarator_list_1", 3, $1, $2, $3);}
 	;
 
 member_declarator:
-	  declarator
-	| declarator pure_specifier
-	| declarator constant_initializer
-	| identifier ':' constant_expression
+        declarator {$$ = $1;}
+	| declarator pure_specifier {$$ = create_tree("member_declarator_1",  2, $1, $2);}
+	| declarator constant_initializer {$$ = create_tree("member_declarator_2", 2, $1, $2);}
+	| identifier ':' constant_expression {$$ = create_tree("member_declarator_3", 3, $1, $2, $3);}
 	;
 
-/*
- * This rule need a hack for working around the ``= 0'' pure specifier.
- * 0 is returned as an ``INTEGER'' by the lexical analyzer but in this
- * context is different.
- */
 pure_specifier:
-	'=' '0'
+      '=' '0' {$$ = NULL; }
 	;
 
 constant_initializer:
-	'=' constant_expression
+	'=' constant_expression {$$ = create_tree("constant_initializer_1", 2, $1, $2);}
 	;
 
 /*----------------------------------------------------------------------
@@ -899,33 +895,33 @@ constant_initializer:
  *----------------------------------------------------------------------*/
 
 base_clause:
-	':' base_specifier_list
+	':' base_specifier_list {$$ = create_tree("base_clause_1", 2, $1, $2);}
 	;
 
 base_specifier_list:
-	base_specifier
-	| base_specifier_list ',' base_specifier
+	base_specifier {$$ = $1;}
+	| base_specifier_list ',' base_specifier {$$ = create_tree("base_specifier_list_1", 3, $1, $2, $3);}
 	;
 
 base_specifier:
-	  COLONCOLON nested_name_specifier class_name
-	| COLONCOLON class_name
-	| nested_name_specifier class_name
-	| class_name
-	| VIRTUAL access_specifier COLONCOLON nested_name_specifier_opt class_name
-	| VIRTUAL access_specifier nested_name_specifier_opt class_name
-	| VIRTUAL COLONCOLON nested_name_specifier_opt class_name
-	| VIRTUAL nested_name_specifier_opt class_name
-	| access_specifier VIRTUAL COLONCOLON nested_name_specifier_opt class_name
-	| access_specifier VIRTUAL nested_name_specifier_opt class_name
-	| access_specifier COLONCOLON nested_name_specifier_opt class_name
-	| access_specifier nested_name_specifier_opt class_name
+	COLONCOLON nested_name_specifier class_name {$$ = create_tree("base_specifier_1", 3, $1, $2, $3);}
+	| COLONCOLON class_name {$$ = create_tree("base_specifier_2", 2, $1, $2);}
+	| nested_name_specifier class_name {$$ = create_tree("base_specifier_3", 2, $1, $2);}
+	| class_name {$$ = $1;}
+	| VIRTUAL access_specifier COLONCOLON nested_name_specifier_opt class_name {$$ = create_tree("base_specifier_4", 5, $1, $2, $3, $4, $5);}
+	| VIRTUAL access_specifier nested_name_specifier_opt class_name {$$ = create_tree("base_specifier_5",  4, $1, $2, $3, $4);}
+	| VIRTUAL COLONCOLON nested_name_specifier_opt class_name {$$ = create_tree("base_specifier_6", 4, $1, $2, $3, $4);}
+	| VIRTUAL nested_name_specifier_opt class_name {$$ = create_tree("base_specifier_7", 3, $1, $2, $3);}
+	| access_specifier VIRTUAL COLONCOLON nested_name_specifier_opt class_name {$$ = create_tree("base_specifier_8", 5, $1, $2, $3, $4, $5);}
+	| access_specifier VIRTUAL nested_name_specifier_opt class_name {$$ = create_tree("base_specifier_9",  4, $1, $2, $3, $4);}
+	| access_specifier COLONCOLON nested_name_specifier_opt class_name {$$ = create_tree("base_specifier_10", 4, $1, $2, $3, $4);}
+	| access_specifier nested_name_specifier_opt class_name {$$ = create_tree("base_specifier_11", 3, $1, $2, $3);}
 	;
 
 access_specifier:
-	PRIVATE
-	| PROTECTED
-	| PUBLIC
+	PRIVATE {$$ = $1;}
+	| PROTECTED {$$ = $1;}
+	| PUBLIC {$$ = $1;}
 	;
 
 /*----------------------------------------------------------------------
@@ -933,36 +929,36 @@ access_specifier:
  *----------------------------------------------------------------------*/
 
 conversion_function_id:
-	OPERATOR conversion_type_id
+	OPERATOR conversion_type_id {$$ = create_tree("conversion_function_id_1", 2, $1, $2);}
 	;
 
 conversion_type_id:
-	type_specifier_seq conversion_declarator_opt
+	type_specifier_seq conversion_declarator_opt {$$ = create_tree("conversion_type_id_1", 2, $1, $2);}
 	;
 
 conversion_declarator:
-	ptr_operator conversion_declarator_opt
+	ptr_operator conversion_declarator_opt {$$ = create_tree("conversion_declarator_1", 2, $1, $2);}
 	;
 
 ctor_initializer:
-	':' mem_initializer_list
+	':' mem_initializer_list {$$ = create_tree("ctor_initializer_1", 2, $1, $2);}
 	;
 
 mem_initializer_list:
-	mem_initializer
-	| mem_initializer ',' mem_initializer_list
+	mem_initializer {$$ = $1;}
+	| mem_initializer ',' mem_initializer_list {$$ = create_tree("mem_initializer_list_1", 3, $1, $2, $3);}
 	;
 
 mem_initializer:
-	mem_initializer_id '(' expression_list_opt ')'
+	mem_initializer_id '(' expression_list_opt ')' {$$ = create_tree("mem_initializer_1", 4, $1, $2, $3, $4);}
 	;
 
 mem_initializer_id:
-	  COLONCOLON nested_name_specifier class_name
-	| COLONCOLON class_name
-	| nested_name_specifier class_name
-	| class_name
-	| identifier
+	COLONCOLON nested_name_specifier class_name {$$ = create_tree("mem_initializer_id_1", 3, $1, $2, $3);}
+	| COLONCOLON class_name {$$ = create_tree("mem_initializer_id_2",  2, $1, $2);}
+	| nested_name_specifier class_name {$$ = create_tree("mem_initializer_id_3", 2, $1, $2);}
+	| class_name {$$ = $1;}
+	| identifier {$$ = $1;}
 	;
 
 /*----------------------------------------------------------------------
@@ -970,52 +966,52 @@ mem_initializer_id:
  *----------------------------------------------------------------------*/
 
 operator_function_id:
-	OPERATOR operator
+	OPERATOR operator {$$ = create_tree("operator_function_id_1", 2, $1, $2);}
 	;
 
 operator:
-	NEW
-	| DELETE
-	| NEW '[' ']'
-	| DELETE '[' ']'
-	| '+'
-	| '_'
-	| '*'
-	| '/'
-	| '%'
-	| '^'
-	| '&'
-	| '|'
-	| '~'
-	| '!'
-	| '='
-	| '<'
-	| '>'
-	| ADDEQ
-	| SUBEQ
-	| MULEQ
-	| DIVEQ
-	| MODEQ
-	| XOREQ
-	| ANDEQ
-	| OREQ
-	| SL
-	| SR
-	| SREQ
-	| SLEQ
-	| EQ
-	| NOTEQ
-	| LTEQ
-	| GTEQ
-	| ANDAND
-	| OROR
-	| PLUSPLUS
-	| MINUSMINUS
-	| ','
-	| ARROWSTAR
-	| ARROW
-	| '(' ')'
-	| '[' ']'
+	NEW {$$ = $1;}
+	| DELETE {$$ = $1;}
+	| NEW '[' ']' {$$ = create_tree("operator_1", 3, $1, $2, $3);}
+	| DELETE '[' ']' {$$ = create_tree("operator_2", 3, $1, $2, $3);}
+	| '+' {$$ = $1;}
+	| '_' {$$ = $1;}
+	| '*' {$$ = $1;}
+	| '/' {$$ = $1;}
+	| '%' {$$ = $1;}
+	| '^' {$$ = $1;}
+	| '&' {$$ = $1;}
+	| '|' {$$ = $1;}
+	| '~' {$$ = $1;}
+	| '!' {$$ = $1;}
+	| '=' {$$ = $1;}
+	| '<' {$$ = $1;}
+	| '>' {$$ = $1;}
+	| ADDEQ {$$ = $1;}
+	| SUBEQ {$$ = $1;}
+	| MULEQ {$$ = $1;}
+	| DIVEQ {$$ = $1;}
+	| MODEQ {$$ = $1;}
+	| XOREQ {$$ = $1;}
+	| ANDEQ {$$ = $1;}
+	| OREQ {$$ = $1;}
+	| SL {$$ = $1;}
+	| SR {$$ = $1;}
+	| SREQ {$$ = $1;}
+	| SLEQ {$$ = $1;}
+	| EQ {$$ = $1;}
+	| NOTEQ {$$ = $1;}
+	| LTEQ {$$ = $1;}
+	| GTEQ {$$ = $1;}
+	| ANDAND {$$ = $1;}
+	| OROR {$$ = $1;}
+	| PLUSPLUS {$$ = $1;}
+	| MINUSMINUS {$$ = $1;}
+	| ',' {$$ = $1;}
+	| ARROWSTAR {$$ = $1;}
+	| ARROW {$$ = $1;}
+	| '(' ')' {$$ = create_tree("operator_2", 2, $1, $2);}
+	| '[' ']' {$$ = create_tree("operator_3", 2, $1, $2);}
 	;
 
 /*----------------------------------------------------------------------
@@ -1023,49 +1019,48 @@ operator:
  *----------------------------------------------------------------------*/
 
 template_declaration:
-	EXPORT_opt TEMPLATE '<' template_parameter_list '>' declaration
+	EXPORT_opt TEMPLATE '<' template_parameter_list '>' declaration {$$ = create_tree("template_declaration_1", 6, $1, $2, $3, $4, $5, $6);}
 	;
 
 template_parameter_list:
-	template_parameter
-	| template_parameter_list ',' template_parameter
+	template_parameter {$$ = $1;}
+	| template_parameter_list ',' template_parameter {$$ = create_tree("template_parameter_list_1", 3, $1, $2, $3);}
 	;
 
 template_parameter:
-	type_parameter
-	| parameter_declaration
+	type_parameter {$$ = $1;}
+	| parameter_declaration {$$ = $1;}
 	;
-
 type_parameter:
-	  CLASS identifier
-	| CLASS identifier '=' type_id
-	| TYPENAME identifier
-	| TYPENAME identifier '=' type_id
-	| TEMPLATE '<' template_parameter_list '>' CLASS identifier
-	| TEMPLATE '<' template_parameter_list '>' CLASS identifier '=' template_name
+	CLASS identifier {$$ = create_tree("type_parameter_1", 2, $1, $2);}
+	| CLASS identifier '=' type_id {$$ = create_tree("type_parameter_2", 4, $1, $2, $3, $4);}
+	| TYPENAME identifier {$$ = create_tree("type_parameter_3", 2, $1, $2);}
+	| TYPENAME identifier '=' type_id {$$ = create_tree("type_parameter_4",  4, $1, $2, $3, $4);}
+	| TEMPLATE '<' template_parameter_list '>' CLASS identifier {$$ = create_tree("type_parameter_5",  6, $1, $2, $3, $4, $5, $6);}
+	| TEMPLATE '<' template_parameter_list '>' CLASS identifier '=' template_name {$$ = create_tree("type_parameter_7", 8, $1, $2, $3, $4, $5, $6, $7, $8);}
 	;
 
 template_id:
-	template_name '<' template_argument_list '>'
+	template_name '<' template_argument_list '>' {$$ = create_tree("template_id_1", 4, $1, $2, $3, $4);}
 	;
 
 template_argument_list:
-	template_argument
-	| template_argument_list ',' template_argument
+	template_argument {$$ = $1;}
+	| template_argument_list ',' template_argument {$$ = create_tree("template_argument_list_1", 3, $1, $2, $3);}
 	;
 
 template_argument:
-	assignment_expression
-	| type_id
-	| template_name
+	assignment_expression {$$ = $1;}
+	| type_id {$$ = $1;}
+	| template_name {$$ = $1;}
 	;
 
 explicit_instantiation:
-	TEMPLATE declaration
+	TEMPLATE declaration {$$ = create_tree("explicit_instantiation_1", 2, $1, $2);}
 	;
 
 explicit_specialization:
-	TEMPLATE '<' '>' declaration
+	TEMPLATE '<' '>' declaration {$$ = create_tree("explicit_specialization_1", 4, $1, $2, $3, $4);}
 	;
 
 /*----------------------------------------------------------------------
@@ -1073,39 +1068,39 @@ explicit_specialization:
  *----------------------------------------------------------------------*/
 
 try_block:
-	TRY compound_statement handler_seq
+	TRY compound_statement handler_seq {$$ = create_tree("try_block_1", 3, $1, $2, $3);}
 	;
 
 function_try_block:
-	TRY ctor_initializer_opt function_body handler_seq
+	TRY ctor_initializer_opt function_body handler_seq {$$ = create_tree("function_try_block_1", 4, $1, $2, $3, $4);}
 	;
 
 handler_seq:
-	handler handler_seq_opt
+	handler handler_seq_opt {$$ = create_tree("handler_seq_1", 2, $1, $2);}
 	;
 
 handler:
-	CATCH '(' exception_declaration ')' compound_statement
+	CATCH '(' exception_declaration ')' compound_statement {$$ = create_tree("handler_1", 5, $1, $2, $3, $4, $5);}
 	;
 
 exception_declaration:
-	type_specifier_seq declarator
-	| type_specifier_seq abstract_declarator
-	| type_specifier_seq
-	| ELLIPSIS
+	type_specifier_seq declarator {$$ = create_tree("exception_declaration_1", 2, $1, $2);}
+	| type_specifier_seq abstract_declarator {$$ = create_tree("exception_declaration_1", 2, $1, $2);}
+	| type_specifier_seq {$$ = $1;}
+	| ELLIPSIS {$$ = $1;}
 	;
 
 throw_expression:
-	THROW assignment_expression_opt
+	THROW assignment_expression_opt {$$ = create_tree("throw_expression_1", 2, $1, $2);}
 	;
 
 exception_specification:
-	THROW '(' type_id_list_opt ')'
+	THROW '(' type_id_list_opt ')' {$$ = create_tree("exception_specification_1", 4, $1, $2, $3, $4);}
 	;
 
 type_id_list:
-	type_id
-	| type_id_list ',' type_id
+	type_id {$$ = $1;}
+	| type_id_list ',' type_id {$$ = create_tree("type_id_list_1", 3, $1, $2, $3);}
 	;
 
 /*----------------------------------------------------------------------
@@ -1113,133 +1108,132 @@ type_id_list:
  *----------------------------------------------------------------------*/
 
 declaration_seq_opt:
-	/* epsilon */
-	| declaration_seq
+	{$$ = NULL;}
+	| declaration_seq {$$ = $1;}
 	;
 
 nested_name_specifier_opt:
-	/* epsilon */
-	| nested_name_specifier
+	{$$ = NULL;}
+	| nested_name_specifier {$$ = $1;}
 	;
 
 expression_list_opt:
-	/* epsilon */
-	| expression_list
+	{$$ = NULL;}
+	| expression_list {$$ = $1;}
 	;
 
 COLONCOLON_opt:
-	/* epsilon */
-	| COLONCOLON
+	{$$ = NULL;}
+	| COLONCOLON {$$ = $1;}
 	;
 
 new_placement_opt:
-	/* epsilon */
-	| new_placement
+	{$$ = NULL;}
+	| new_placement {$$ = $1;}
 	;
 
 new_initializer_opt:
-	/* epsilon */
-	| new_initializer
+	{$$ = NULL;}
+	| new_initializer {$$ = $1;}
 	;
 
 new_declarator_opt:
-	/* epsilon */
-	| new_declarator
+	{$$ = NULL;}
+	| new_declarator {$$ = $1;}
 	;
 
 expression_opt:
-	/* epsilon */
-	| expression
+	{$$ = NULL;}
+	| expression {$$ = $1;}
 	;
 
 statement_seq_opt:
-	/* epsilon */
-	| statement_seq
+	{$$ = NULL;}
+	| statement_seq {$$ = $1;}
 	;
 
 condition_opt:
-	/* epsilon */
-	| condition
+	{$$ = NULL;}
+	| condition {$$ = $1;}
 	;
 
 enumerator_list_opt:
-	/* epsilon */
-	| enumerator_list
+	{$$ = NULL;}
+	| enumerator_list {$$ = $1;}
 	;
 
 initializer_opt:
-	/* epsilon */
-	| initializer
+	{$$ = NULL;}
+	| initializer {$$ = $1;}
 	;
 
 constant_expression_opt:
-	/* epsilon */
-	| constant_expression
+	{$$ = NULL;}
+	| constant_expression {$$ = $1;}
 	;
 
 abstract_declarator_opt:
-	/* epsilon */
-	| abstract_declarator
+	{$$ = NULL;}
+	| abstract_declarator {$$ = $1;}
 	;
 
 type_specifier_seq_opt:
-	/* epsilon */
-	| type_specifier_seq
+	{$$ = NULL;}
+	| type_specifier_seq {$$ = $1;}
 	;
 
 direct_abstract_declarator_opt:
-	/* epsilon */
-	| direct_abstract_declarator
+	{$$ = NULL;}
+	| direct_abstract_declarator {$$ = $1;}
 	;
 
 ctor_initializer_opt:
-	/* epsilon */
-	| ctor_initializer
+	{$$ = NULL;}
+	| ctor_initializer {$$ = $1;}
 	;
 
 COMMA_opt:
-	/* epsilon */
-	| ','
+	{$$ = NULL;}
+	| ',' {$$ = $1;}
 	;
 
 member_specification_opt:
-	/* epsilon */
-	| member_specification
+	{$$ = NULL;}
+	| member_specification {$$ = $1;}
 	;
 
 SEMICOLON_opt:
-	/* epsilon */
-	| ';'
+	{$$ = NULL;}
+	| ';' {$$ = $1;}
 	;
 
 conversion_declarator_opt:
-	/* epsilon */
-	| conversion_declarator
+	{$$ = NULL;}
+	| conversion_declarator {$$ = $1;}
 	;
 
 EXPORT_opt:
-	/* epsilon */
-	| EXPORT
+    //EXPORT {$$ = $1;}
+	| {$$ = NULL;}
 	;
 
 handler_seq_opt:
-	/* epsilon */
-	| handler_seq
+	{$$ = NULL;}
+	| handler_seq {$$ = $1;}
 	;
 
 assignment_expression_opt:
-	/* epsilon */
-	| assignment_expression
+	{$$ = NULL;}
+	| assignment_expression {$$ = $1;}
 	;
 
 type_id_list_opt:
-	/* epsilon */
-	| type_id_list
+	{$$ = NULL;}
+	| type_id_list {$$ = $1;}
 	;
 
 %%
 
-static void yyerror(char *s)
-{
-	fprintf(stderr, "%d: %s\n", yylineno, s);
+static void yyerror(char *s) {
+	fprintf(stderr, "line %d: %s\n", yylineno, s);
 }

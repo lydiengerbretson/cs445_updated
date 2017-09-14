@@ -43,21 +43,21 @@
 
 #include "120gram_lydia.tab.h"
 #include "token.h"
-#include "120tree_lydia.h"
+#include "tree_lydia.h"
 
 int lineno;
 int saw_iostream, saw_string, saw_std;
 
-static int yywrap(void);
+//static int yywrap(void);
 static void skip_until_eol(void);
 static void skip_comment(void);
 static int check_identifier(char *);
 
 // extern variables
-extern YYSTYPE yylval; 
 extern filenodeptr file_stack;
 extern char* filetext; 
 extern FILE *yyin; 
+extern YYSTYPE yylval; 
 
 // global variables
 struct token *YYTOKEN; 
@@ -70,6 +70,7 @@ int add_token(int category);
 void handle_include(char *s); 
 %}
 %option yylineno
+%option noyywrap
 %x INCLUDE STR
 
 intsuffix				([uU][lL]?)|([lL][uU]?)
@@ -278,8 +279,6 @@ int add_token(int category)
     filetext = file_stack->filename;
    	YYTOKEN = create_token(category, yytext, yylineno, filetext);  
 	
-	//add_token_to_list(YYTOKEN); 
-	
 	yylval.t = create_tree(yytext, 0); 
 	yylval.t->leaf = YYTOKEN; 
 	
@@ -288,10 +287,10 @@ int add_token(int category)
   	
 }
 
-static int yywrap(void)
-{
-	return 1;
-}
+//static int yywrap(void)
+//{
+	//return 1;
+//}
 
 /*
  * We use this routine instead a lex pattern because we don't need
@@ -364,10 +363,6 @@ int typenametable_insert(char *s, int cat)
    head = tmp;
 }
 
-static int check_identifier(char *s)
-{
-	return typenametable_lookup(s);
-}
 
 // handle user include files
 void handle_include(char *s)
@@ -397,6 +392,11 @@ void lexerr(const char *s)
     filetext = file_stack->filename;
 	fprintf (stderr, "File %s line %d, token %s: %s\n", filetext, yylineno, yytext, s);
     exit (1); 
+}
+
+static int check_identifier(char *s)
+{
+	return typenametable_lookup(s);
 }
 
 

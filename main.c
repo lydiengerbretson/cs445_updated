@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "token.h"
-#include "120tree_lydia.h"
+#include "tree_lydia.h"
 #include "120gram_lydia.tab.h"
 
 
@@ -12,6 +12,7 @@ int yylex();
 
 // extern variables in clex.l
 extern FILE *yyin; 
+extern char *yytext; 
 extern struct tokenlist *YYTOKENLIST; 
 extern struct token *YYTOKEN; 
 extern int yyparse(); 
@@ -30,6 +31,7 @@ int main(int argc, char **argv)
    struct tokenlist* head;
    char *file_list[argc]; 
    int parse = 0; 
+   YYPROGRAM = NULL; 
    
    ++argv, --argc;  /* skip over program name */
    
@@ -43,7 +45,7 @@ int main(int argc, char **argv)
    {
 	   for(i = 0; i < argc; i++)
 	   { 
-	      construct_list_head();
+	      //construct_list_head();
 
 		  yyin = fopen(file_list[i], "r"); 
 		  // push file onto stack 
@@ -51,17 +53,20 @@ int main(int argc, char **argv)
 		  push_file_node(&file_stack, filetext); // adapted from https://github.com/park2331
 		  yypush_buffer_state(yy_create_buffer(yyin, YY_BUF_SIZE));
 	   }
-		   while (1 && yyin) 
-		   { 
+		   //while (1 && yyin) 
+		   //{ 
 			   //eof = yylex();
-			   parse = yyparse(); 
-			   if (eof == 0)
+			   while(!feof(yyin))
 			   {
-				   break;
+					parse = yyparse(); 
 			   }
+			   //if (eof == 0)
+			   //{
+				  // break;
+			  // }
 		
-		   }		
-         
+		   //}		
+		 
          if (yyin) 
          {
             fclose(yyin);
@@ -70,16 +75,11 @@ int main(int argc, char **argv)
          {
             printf("File Input/Output Error: %s. \nPlease check if this file exists or if there is an error within the file.\n", filetext); 
          }
-	     
-	     //printf("Category          Text         Line no           Filename      Ival        Sval\n"); 
-	     //printf("-----------------------------------------------------------------------------------\n"); 
-	     //print_token_list(); 
-	    // head = YYTOKENLIST;
-	     //clear_tokens(head); 
 		   
-         
+         print_tree(YYPROGRAM, 0); 
+		 
         }
-		print_tree(YYPROGRAM, 0); 
+
      }
 
 

@@ -5,22 +5,23 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
-
-#include "120tree_lydia.h"
+#include "tree_lydia.h"
 #include "token.h"
+
 
 Treeptr create_tree(char* prod_name, int num_kids, ...)
 {
+    va_list args;
 	Treeptr T = malloc(sizeof(struct tree) + (num_kids-1)*sizeof(Treeptr)); 
 	
 	int j;
 	// type that holds variable arguments
-	va_list args;
+
 	// product rule name 
 	char* prod_name_t = strdup(prod_name); 
 	//strcpy(prod_name_t, prod_name); 
 	
-	printf("%s\n", prod_name); 
+	printf("%s\n", prod_name); // testing purposes
 	
 	if(T == NULL)
 	{
@@ -30,7 +31,7 @@ Treeptr create_tree(char* prod_name, int num_kids, ...)
 	// product rule name 
 	T->prodrule_name = prod_name_t; 
 	// product rule number 
-	// T->prodrule = category; // ????
+	// T->prodrule = category; // add as a parameter
 	// number of kids
 	T->nkids = num_kids; 
 
@@ -53,29 +54,34 @@ Treeptr create_tree(char* prod_name, int num_kids, ...)
 
 }
 
-void print_tree(struct tree *t, int depth)
+void print_tree(struct tree *treeptr, int depth)
 {
-  int i;
+  int j;
   
-  if(!t)
+  if(!treeptr)
   {
       // do nothing
-	  printf("exit 1\n"); 
+	  //printf("exit 1\n"); 
   }
-  else if(t->nkids == 0)
-  {
-	 printf("%*s  %s\n", depth*2, " ", t->leaf->text); 
-  }
-  else
-  {
-	printf("%*s %s: %d\n", depth*2, " ", t->prodrule_name, t->nkids);
-    printf("exit 2\n"); 
-	for(i=0; i<t->nkids; i++)
-	{
-		printf("exit 3\n"); 
-		print_tree(t->kid[i], depth+1);
+  else 
+  { 
+	  if (treeptr->nkids == 0)
+	  {
+		  //printf("exit 0\n"); 
+		  printf("%*s  Leaf: %d  %s\n", depth*2, " ", 
+				treeptr->leaf->category, treeptr->leaf->text); 
+	  }
+	  else
+	  {
+		printf("%*s  Kid: %s: %d\n", depth*2, " ", treeptr->prodrule_name, treeptr->nkids);
+		//printf("exit 2\n"); 
+		for(j=0; j<treeptr->nkids; j++)
+		{
+			//printf("exit 3\n"); 
+			print_tree(treeptr->kid[j], depth+1);
 
-	}
-  }
+		}
+	  }
+}
 }
 

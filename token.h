@@ -2,6 +2,9 @@
 #include <string.h>
 #include <stdio.h>
 
+#ifndef TOKEN_H
+#define TOKEN_H
+
 /* Size of default input buffer. */
 /* Retrieved from lex.yy.c file */
 #ifndef YY_BUF_SIZE
@@ -65,3 +68,5 @@ void pop_file_node(filenodeptr*);
 
 // push file node onto file stack 
 void push_file_node(filenodeptr*, char *filename); 
+
+#endif /*TOKEN_H*/

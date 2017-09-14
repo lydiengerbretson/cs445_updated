@@ -151,12 +151,11 @@ extern int yydebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 64 "120gram_lydia.y" /* yacc.c:1909  */
+#line 65 "120gram_lydia.y" /* yacc.c:1909  */
 
   struct tree *t;
-  
 
-#line 160 "120gram_lydia.tab.h" /* yacc.c:1909  */
+#line 159 "120gram_lydia.tab.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
