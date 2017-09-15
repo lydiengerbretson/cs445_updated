@@ -21,7 +21,7 @@ Treeptr create_tree(char* prod_name, int num_kids, ...)
 	char* prod_name_t = strdup(prod_name); 
 	//strcpy(prod_name_t, prod_name); 
 	
-	printf("%s\n", prod_name); // testing purposes
+	//printf("%s\n", prod_name); // testing purposes
 	
 	if(T == NULL)
 	{

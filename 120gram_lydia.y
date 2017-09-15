@@ -843,9 +843,9 @@ class_specifier:
 	;
 
 class_head:       
-    class_key identifier { $$ = create_tree("class_head_1", 2, $1, $2); } 
+    class_key identifier { $$ = create_tree("class_head_1", 2, $1, $2); insert_typename_tree($2, CLASS_NAME);} 
 	| class_key identifier base_clause {$$ = create_tree("class_head_2", 3, $1, $2, $3);}
-	| class_key nested_name_specifier identifier {$$ = create_tree("class_head_3", 3, $1, $2, $3);}
+	| class_key nested_name_specifier identifier {$$ = create_tree("class_head_3", 3, $1, $2, $3);insert_typename_tree($3, CLASS_NAME);}
 	| class_key nested_name_specifier identifier base_clause {$$ = create_tree("class_head_4", 4, $1, $2, $3, $4);}
 	;
 

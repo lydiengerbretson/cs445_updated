@@ -363,6 +363,11 @@ int typenametable_insert(char *s, int cat)
    head = tmp;
 }
 
+void insert_typename_tree(struct tree *t, int category)
+{
+	typenametable_insert(((struct token *)t->leaf)->text, category); 
+	printf("added class name %s to tree!!!\n", ((struct token *)t->leaf)->text); 
+}
 
 // handle user include files
 void handle_include(char *s)

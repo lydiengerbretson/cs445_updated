@@ -2,7 +2,7 @@
 
 using namespace std;
 int
-main ()
+int main ()
 {
    char a[5][9] = { "every", "good", "bear", "deserves", "fudge" };
    char *p = &(a[2][1]);
