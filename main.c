@@ -48,6 +48,12 @@ int main(int argc, char **argv)
 	      //construct_list_head();
 
 		  yyin = fopen(file_list[i], "r"); 
+		  
+		  if(yyin == NULL)
+		  {
+			  printf("File does not exist.\n"); 
+			  return; 
+		  }
 		  // push file onto stack 
 	      filetext = file_list[i]; 
 		  push_file_node(&file_stack, filetext); // adapted from https://github.com/park2331

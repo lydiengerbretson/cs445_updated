@@ -52,6 +52,7 @@ int saw_iostream, saw_string, saw_std;
 static void skip_until_eol(void);
 static void skip_comment(void);
 static int check_identifier(char *);
+void insert_typename_tree(struct tree *t, int category); 
 
 // extern variables
 extern filenodeptr file_stack;

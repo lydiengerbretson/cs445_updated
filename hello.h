@@ -1,6 +1,8 @@
-"This is a test"
-
-case
-char
-main
-bool
+#include <iostream>
+class G{
+	int x; 
+};
+int main()
+{
+	cout << "hello world.\n";
+}

@@ -1,18 +1,9 @@
 #include <iostream>
 using namespace std; 
 
-int main()
-{
-cout << "hey there\n";
-}
-
-class C
-{
-	int x; 
+class A {
+	int e; 
+	int f; 
 }; 
 
-class D
-{
-	int y; 
-}; 
  
