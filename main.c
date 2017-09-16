@@ -45,7 +45,6 @@ int main(int argc, char **argv)
    {
 	   for(i = 0; i < argc; i++)
 	   { 
-	      //construct_list_head();
 
 		  yyin = fopen(file_list[i], "r"); 
 		  
@@ -59,19 +58,11 @@ int main(int argc, char **argv)
 		  push_file_node(&file_stack, filetext); // adapted from https://github.com/park2331
 		  yypush_buffer_state(yy_create_buffer(yyin, YY_BUF_SIZE));
 	   }
-		   //while (1 && yyin) 
-		   //{ 
-			   //eof = yylex();
+
 			   while(!feof(yyin))
 			   {
 					parse = yyparse(); 
-			   }
-			   //if (eof == 0)
-			   //{
-				  // break;
-			  // }
-		
-		   //}		
+			   }		
 		 
          if (yyin) 
          {

@@ -280,7 +280,7 @@ int add_token(int category)
     filetext = file_stack->filename;
    	YYTOKEN = create_token(category, yytext, yylineno, filetext);  
 	
-	yylval.t = create_tree(yytext, 0); 
+	yylval.t = create_tree(yytext, category, 0); 
 	yylval.t->leaf = YYTOKEN; 
 	
 	return category; 
@@ -358,7 +358,7 @@ int typenametable_insert(char *s, int cat)
       tmp = tmp->next;
    }
    tmp = calloc(1, sizeof (struct typenametable_entry));
-   if(!tmp) { fprintf(stderr, "tnti out of memory\n"); return -1; }
+   if(!tmp) { fprintf(stderr, "type name table is out of memory\n"); return -1; }
    tmp->name = strdup(s);
    tmp->category = cat;
    tmp->next = head;
@@ -367,8 +367,9 @@ int typenametable_insert(char *s, int cat)
 
 void insert_typename_tree(struct tree *t, int category)
 {
-	//typenametable_insert(((struct token *)t->leaf)->text, category);
-    typenametable_insert(t->leaf->text, category);	
+	// check if null before inserting?? 
+	typenametable_insert(((struct token *)t->leaf)->text, category);
+    //typenametable_insert(t->leaf->text, category);	
 	printf("added class name %s to tree!!!\n", ((struct token *)t->leaf)->text); 
 }
 

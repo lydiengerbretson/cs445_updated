@@ -9,7 +9,7 @@
 #include "token.h"
 
 
-Treeptr create_tree(char* prod_name, int num_kids, ...)
+Treeptr create_tree(char* prod_name, int category, int num_kids, ...)
 {
     va_list args;
 	Treeptr T = malloc(sizeof(struct tree) + (num_kids-1)*sizeof(Treeptr)); 
@@ -31,7 +31,7 @@ Treeptr create_tree(char* prod_name, int num_kids, ...)
 	// product rule name 
 	T->prodrule_name = prod_name_t; 
 	// product rule number 
-	// T->prodrule = category; // add as a parameter
+	T->prodrule = category; // add as a parameter
 	// number of kids
 	T->nkids = num_kids; 
 

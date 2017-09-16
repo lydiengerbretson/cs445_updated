@@ -16,6 +16,6 @@ typedef struct tree {
 
 void print_tree(Treeptr, int); 
 
-Treeptr create_tree(char*, int,  ...); 
+Treeptr create_tree(char*, int, int, ...); 
 
 #endif /* TREE_LYDIA_H_ */
