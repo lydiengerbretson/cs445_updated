@@ -1,86 +1,106 @@
-#define identifier literal 
-#define boolean_literal
-#define translation_unit 
-#define primary_expression 
-#define id_expression
-#define unqualified_id
-#define qualified_id 
-#define nested_name_specifier 
-#define postfix_expression
-#define expression_list
-#define unary_expression
-#define unary_operator
-#define new_expression
-#define new_placement
-#define new_type_id
-#define new_declarator 
-#define direct_new_declarator
-#define new_initializer 
-#define delete_expression
-#define pm_expression
-#define multiplicative_expression
-#define additive_expression
-#define shift_expression
-#define relational_expression
-#define equality_expression
-#define and_expression
-#define exclusive_or_expression 
-#define inclusive_or_expression 
-#define logical_and_expression 
-#define logical_or_expression 
-#define conditional_expression
-#define assignment_expression
-#define assignment_operator
-#define expression
-#define constant_expression
-#define statement
-#define labeled_statement
-expression_statement
-compound_statement
-statement_seq
-#define selection_statement
-condition
-iteration_statement
-for_init_statement 
-#define jump_statement
-declaration_statement
-declaration_seq
-declaration
-#define block_declaration
-simple_declaration
-decl_specifier
-decl_specifier_seq
-#define storage_class_specifier
-function_specifier
-type_specifier
-simple_type_specifier
-#define elaborated_type_specifier 
-#define init_declarator_list
-init_declarator declarator 
-#define direct_declarator
-ptr_operator
-cv_qualifier_seq
-cv_qualifier
-declarator_id
-#define type_id
-type_specifier_seq
-abstract_declarator
-direct_abstract_declarator 
-#define parameter_declaration_clause
-parameter_declaration_list
-parameter_declaration
-#define function_definition
-function_body
-initializer
-initializer_clause
-initializer_list
-#define class_specifier class_head class_key member_specification member_declaration
-#define member_declarator_list member_declarator pure_specifier constant_initializer
-#define ctor_initializer
-#define mem_initializer_list mem_initializer mem_initializer_id   
-#define declaration_seq_opt expression_list_opt
-#define new_placement_opt new_initializer_opt new_declarator_opt
-#define expression_opt statement_seq_opt condition_opt
-#define initializer_opt constant_expression_opt abstract_declarator_opt type_specifier_seq_opt
-#define ctor_initializer_opt COMMA_opt member_specification_opt
-#define SEMICOLON_opt access_specifier
+#define IDENTIFIER LITERAL 
+#define BOOLEAN_LITERAL
+#define TRANSLATION_UNIT 
+#define PRIMARY_EXPRESSION 
+#define ID_EXPRESSION
+#define UNQUALIFIED_ID
+#define QUALIFIED_ID 
+#define NESTED_NAME_SPECIFIER 
+#define POSTFIX_EXPRESSION
+#define EXPRESSION_LIST
+#define UNARY_EXPRESSION
+#define UNARY_OPERATOR
+#define NEW_EXPRESSION
+#define NEW_PLACEMENT
+#define NEW_TYPE_ID
+#define NEW_DECLARATOR 
+#define DIRECT_NEW_DECLARATOR
+#define NEW_INITIALIZER 
+#define DELETE_EXPRESSION
+#define PM_EXPRESSION
+#define MULTIPLICATIVE_EXPRESSION
+#define ADDITIVE_EXPRESSION
+#define SHIFT_EXPRESSION
+#define RELATIONAL_EXPRESSION
+#define EQUALITY_EXPRESSION
+#define AND_EXPRESSION
+#define EXCLUSIVE_OR_EXPRESSION 
+#define INCLUSIVE_OR_EXPRESSION 
+#define LOGICAL_AND_EXPRESSION 
+#define LOGICAL_OR_EXPRESSION 
+#define CONDITIONAL_EXPRESSION
+#define ASSIGNMENT_EXPRESSION
+#define ASSIGNMENT_OPERATOR
+#define EXPRESSION
+#define CONSTANT_EXPRESSION
+#define STATEMENT
+#define LABELED_STATEMENT
+#define EXPRESSION_STATEMENT
+#define COMPOUND_STATEMENT
+#define STATEMENT_SEQ
+#define SELECTION_STATEMENT
+#define CONDITION
+#define ITERATION_STATEMENT
+#define FOR_INIT_STATEMENT 
+#define JUMP_STATEMENT
+#define DECLARATION_STATEMENT
+#define DECLARATION_SEQ
+#define DECLARATION
+#define BLOCK_DECLARATION
+#define SIMPLE_DECLARATION
+#define DECL_SPECIFIER
+#define DECL_SPECIFIER_SEQ
+#define STORAGE_CLASS_SPECIFIER
+#define FUNCTION_SPECIFIER
+#define TYPE_SPECIFIER
+#define SIMPLE_TYPE_SPECIFIER
+#define ELABORATED_TYPE_SPECIFIER 
+#define INIT_DECLARATOR_LIST
+#define INIT_DECLARATOR DECLARATOR 
+#define DIRECT_DECLARATOR
+#define PTR_OPERATOR
+#define CV_QUALIFIER_SEQ
+#define CV_QUALIFIER
+#define DECLARATOR_ID
+#define TYPE_ID
+#define TYPE_SPECIFIER_SEQ
+#define ABSTRACT_DECLARATOR
+#define DIRECT_ABSTRACT_DECLARATOR 
+#define PARAMETER_DECLARATION_CLAUSE
+#define PARAMETER_DECLARATION_LIST
+#define PARAMETER_DECLARATION
+#define FUNCTION_DEFINITION
+#define FUNCTION_BODY
+#define INITIALIZER
+#define INITIALIZER_CLAUSE
+#define INITIALIZER_LIST
+#define CLASS_SPECIFIER
+#define CLASS_HEAD
+#define CLASS_KEY
+#define MEMBER_SPECIFICATION
+#define MEMBER_DECLARATION
+#define MEMBER_DECLARATOR_LIST
+#define MEMBER_DECLARATOR
+#define PURE_SPECIFIER
+#define CONSTANT_INITIALIZER
+#define CTOR_INITIALIZER
+#define MEM_INITIALIZER_LIST
+#define MEM_INITIALIZER
+#define MEM_INITIALIZER_ID   
+#define DECLARATION_SEQ_OPT
+#define EXPRESSION_LIST_OPT
+#define NEW_PLACEMENT_OPT
+#define NEW_INITIALIZER_OPT
+#define NEW_DECLARATOR_OPT
+#define EXPRESSION_OPT
+#define STATEMENT_SEQ_OPT 
+#define CONDITION_OPT
+#define INITIALIZER_OPT 
+#define CONSTANT_EXPRESSION_OPT 
+#define ABSTRACT_DECLARATOR_OPT 
+#define TYPE_SPECIFIER_SEQ_OPT
+#define CTOR_INITIALIZER_OPT 
+#define COMMA_OPT 
+#define MEMBER_SPECIFICATION_OPT
+#define SEMICOLON_OPT 
+#define ACCESS_SPECIFIER
