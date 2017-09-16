@@ -166,8 +166,8 @@ stringtext				([^"])|(\\.)
 "->*"					{ return add_token(ARROWSTAR); }
 "->"					{ return add_token(ARROW); }
 
-"asm"                   { return add_token(ASM); }
-"auto"                  { return add_token(AUTO); }
+"asm"                   { lexerr("Unsupported token."); }
+"auto"                  { lexerr("Unsupported token."); }
 "bool"					{ return add_token(BOOL); }
 "break"					{ return add_token(BREAK); }
 "case"					{ return add_token(CASE); }
@@ -175,17 +175,17 @@ stringtext				([^"])|(\\.)
 "class"					{ return add_token(CLASS); }
 "continue"				{ return add_token(CONTINUE); }
 "const"                 { return add_token(CONST); }
-"const_cast"            { return add_token(CONST_CAST); }
+"const_cast"            { lexerr("Unsupported token."); }
 "default"				{ return add_token(DEFAULT); }
 "delete"				{ return add_token(DELETE); }
 "do"					{ return add_token(DO); }
 "double"				{ return add_token(DOUBLE); }
-"dynamic_cast"          { return add_token(DYNAMIC_CAST); }
+"dynamic_cast"          { lexerr("Unsupported token."); }
 "else"					{ return add_token(ELSE); }
-"enum"                  { return add_token(ENUM); }
+"enum"                  { lexerr("Unsupported token.");}
 "explicit"              { return add_token(EXPLICIT); }
 "export"                { return add_token(EXPORT); }
-"extern"                { return add_token(EXTERN); }
+"extern"                { lexerr("Unsupported token."); }
 "false"					{ return add_token(FALSE); }
 "float"					{ return add_token(FLOAT); }
 "for"					{ return add_token(FOR); }
@@ -202,29 +202,29 @@ stringtext				([^"])|(\\.)
 "protected"				{ return add_token(PROTECTED); }
 "public"				{ return add_token(PUBLIC); }
 "register"              { return add_token(REGISTER); }
-"reinterpret_cast"      { return add_token(REINTERPRET_CAST); }
+"reinterpret_cast"      { lexerr("Unsupported token."); }
 "return"				{ return add_token(RETURN); }
 "short"					{ return add_token(SHORT); }
 "signed"				{ return add_token(SIGNED); }
 "sizeof"				{ return add_token(SIZEOF); }
 "struct"				{ return add_token(STRUCT); }
 "static"                { return add_token(STATIC); }
-"static_cast"           { return add_token(STATIC_CAST); }
+"static_cast"           { lexerr("Unsupported token."); }
 "switch"				{ return add_token(SWITCH); }
 "template"              { return add_token(TEMPLATE); }
 "this"                  { return add_token(THIS); }
-"throw"                 { return add_token(THROW); }
+"throw"                 { lexerr("Unsupported token."); }
 "true"					{ return add_token(TRUE); }
-"try"                   { return add_token(TRY); }
-"typedef"               { return add_token(TYPEDEF); }
+"try"                   { lexerr("Unsupported token.");}
+"typedef"               { lexerr("Unsupported token.");  }
 "typeid"                { return add_token(TYPEID); }
 "typename"              { return add_token(TYPENAME); }
-"union"					{ return add_token(UNION); }
+"union"					{ lexerr("Unsupported token."); }
 "unsigned"				{ return add_token(UNSIGNED); }
-"using"                 { return add_token(USING); }
-"virtual"               { return add_token(VIRTUAL); }
+"using"                 { lexerr("Unsupported token.");}
+"virtual"               { lexerr("Unsupported token."); }
 "void"					{ return add_token(VOID); }
-"volatile"              { return add_token(VOLATILE); }
+"volatile"              { lexerr("Unsupported token."); }
 "wchar_t"               { return add_token(WCHAR_T); }
 "while"					{ return add_token(WHILE); }
 
@@ -328,6 +328,7 @@ static void skip_until_eol(void)
  * Type name table.
  * Replace this with a hash table, when you get a chance.
  */
+ 
 struct typenametable_entry {
    char *name;
    int category;
@@ -366,7 +367,8 @@ int typenametable_insert(char *s, int cat)
 
 void insert_typename_tree(struct tree *t, int category)
 {
-	typenametable_insert(((struct token *)t->leaf)->text, category); 
+	//typenametable_insert(((struct token *)t->leaf)->text, category);
+    typenametable_insert(t->leaf->text, category);	
 	printf("added class name %s to tree!!!\n", ((struct token *)t->leaf)->text); 
 }
 

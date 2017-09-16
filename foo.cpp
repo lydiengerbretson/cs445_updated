@@ -1,7 +1,7 @@
 #include <iostream>
 
 using namespace std;
-int
+ 
 int main ()
 {
    char a[5][9] = { "every", "good", "bear", "deserves", "fudge" };
