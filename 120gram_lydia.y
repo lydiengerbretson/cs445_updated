@@ -113,17 +113,19 @@ void insert_typename_tree(struct tree *t, int category);
 %type <t> function_definition function_body initializer initializer_clause initializer_list
 %type <t> class_specifier class_head class_key member_specification member_declaration
 %type <t> member_declarator_list member_declarator pure_specifier constant_initializer
-%type <t> ctor_initializer
+%type <t> access_specifier ctor_initializer
 %type <t> mem_initializer_list mem_initializer mem_initializer_id   
 %type <t> declaration_seq_opt expression_list_opt
 %type <t> new_placement_opt new_initializer_opt new_declarator_opt
 %type <t> expression_opt statement_seq_opt condition_opt
 %type <t> initializer_opt constant_expression_opt abstract_declarator_opt type_specifier_seq_opt
 %type <t> ctor_initializer_opt COMMA_opt member_specification_opt
-%type <t> SEMICOLON_opt access_specifier
+%type <t> SEMICOLON_opt 
 
 
 %start translation_unit
+
+%debug
 
 %%
 
@@ -167,7 +169,7 @@ translation_unit:
 
 primary_expression:
 	literal {$$ = $1;}
-	| '(' expression ')' { $$ = create_tree("primary_expression", PRIMARY_EXPRESSION_1, 3, $1, $2, $3); }
+	| '(' expression ')' { $$ = $2; }
 	| id_expression {$$ = $1;}
 	;
 
@@ -185,8 +187,8 @@ qualified_id:
 	nested_name_specifier unqualified_id { $$ = create_tree("qualified_id_1", QUALIFIED_ID_1, 2, $1, $2);}
 
 nested_name_specifier:
-	CLASS_NAME COLONCOLON nested_name_specifier {$$ = create_tree("nested_name_specifier_1", NESTED_NAME_SPECIFIER_1, 3, $1, $2, $3);}
-	| CLASS_NAME COLONCOLON {$$ = create_tree("nested_name_specifier_3", NESTED_NAME_SPECIFIER_1, 2, $1, $2);}
+	CLASS_NAME COLONCOLON nested_name_specifier {$$ = create_tree("nested_name_specifier_1", NESTED_NAME_SPECIFIER_1, 2, $1, $3);}
+	| CLASS_NAME COLONCOLON {$$ = $1;}
 
 	;
 
@@ -194,9 +196,9 @@ postfix_expression:
 	primary_expression {$$ = $1;}
 	| postfix_expression '[' expression ']' {$$ = create_tree("postfix_expression_1", POSTFIX_EXPRESSION_1, 4, $1, $2, $3, $4);}
 	| postfix_expression '(' expression_list_opt ')' {$$ = create_tree("postfix_expression_2", POSTFIX_EXPRESSION_1, 4, $1, $2, $3, $4);}
-	| postfix_expression '.' COLONCOLON id_expression {$$ = create_tree("postfix_expression_3", POSTFIX_EXPRESSION_1, 4, $1, $2, $3, $4);}
+	| postfix_expression '.' COLONCOLON id_expression {$$ = create_tree("postfix_expression_3", POSTFIX_EXPRESSION_1, 3, $1, $2, $4);}
 	| postfix_expression '.' id_expression {$$ = create_tree("postfix_expression_4", POSTFIX_EXPRESSION_1, 3, $1, $2, $3);}
-	| postfix_expression ARROW COLONCOLON id_expression {$$ = create_tree("postfix_expression_5", POSTFIX_EXPRESSION_1,  4, $1, $2, $3, $4);}
+	| postfix_expression ARROW COLONCOLON id_expression {$$ = create_tree("postfix_expression_5", POSTFIX_EXPRESSION_1,  3, $1, $2, $4);}
 	| postfix_expression ARROW id_expression {$$ = create_tree("postfix_expression_6", POSTFIX_EXPRESSION_1, 3, $1, $2, $3);}
 	| postfix_expression PLUSPLUS {$$ = create_tree("postfix_expression_7", POSTFIX_EXPRESSION_1, 2, $1, $2);}
 	| postfix_expression MINUSMINUS {$$ = create_tree("postfix_expression_8", POSTFIX_EXPRESSION_1, 2, $1, $2);}
@@ -229,7 +231,7 @@ unary_operator:
 
 new_expression:
 	  NEW new_placement_opt new_type_id new_initializer_opt {$$ = create_tree("new_expression_1", NEW_EXPRESSION_1, 4, $1, $2, $3, $4);}
-	| COLONCOLON NEW new_placement_opt new_type_id new_initializer_opt {$$ = create_tree("new_expression_2", NEW_EXPRESSION_1, 5, $1, $2, $3, $4, $5);}
+	| COLONCOLON NEW new_placement_opt new_type_id new_initializer_opt {$$ = create_tree("new_expression_2", NEW_EXPRESSION_1, 4, $2, $3, $4, $5);}
 	;
 
 new_placement:
@@ -256,9 +258,9 @@ new_initializer:
 
 delete_expression:
 	  DELETE unary_expression {$$ = create_tree("delete_expression_1", DELETE_EXPRESSION_1, 2, $1, $2);}
-	| COLONCOLON DELETE unary_expression {$$ = create_tree("delete_expression_2", DELETE_EXPRESSION_1, 3, $1, $2, $3);}
+	| COLONCOLON DELETE unary_expression {$$ = create_tree("delete_expression_2", DELETE_EXPRESSION_1, 2, $2, $3);}
 	| DELETE '[' ']' unary_expression {$$ = create_tree("delete_expression_3", DELETE_EXPRESSION_1, 4, $1, $2, $3, $4);}
-	| COLONCOLON DELETE '[' ']' unary_expression {$$ = create_tree("delete_expression_4", DELETE_EXPRESSION_1, 5, $1, $2, $3, $4, $5);}
+	| COLONCOLON DELETE '[' ']' unary_expression {$$ = create_tree("delete_expression_4", DELETE_EXPRESSION_1, 4, $2, $3, $4, $5);}
 	;
 
 pm_expression:
@@ -496,8 +498,8 @@ simple_type_specifier:
 	;
 
 elaborated_type_specifier:
-	  class_key COLONCOLON nested_name_specifier identifier {$$ = create_tree("elaborated_type_specifier_1", ELABORATED_TYPE_SPECIFIER_1, 4, $1, $2, $3, $4);}
-	| class_key COLONCOLON identifier {$$ = create_tree("elaborated_type_specifier_2", ELABORATED_TYPE_SPECIFIER_1, 3, $1, $2, $3);}
+	  class_key COLONCOLON nested_name_specifier identifier {$$ = create_tree("elaborated_type_specifier_1", ELABORATED_TYPE_SPECIFIER_1, 3, $1, $3, $4);}
+	| class_key COLONCOLON identifier {$$ = create_tree("elaborated_type_specifier_2", ELABORATED_TYPE_SPECIFIER_1, 2, $1, $3);}
 	
 	;
 
@@ -525,8 +527,8 @@ direct_declarator:
 	  declarator_id { $$ = $1; }
 	| direct_declarator '(' parameter_declaration_clause ')' { $$ = create_tree("direct_declarator_1", DIRECT_DECLARATOR_1, 4, $1, $2, $3, $4); }
 	| CLASS_NAME '(' parameter_declaration_clause ')' {$$ = create_tree("direct_declarator_2", DIRECT_DECLARATOR_1, 4, $1, $2, $3, $4);}
-	| CLASS_NAME COLONCOLON declarator_id '(' parameter_declaration_clause ')' {$$ = create_tree("direct_declarator_3", DIRECT_DECLARATOR_1, 6, $1, $2, $3, $4, $5, $6);}
-	| CLASS_NAME COLONCOLON CLASS_NAME '(' parameter_declaration_clause ')' {$$ = create_tree("direct_declarator_4", DIRECT_DECLARATOR_1, 6, $1, $2, $3, $4, $5, $6);}
+	| CLASS_NAME COLONCOLON declarator_id '(' parameter_declaration_clause ')' {$$ = create_tree("direct_declarator_3", DIRECT_DECLARATOR_1, 3, $1, $3, $5);}
+	| CLASS_NAME COLONCOLON CLASS_NAME '(' parameter_declaration_clause ')' {$$ = create_tree("direct_declarator_4", DIRECT_DECLARATOR_1, 3, $1, $3, $5);}
 	| direct_declarator '[' constant_expression_opt ']' {$$ = create_tree("direct_declarator_5", DIRECT_DECLARATOR_1, 4, $1, $2, $3, $4);}
 	| '(' declarator ')' {$$ = create_tree("direct_declarator_6", DIRECT_DECLARATOR_1, 3, $1, $2, $3);}
 	;
@@ -537,7 +539,7 @@ ptr_operator:
 	| '&' { $$ = $1; }
 	| nested_name_specifier '*' {$$ = create_tree("ptr_operator_2", PTR_OPERATOR_1, 2, $1, $2);}
 	| nested_name_specifier '*' cv_qualifier_seq {$$ = create_tree("ptr_operator_3", PTR_OPERATOR_1, 3, $1, $2, $3);}
-	| COLONCOLON nested_name_specifier '*' {$$ = create_tree("ptr_operator_4",PTR_OPERATOR_1, 3, $1, $2, $3);}
+	| COLONCOLON nested_name_specifier '*' {$$ = create_tree("ptr_operator_4",PTR_OPERATOR_1, 2, $2, $3);}
 	| COLONCOLON nested_name_specifier '*' cv_qualifier_seq {$$ = create_tree("ptr_operator_5", PTR_OPERATOR_1, 4, $1, $2, $3, $4);}
 	;
 
@@ -553,9 +555,9 @@ cv_qualifier:
 
 declarator_id:
 	id_expression {$$ = $1;}
-	| COLONCOLON id_expression {$$ = create_tree("declarator_id_1", DECLARATOR_ID_1, 2, $1, $2);}
-	| COLONCOLON nested_name_specifier CLASS_NAME {$$ = create_tree("declarator_id_2", DECLARATOR_ID_1, 3, $1, $2, $3);}
-	| COLONCOLON CLASS_NAME {$$ = create_tree("declarator_id_3", DECLARATOR_ID_1, 2, $1, $2);}
+	| COLONCOLON id_expression {$$ = $2; }
+	| COLONCOLON nested_name_specifier CLASS_NAME {$$ = create_tree("declarator_id_2", DECLARATOR_ID_1, 2, $2, $3);}
+	| COLONCOLON CLASS_NAME {$$ = $2;}
 	;
 
 type_id:
@@ -629,7 +631,7 @@ initializer_list:
  *----------------------------------------------------------------------*/
 
 class_specifier:
-    class_head '{' member_specification_opt '}' { $$ = create_tree("class_specifier_1", CLASS_SPECIFIER_1, 4, $1, $2, $3, $4); }
+    class_head '{' member_specification_opt '}' { $$ = create_tree("class_specifier_1", CLASS_SPECIFIER_1, 2, $1, $3); }
 	;
 
 class_head:       
@@ -703,8 +705,8 @@ mem_initializer:
 	;
 
 mem_initializer_id:
-	COLONCOLON nested_name_specifier CLASS_NAME {$$ = create_tree("mem_initializer_id_1", MEM_INITIALIZER_ID_1, 3, $1, $2, $3);}
-	| COLONCOLON CLASS_NAME {$$ = create_tree("mem_initializer_id_2",  MEM_INITIALIZER_ID_1,2, $1, $2);}
+	COLONCOLON nested_name_specifier CLASS_NAME {$$ = create_tree("mem_initializer_id_1", MEM_INITIALIZER_ID_1, 2, $2, $3);}
+	| COLONCOLON CLASS_NAME {$$ = $2;}
 	| nested_name_specifier CLASS_NAME {$$ = create_tree("mem_initializer_id_3", MEM_INITIALIZER_ID_1, 2, $1, $2);}
 	| CLASS_NAME {$$ = $1;}
 	| identifier {$$ = $1;}

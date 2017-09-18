@@ -41,11 +41,7 @@ class ant {
         bool Right();
         bool Forward();
         
-        friend ostream &operator<<(ostream &outs, ant &rhs) {
-            outs << "(" << rhs.GetX() << "," 
-                 << rhs.GetY() << ") " << rhs.Print() 
-                 << " " << rhs.GetEnergy();
-        }
+ 
     private:
         int x,y;
         char dir;
