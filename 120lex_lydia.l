@@ -347,19 +347,24 @@ int typenametable_lookup(char *s)
 
 int typenametable_insert(char *s, int cat)
 {
-   struct typenametable_entry *tmp = head;
+  struct typenametable_entry *tmp = head; 
    while (tmp) {
       if (!strcmp(s, tmp->name)) {
-         fprintf(stderr,
+          fprintf(stderr,
 	    "warning, %s is already in the typename table as a %d\n",
-	    s, tmp->category );
-         return tmp->category;
+	    s, tmp->category ); 
+		// lexerr("Already in type table.\n"); 
+        return tmp->category;
+		//return 0; 
          }
       tmp = tmp->next;
    }
    tmp = calloc(1, sizeof (struct typenametable_entry));
+   //tmp = malloc(sizeof(struct typenametable_entry)); 
    if(!tmp) { fprintf(stderr, "type name table is out of memory\n"); return -1; }
-   tmp->name = strdup(s);
+   tmp->name = calloc(2048, sizeof(char));
+   strcpy(tmp->name, s); 
+   //tmp->name = strdup(s);
    tmp->category = cat;
    tmp->next = head;
    head = tmp;

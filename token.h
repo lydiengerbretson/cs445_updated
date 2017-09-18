@@ -29,8 +29,7 @@ struct token {
    char *filename; /* the source file in which the token occurs */
    int ival;       /* if you had an integer constant, store its value here */
    char *sval;      /* if you had a string constant, malloc space and store */
-   /* add char cval */ 
-   /* add double dval */
+   double fval;
    };               /*    the string (less quotes and after escapes) here */ 
    
 struct tokenlist {

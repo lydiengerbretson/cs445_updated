@@ -105,6 +105,7 @@ struct token* create_token(int category, char *text, int lineno, char *filename)
 		
 		// default values
 		new_token->ival = 0; 
+		new_token->fval = 0.0; 
 		new_token->sval = calloc(8, sizeof(char));
 		strcpy(new_token->sval, "N/A");
 
@@ -123,6 +124,9 @@ struct token* create_token(int category, char *text, int lineno, char *filename)
 				c = get_cval(text); 
 				strcpy(new_token->sval, c); 
 				break; 
+			case FLOATING: 
+				new_token->fval = atof(text); 
+				break;  
 			default:  
 				break; 
 		}

@@ -30,7 +30,7 @@ int main(int argc, char **argv)
    int eof;
    struct tokenlist* head;
    char *file_list[argc]; 
-   int parse = 0; 
+   int result = 0; 
    YYPROGRAM = NULL; 
    
    ++argv, --argc;  /* skip over program name */
@@ -61,7 +61,7 @@ int main(int argc, char **argv)
 
 			   while(!feof(yyin))
 			   {
-					parse = yyparse(); 
+					result = yyparse(); 
 			   }		
 		 
          if (yyin) 
@@ -72,8 +72,16 @@ int main(int argc, char **argv)
          {
             printf("File Input/Output Error: %s. \nPlease check if this file exists or if there is an error within the file.\n", filetext); 
          }
-		   
-         print_tree(YYPROGRAM, 0); 
+		 if(result == 0)
+		 {			 
+			print_tree(YYPROGRAM, 0); 
+		 }
+		 else
+		 {
+			 return 2; 
+		 }
+		 
+		 yylex_destroy();
 		 
         }
 
