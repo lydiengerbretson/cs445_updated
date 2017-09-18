@@ -50,17 +50,6 @@ typedef struct file_node
  // create a new token 
 struct token* create_token(int category, char *text, int lineno, char *filename); 
 
-// add new token to linked list 
-void add_token_to_list(struct token *new_token); 
-
-void print_token_list(); 
-
-// clear tokens in linked list 
-void clear_tokens(); 
-
-void free_token(struct token *t); 
-
-void construct_list_head();
 
 // pop file node from file stack 
 void pop_file_node(filenodeptr*); 

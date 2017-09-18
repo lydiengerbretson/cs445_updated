@@ -46,6 +46,7 @@ int main(int argc, char **argv)
 	   for(i = 0; i < argc; i++)
 	   { 
 
+		  printf("Opening %s\n", file_list[i]); 
 		  yyin = fopen(file_list[i], "r"); 
 		  
 		  if(yyin == NULL)
@@ -81,7 +82,7 @@ int main(int argc, char **argv)
 			 return 2; 
 		 }
 		 
-		 yylex_destroy();
+		 //yylex_destroy();
 		 
         }
 

@@ -50,7 +50,8 @@
 
 extern int yylineno;
 extern char *yytext;
-
+char *filetext; 
+filenodeptr file_stack;
 // tree pointer to the start of the program
 Treeptr YYPROGRAM; 
 int yydebug=0;
@@ -800,7 +801,8 @@ SEMICOLON_opt:
 %%
 
 static void yyerror(char *s) {
-	fprintf(stderr, "Syntax error: line %d:, token: %s   %s\n", yylineno, yytext, s);
+    filetext = file_stack->filename;
+	fprintf(stderr, "Syntax error: File: %s, line %d:, token: %s   %s\n", filetext, yylineno, yytext, s);
 	
 	exit(2);
 }

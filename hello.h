@@ -1,6 +1,11 @@
 #include <iostream>
-class G{
+
+class G {
 	int x; 
+}; 
+
+class A{
+	int b; 
 };
 int main()
 {

@@ -1,9 +1,14 @@
 #include <iostream>
 using namespace std; 
 
-class A {
+class CLASS_LYDIA {
 	int e; 
 	int f; 
 }; 
+
+int main()
+{
+	return 0; 
+}
 
  

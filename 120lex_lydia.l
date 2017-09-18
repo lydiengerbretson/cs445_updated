@@ -54,6 +54,16 @@ static void skip_comment(void);
 static int check_identifier(char *);
 void insert_typename_tree(struct tree *t, int category); 
 
+/*
+ * Type name table.
+ * Replace this with a hash table, when you get a chance.
+ */
+struct typenametable_entry {
+   char *name;
+   int category;
+   struct typenametable_entry *next;
+   } *head;
+
 // extern variables
 extern filenodeptr file_stack;
 extern char* filetext; 
@@ -84,16 +94,25 @@ stringtext				([^"])|(\\.)
 %%
 "#include"              {BEGIN(INCLUDE);}
 <INCLUDE>{
-"<iostream>"            { BEGIN(INITIAL); }
+"<iostream>"            { saw_iostream = 1; BEGIN(INITIAL); }
 "<fstream>"             { BEGIN(INITIAL); }
 "<cstdlib>"             { BEGIN(INITIAL); }
 "<cstring>"             { BEGIN(INITIAL); }
-"<string>"              { BEGIN(INITIAL); }
+"<string>"              { saw_string = 1; BEGIN(INITIAL);  }
 "<ctime>" 				{ BEGIN(INITIAL); }
 "<cmath>"               { BEGIN(INITIAL); }
 "<iomanip>"             { BEGIN(INITIAL); }
+
 \"[^\"]+\"              { handle_include(yytext); BEGIN(INITIAL); }
 }
+
+"using namespace std;"			{ saw_std = 1;
+		if (saw_string) typenametable_insert("string", CLASS_NAME);
+		if (saw_iostream) {
+			typenametable_insert("ifstream", CLASS_NAME);
+			typenametable_insert("ofstream", CLASS_NAME);
+			}
+		}
 
 "\n"					{ ++lineno; }
 [\t\f\v\r ]+			{ /* Ignore whitespace. */ }
@@ -228,7 +247,7 @@ stringtext				([^"])|(\\.)
 "wchar_t"               { return add_token(WCHAR_T); }
 "while"					{ return add_token(WHILE); }
 
-[a-zA-Z_][a-zA-Z_0-9]*			    { return add_token(check_identifier(yytext)); }
+[a-zA-Z_][a-zA-Z_0-9]*			    { return add_token(IDENTIFIER); typenametable_insert(yytext, IDENTIFIER);  }
 
 "0"[xX][0-9a-fA-F]+{intsuffix}?		{ return add_token(INTEGER); }
 "0"[0-7]+{intsuffix}?			    { return add_token(INTEGER); }
@@ -243,15 +262,6 @@ stringtext				([^"])|(\\.)
 "\""{stringtext}*"\""			{ return add_token(STRING); }
 "L\""{stringtext}*"\""			{ return add_token(STRING); }
 
-"#include <iostream>"			{ saw_iostream = 1; }
-"#include <string>"			    { saw_string = 1; }
-"using namespace std;"			{ saw_std = 1;
-		if (saw_string) typenametable_insert("string", CLASS_NAME);
-		if (saw_iostream) {
-			typenametable_insert("ifstream", CLASS_NAME);
-			typenametable_insert("ofstream", CLASS_NAME);
-			}
-		}
 
 
 .					            { lexerr("Unrecognized token.\n"); }
@@ -288,10 +298,6 @@ int add_token(int category)
   	
 }
 
-//static int yywrap(void)
-//{
-	//return 1;
-//}
 
 /*
  * We use this routine instead a lex pattern because we don't need
@@ -323,23 +329,18 @@ static void skip_until_eol(void)
 		;
 	++lineno;
 }
-
-/*
- * Type name table.
- * Replace this with a hash table, when you get a chance.
- */
  
-struct typenametable_entry {
-   char *name;
-   int category;
-   struct typenametable_entry *next;
-   } *head;
 
 int typenametable_lookup(char *s)
 {
    struct typenametable_entry *tmp = head;
    while (tmp) {
-      if (!strcmp(s, tmp->name)) return tmp->category;
+      if (!strcmp(s, tmp->name)) {
+         fprintf(stderr,
+	    "warning, %s is already in the typename table as a %d\n",
+	    s, tmp->category );
+         return tmp->category;
+         }
       tmp = tmp->next;
    }
    return IDENTIFIER;
@@ -347,24 +348,19 @@ int typenametable_lookup(char *s)
 
 int typenametable_insert(char *s, int cat)
 {
-  struct typenametable_entry *tmp = head; 
+   struct typenametable_entry *tmp = head;
    while (tmp) {
       if (!strcmp(s, tmp->name)) {
-          fprintf(stderr,
+         fprintf(stderr,
 	    "warning, %s is already in the typename table as a %d\n",
-	    s, tmp->category ); 
-		// lexerr("Already in type table.\n"); 
-        return tmp->category;
-		//return 0; 
+	    s, tmp->category );
+         return tmp->category;
          }
       tmp = tmp->next;
    }
    tmp = calloc(1, sizeof (struct typenametable_entry));
-   //tmp = malloc(sizeof(struct typenametable_entry)); 
-   if(!tmp) { fprintf(stderr, "type name table is out of memory\n"); return -1; }
-   tmp->name = calloc(2048, sizeof(char));
-   strcpy(tmp->name, s); 
-   //tmp->name = strdup(s);
+   //if(!tmp) { fprintf(stderr, "tnti out of memory\n"); return -1; }
+   tmp->name = strdup(s);
    tmp->category = cat;
    tmp->next = head;
    head = tmp;
@@ -372,9 +368,7 @@ int typenametable_insert(char *s, int cat)
 
 void insert_typename_tree(struct tree *t, int category)
 {
-	// check if null before inserting?? 
-	typenametable_insert(((struct token *)t->leaf)->text, category);
-    //typenametable_insert(t->leaf->text, category);	
+	typenametable_insert(yylval.t->leaf->text, category);	
 	printf("added class name %s to tree!!!\n", ((struct token *)t->leaf)->text); 
 }
 
@@ -397,6 +391,7 @@ void handle_include(char *s)
   }
   push_file_node(&file_stack, fname);
   yypush_buffer_state(yy_create_buffer(yyin, YY_BUF_SIZE));
+  
    
 }
 

@@ -12,12 +12,12 @@
 Treeptr create_tree(char* prod_name, int category, int num_kids, ...)
 {
     va_list args;
-	Treeptr T = malloc(sizeof(struct tree) + (num_kids-1)*sizeof(Treeptr)); 
-	
+	struct tree *T = malloc(sizeof(*T));
 	int j;
 	// type that holds variable arguments
 
 	// product rule name 
+	//char *prod_name_t = malloc(strlen(prod_name + 1)); 
 	char* prod_name_t = strdup(prod_name); 
 	//strcpy(prod_name_t, prod_name); 
 	

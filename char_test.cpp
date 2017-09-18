@@ -1,7 +1,11 @@
 #include <iostream>
 
 using namespace std; 
+class CLASS_LYDIA {
+	int x; 
+}; 
 
+ 
 int main ()
 {
    char a[5][9] = { "every", "good", "bear", "deserves", "fudge" };
