@@ -74,7 +74,6 @@ extern YYSTYPE yylval;
 struct token *YYTOKEN; 
 struct tokenlist *YYTOKENLIST; 
 char* file_name; 
-char* temp_name; 
 
 void lexerr(const char *s); 
 int add_token(int category);

@@ -1,5 +1,5 @@
-#include "token.h"
 #include "120gram_lydia.tab.h"
+#include "token.h"
 
  // seg fault and pointer help from Tovah Whitesell
  

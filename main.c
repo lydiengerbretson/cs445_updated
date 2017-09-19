@@ -13,7 +13,6 @@ int yylex();
 // extern variables in clex.l
 extern FILE *yyin; 
 extern char *yytext; 
-extern struct tokenlist *YYTOKENLIST; 
 extern struct token *YYTOKEN; 
 extern int yyparse(); 
 extern YYSTYPE yylval;
@@ -60,10 +59,10 @@ int main(int argc, char **argv)
 		  yypush_buffer_state(yy_create_buffer(yyin, YY_BUF_SIZE));
 	   }
 
-			   while(!feof(yyin))
-			   {
-					result = yyparse(); 
-			   }		
+		while(!feof(yyin))
+		{
+			result = yyparse(); 
+		}		
 		 
          if (yyin) 
          {
@@ -82,7 +81,6 @@ int main(int argc, char **argv)
 			 return 2; 
 		 }
 		 
-		 //yylex_destroy();
 		 
         }
 
