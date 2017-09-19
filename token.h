@@ -32,10 +32,6 @@ struct token {
    double fval;
    };               /*    the string (less quotes and after escapes) here */ 
    
-struct tokenlist {
-   struct token *t;
-   struct tokenlist *next;
-   };
  
   // adapted from https://github.com/park2331
 typedef struct file_node

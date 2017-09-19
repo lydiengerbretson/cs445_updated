@@ -206,7 +206,7 @@ postfix_expression:
 
 expression_list:
 	assignment_expression { $$ = $1; }
-	| expression_list ',' assignment_expression {$$ = create_tree("expression_list_1", EXPRESSION_LIST_1, 3, $1, $2, $3);}
+	| expression_list ',' assignment_expression {$$ = create_tree("expression_list_1", EXPRESSION_LIST_1, 2, $1, $3);}
 	;
 
 unary_expression:
@@ -353,7 +353,7 @@ assignment_operator:
 
 expression:
 	assignment_expression { $$ = $1; }
-	| expression ',' assignment_expression {$$ = create_tree("expression_1", EXPRESSION_1, 3, $1, $2, $3);} 
+	| expression ',' assignment_expression {$$ = create_tree("expression_1", EXPRESSION_1, 2, $1, $3);} 
 	;
 
 constant_expression:
@@ -381,11 +381,11 @@ labeled_statement:
 	;
 
 expression_statement:
-	expression_opt ';' {$$ = create_tree("expression_statement_1", EXPRESSION_STATEMENT_1, 2, $1, $2);} 
+	expression_opt ';' {$$ = $1;} 
 	;
 
 compound_statement:
-	'{' statement_seq_opt '}' {$$ = create_tree("compound_statement_1", COMPOUND_STATEMENT_1, 3, $1, $2, $3);} 
+	'{' statement_seq_opt '}' {$$ = $2;} 
 	;
 
 statement_seq:
@@ -525,12 +525,12 @@ declarator:
 
 direct_declarator:
 	  declarator_id { $$ = $1; }
-	| direct_declarator '(' parameter_declaration_clause ')' { $$ = create_tree("direct_declarator_1", DIRECT_DECLARATOR_1, 4, $1, $2, $3, $4); }
-	| CLASS_NAME '(' parameter_declaration_clause ')' {$$ = create_tree("direct_declarator_2", DIRECT_DECLARATOR_1, 4, $1, $2, $3, $4);}
+	| direct_declarator '(' parameter_declaration_clause ')' { $$ = create_tree("direct_declarator_1", DIRECT_DECLARATOR_1, 2, $1, $3); }
+	| CLASS_NAME '(' parameter_declaration_clause ')' {$$ = create_tree("direct_declarator_2", DIRECT_DECLARATOR_1, 2, $1, $3);}
 	| CLASS_NAME COLONCOLON declarator_id '(' parameter_declaration_clause ')' {$$ = create_tree("direct_declarator_3", DIRECT_DECLARATOR_1, 3, $1, $3, $5);}
 	| CLASS_NAME COLONCOLON CLASS_NAME '(' parameter_declaration_clause ')' {$$ = create_tree("direct_declarator_4", DIRECT_DECLARATOR_1, 3, $1, $3, $5);}
 	| direct_declarator '[' constant_expression_opt ']' {$$ = create_tree("direct_declarator_5", DIRECT_DECLARATOR_1, 4, $1, $2, $3, $4);}
-	| '(' declarator ')' {$$ = create_tree("direct_declarator_6", DIRECT_DECLARATOR_1, 3, $1, $2, $3);}
+	| '(' declarator ')' {$$ = $2;}
 	;
 
 ptr_operator:
@@ -612,18 +612,18 @@ function_body:
 
 initializer:
 	'=' initializer_clause {$$ = create_tree("initializer_1", INITIALIZER_1, 2, $1, $2);}
-	| '(' expression_list ')' {$$ = create_tree("initializer_2", INITIALIZER_1, 3, $1, $2, $3);}
+	| '(' expression_list ')' {$$ = $2;}
 	;
 
 initializer_clause:
 	assignment_expression {$$ = $1;}
-	| '{' initializer_list COMMA_opt '}' {$$ = create_tree("initializer_clause_1", INITIALIZER_CLAUSE_1, 3, $1, $2, $3);}
-	| '{' '}' {$$ = create_tree("initializer_clause_2", INITIALIZER_CLAUSE_1, 2, $1, $2);}
+	| '{' initializer_list COMMA_opt '}' {$$ = create_tree("initializer_clause_1", INITIALIZER_CLAUSE_1, 2, $2, $3);}
+	| '{' '}' {$$ = NULL; }
 	;
 
 initializer_list:
 	initializer_clause {$$ = $1;}
-	| initializer_list ',' initializer_clause {$$ = create_tree("initializer_list_1", INITIALIZER_LIST_1, 3, $1, $2, $3);}
+	| initializer_list ',' initializer_clause {$$ = create_tree("initializer_list_1", INITIALIZER_LIST_1, 2, $1, $3);}
 	;
 
 /*----------------------------------------------------------------------
@@ -652,16 +652,16 @@ member_specification:
 
 member_declaration:
 	decl_specifier_seq member_declarator_list ';' {$$ = create_tree("member_declaration_1", MEMBER_DECLARATION_1, 3, $1, $2, $3);}
-	| decl_specifier_seq ';' {$$ = create_tree("member_declaration_2", MEMBER_DECLARATION_1, 2, $1, $2);}
-	| member_declarator_list ';' {$$ = create_tree("member_declaration_3", MEMBER_DECLARATION_1, 2, $1, $2);}
-	| ';' {$$ = $1;}
+	| decl_specifier_seq ';' {$$ = $1;}
+	| member_declarator_list ';' {$$ = $1;}
+	| ';' {$$ = NULL;}
 	| function_definition SEMICOLON_opt {$$ = create_tree("member_declaration_4", MEMBER_DECLARATION_1, 2, $1, $2);}
-	| qualified_id ';' {$$ = create_tree("member_declaration_5", MEMBER_DECLARATION_1, 2, $1, $2);}
+	| qualified_id ';' {$$ = $1;}
 	;
 
 member_declarator_list:
 	member_declarator {$$ = $1;}
-	| member_declarator_list ',' member_declarator {$$ = create_tree("member_declarator_list_1", MEMBER_DECLARATOR_LIST_1, 3, $1, $2, $3);}
+	| member_declarator_list ',' member_declarator {$$ = create_tree("member_declarator_list_1", MEMBER_DECLARATOR_LIST_1, 2, $1, $3);}
 	;
 
 member_declarator:
@@ -697,11 +697,11 @@ ctor_initializer:
 
 mem_initializer_list:
 	mem_initializer {$$ = $1;}
-	| mem_initializer ',' mem_initializer_list {$$ = create_tree("mem_initializer_list_1", MEM_INITIALIZER_LIST_1, 3, $1, $2, $3);}
+	| mem_initializer ',' mem_initializer_list {$$ = create_tree("mem_initializer_list_1", MEM_INITIALIZER_LIST_1, 2, $1, $3);}
 	;
 
 mem_initializer:
-	mem_initializer_id '(' expression_list_opt ')' {$$ = create_tree("mem_initializer_1", MEM_INITIALIZER_1, 4, $1, $2, $3, $4);}
+	mem_initializer_id '(' expression_list_opt ')' {$$ = create_tree("mem_initializer_1", MEM_INITIALIZER_1, 2, $1, $3);}
 	;
 
 mem_initializer_id:
@@ -785,7 +785,7 @@ ctor_initializer_opt:
 
 COMMA_opt:
 	%empty {$$ = NULL;}
-	| ',' {$$ = $1;}
+	| ',' {$$ = NULL;}
 	;
 
 member_specification_opt:
@@ -795,7 +795,7 @@ member_specification_opt:
 
 SEMICOLON_opt:
 	%empty {$$ = NULL;}
-	| ';' {$$ = $1;}
+	| ';' {$$ = NULL;}
 	;
 
 

@@ -249,7 +249,7 @@ stringtext				([^"])|(\\.)
 "->*"					{ return add_token(ARROWSTAR); }
 "->"					{ return add_token(ARROW); }
 
-[a-zA-Z_][a-zA-Z_0-9]*			    { /*typenametable_insert(yytext, IDENTIFIER);*/ return add_token(check_identifier(yytext));  }
+[a-zA-Z_][a-zA-Z_0-9]*			    { return add_token(check_identifier(yytext));  }
 
 "0"[xX][0-9a-fA-F]+{intsuffix}?		{ return add_token(INTEGER); }
 "0"[0-7]+{intsuffix}?			    { return add_token(INTEGER); }
@@ -371,7 +371,7 @@ int typenametable_insert(char *s, int cat)
 void insert_typename_tree(struct tree *t, int category)
 {
 	typenametable_insert(yylval.t->leaf->text, category);	
-	printf("added class name %s to tree!!!\n", ((struct token *)t->leaf)->text); 
+	//printf("Added class name %s to tree.\n", ((struct token *)t->leaf)->text); 
 }
 
 // handle user include files

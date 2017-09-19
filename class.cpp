@@ -1,7 +1,7 @@
 #include <iostream>
 using namespace std; 
 
-class CLASS_LYDIA {
+class CLASS_LYD {
 	int e; 
 	int f; 
 }; 

@@ -57,6 +57,7 @@ Treeptr create_tree(char* prod_name, int category, int num_kids, ...)
 void print_tree(struct tree *treeptr, int depth)
 {
   int j;
+ 
   
   if(!treeptr)
   {
@@ -68,8 +69,8 @@ void print_tree(struct tree *treeptr, int depth)
 	  if (treeptr->nkids == 0)
 	  {
 		  //printf("exit 0\n"); 
-		  printf("%*s  Leaf: %d  %s\n", depth*2, " ", 
-				treeptr->leaf->category, treeptr->leaf->text); 
+		  printf("%*s  Leaf: %s  %d\n", depth*2, " ", 
+				 treeptr->leaf->text, treeptr->leaf->category); 
 	  }
 	  else
 	  {
