@@ -60,15 +60,15 @@ int main(int argc, char **argv)
 			  return; 
 		  }
 		  // push file onto stack 
+		  // instead of pushing all of them onto stack. push them one at a time, call yyparse, close file, repeat. 
 	      filetext = file_list[i]; 
 		  push_file_node(&file_stack, filetext); // adapted from https://github.com/park2331
 		  yypush_buffer_state(yy_create_buffer(yyin, YY_BUF_SIZE));
 	   }
-		//while(!feof(yyin))
-		//{
-			result = yyparse(); 
 
-		//}		
+		result = yyparse(); 
+
+	
 		 if (yyin) 
          {
             fclose(yyin);
@@ -91,7 +91,6 @@ int main(int argc, char **argv)
 			yylex_destroy(); 
 			tmp_head = HEAD; 
 		    typenametable_clear(tmp_head); // this works! but only at end of program :(
-		 
    }
      }
 

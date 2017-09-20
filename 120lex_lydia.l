@@ -188,7 +188,7 @@ stringtext				([^"])|(\\.)
 ")"					    { return add_token(')'); }
 ";"					    { return add_token(';'); }
 ":"					    { return add_token(':'); }
-"..."					{ return add_token(ELLIPSIS); }
+"..."					{ lexerr("Unsupported token."); }
 "?"					    { return add_token('?'); }
 "::"					{ return add_token(COLONCOLON); }
 "."					    { return add_token('.'); }
@@ -368,5 +368,3 @@ static int check_identifier(char *s)
 	return typenametable_lookup(s);
 
 }
-
-

@@ -51,7 +51,6 @@
 #include <string.h>
 #include <limits.h>
 
-//#include "120lex.h"
 #include "token.h"
 #include "tree_lydia.h"
 #include "nonterms.h"

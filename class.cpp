@@ -1,13 +1,15 @@
 #include <iostream>
+#include <string>
 using namespace std; 
 
-class CLASS_LYD {
+class LYD {
 	int e; 
 	int f; 
 }; 
 
 int main()
 {
+	string s; 
 	return 0; 
 }
 
