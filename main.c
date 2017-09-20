@@ -3,20 +3,23 @@
 #include "token.h"
 #include "tree_lydia.h"
 #include "120gram_lydia.tab.h"
+#include "table.h"
 
 
 // code help from Tovah Whitesell (SEL)
+// ideas and program outline: https://github.com/andschwa/partial-cpp-compiler
 
 // Forward declare this function for compiler
 int yylex(); 
 
-// extern variables in clex.l
+// extern variables in 120lex_lydia.l
 extern FILE *yyin; 
 extern char *yytext; 
 extern struct token *YYTOKEN; 
 extern int yyparse(); 
 extern YYSTYPE yylval;
 extern Treeptr YYPROGRAM; 
+extern struct typenametable_entry *HEAD; 
 
 char *filetext; 
 filenodeptr file_stack = NULL; 
@@ -31,12 +34,15 @@ int main(int argc, char **argv)
    char *file_list[argc]; 
    int result = 0; 
    YYPROGRAM = NULL; 
+   struct typenametable_entry *tmp_head; 
+
    
    ++argv, --argc;  /* skip over program name */
    
    for (i = 0; i < argc; i++) 
    {
 		file_list[i] = argv[i];
+		printf("file list %s\n", file_list[i]); 
    }
    
 
@@ -58,13 +64,12 @@ int main(int argc, char **argv)
 		  push_file_node(&file_stack, filetext); // adapted from https://github.com/park2331
 		  yypush_buffer_state(yy_create_buffer(yyin, YY_BUF_SIZE));
 	   }
-
-		while(!feof(yyin))
-		{
+		//while(!feof(yyin))
+		//{
 			result = yyparse(); 
-		}		
-		 
-         if (yyin) 
+
+		//}		
+		 if (yyin) 
          {
             fclose(yyin);
          }
@@ -75,15 +80,19 @@ int main(int argc, char **argv)
 		 if(result == 0)
 		 {			 
 			print_tree(YYPROGRAM, 0); 
+
 		 }
 		 else
 		 {
 			 return 2; 
 		 }
 		 
+		 	//free_tree(YYPROGRAM); // causes seg fault when only one file is called to command line 
+			yylex_destroy(); 
+			tmp_head = HEAD; 
+		    typenametable_clear(tmp_head); // this works! but only at end of program :(
 		 
-        }
-
+   }
      }
 
 

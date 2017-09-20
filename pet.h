@@ -11,7 +11,7 @@ class pet {
 public:
     pet();
     pet(const pet& orig);
-    virtual ~pet();
+    //virtual ~pet();
     void print(int);
     void set_type(string);
     void set_name(string);

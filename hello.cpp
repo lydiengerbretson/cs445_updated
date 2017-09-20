@@ -10,7 +10,6 @@ int main()
    i++; 
 }
 
-/*int hello()
-{
-	int x; 
-}*/
+class CLASS_LYD{
+	int a; 
+}; 

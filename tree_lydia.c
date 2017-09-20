@@ -75,3 +75,34 @@ void print_tree(struct tree *treeptr, int depth)
 
 }
 
+void free_tree(struct tree *treeptr)
+{
+	int idx = 0; 
+	if(treeptr != NULL)
+	{ 
+		treeptr->prodrule = 0; 
+		treeptr->nkids = 0; 
+		//printf("freeing %s \n", treeptr->prodrule_name); 
+		free(treeptr->prodrule_name); 
+		treeptr->prodrule_name = NULL;
+		
+		/*treeptr->leaf->lineno = 1; 
+		treeptr->leaf->ival = 0; 
+		treeptr->leaf->fval = 0; 
+		
+		free(treeptr->leaf->text); 
+		treeptr->leaf->text = NULL; 
+		free(treeptr->leaf->filename); 
+		treeptr->leaf->filename = NULL;
+		free(treeptr->leaf->sval); 
+		treeptr->leaf->sval = NULL; */
+		
+		while(idx < 9)
+		{
+			free_tree(treeptr->kid[idx]); 
+			treeptr->kid[idx] = NULL; 
+			idx++; 
+		}
+	}
+}
+

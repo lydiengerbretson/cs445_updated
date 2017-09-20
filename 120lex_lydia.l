@@ -32,6 +32,7 @@
  * 
  * Lydia Engerbretson
  * Fall 2017
+ * adapted from http://www2.cs.uidaho.edu/~jeffery/courses/445/120pp/120lex.l
  *
  */
 
@@ -44,6 +45,7 @@
 #include "120gram_lydia.tab.h"
 #include "token.h"
 #include "tree_lydia.h"
+#include "table.h"
 
 int lineno;
 int saw_iostream, saw_string, saw_std;
@@ -54,21 +56,12 @@ static void skip_comment(void);
 static int check_identifier(char *);
 void insert_typename_tree(struct tree *t, int category); 
 
-/*
- * Type name table.
- * Replace this with a hash table, when you get a chance.
- */
-struct typenametable_entry {
-   char *name;
-   int category;
-   struct typenametable_entry *next;
-   } *head;
-
 // extern variables
 extern filenodeptr file_stack;
 extern char* filetext; 
 extern FILE *yyin; 
 extern YYSTYPE yylval; 
+extern struct typenametable_entry *HEAD; 
 
 // global variables
 struct token *YYTOKEN; 
@@ -268,7 +261,6 @@ stringtext				([^"])|(\\.)
 .					            { lexerr("Unrecognized token.\n"); }
 
 <<EOF>>                 {
-
   yypop_buffer_state();
   pop_file_node(&file_stack); // adapted from https://github.com/park2331
   if (file_stack == NULL) {
@@ -291,8 +283,9 @@ int add_token(int category)
     filetext = file_stack->filename;
    	YYTOKEN = create_token(category, yytext, yylineno, filetext);  
 	
-	yylval.t = create_tree(yytext, category, 0); 
-	yylval.t->leaf = YYTOKEN; 
+
+	yylval.t = create_tree(yytext, category, 0); 	// adapted from https://github.com/park2331
+	yylval.t->leaf = YYTOKEN; 	// adapted from https://github.com/park2331
 	
 	return category; 
    
@@ -332,45 +325,10 @@ static void skip_until_eol(void)
 }
  
 
-int typenametable_lookup(char *s)
-{
-   struct typenametable_entry *tmp = head;
-   while (tmp) {
-      if (!strcmp(s, tmp->name)) {
-         fprintf(stderr,
-	    "warning, %s is already in the typename table as a %d\n",
-	    s, tmp->category );
-         return tmp->category;
-         }
-      tmp = tmp->next;
-   }
-   return IDENTIFIER;
-}
-
-int typenametable_insert(char *s, int cat)
-{
-   struct typenametable_entry *tmp = head;
-   while (tmp) {
-      if (!strcmp(s, tmp->name)) {
-         fprintf(stderr,
-	    "warning, %s is already in the typename table as a %d\n",
-	    s, tmp->category );
-         return tmp->category;
-         }
-      tmp = tmp->next;
-   }
-   tmp = calloc(1, sizeof (struct typenametable_entry));
-   //if(!tmp) { fprintf(stderr, "tnti out of memory\n"); return -1; }
-   tmp->name = strdup(s);
-   tmp->category = cat;
-   tmp->next = head;
-   head = tmp;
-}
-
 void insert_typename_tree(struct tree *t, int category)
 {
+    // adapted from https://github.com/andschwa/partial-cpp-compiler
 	typenametable_insert(yylval.t->leaf->text, category);	
-	//printf("Added class name %s to tree.\n", ((struct token *)t->leaf)->text); 
 }
 
 // handle user include files
@@ -390,7 +348,8 @@ void handle_include(char *s)
      printf("File %s is not recognized. \n", fname); 
 	 return; 
   }
-  push_file_node(&file_stack, fname);
+
+  push_file_node(&file_stack, fname);   // adapted from https://github.com/park2331
   yypush_buffer_state(yy_create_buffer(yyin, YY_BUF_SIZE));
   
    

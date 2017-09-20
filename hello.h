@@ -7,6 +7,7 @@ class G {
 class A{
 	int b; 
 };
+
 int main()
 {
 	cout << "hello world.\n";

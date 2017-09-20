@@ -18,4 +18,6 @@ void print_tree(Treeptr, int);
 
 Treeptr create_tree(char*, int, int, ...); 
 
+void free_tree(struct tree *treeptr); 
+
 #endif /* TREE_LYDIA_H_ */

@@ -151,7 +151,7 @@ extern int yydebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 74 "120gram_lydia.y" /* yacc.c:1909  */
+#line 80 "120gram_lydia.y" /* yacc.c:1909  */
 
   struct tree *t;
 
