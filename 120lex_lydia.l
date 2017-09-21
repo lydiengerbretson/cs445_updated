@@ -65,7 +65,6 @@ extern struct typenametable_entry *HEAD;
 
 // global variables
 struct token *YYTOKEN; 
-struct tokenlist *YYTOKENLIST; 
 char* file_name; 
 
 void lexerr(const char *s); 
@@ -121,7 +120,7 @@ stringtext				([^"])|(\\.)
 "char"					{ return add_token(CHAR); }
 "class"					{ return add_token(CLASS); }
 "continue"				{ return add_token(CONTINUE); }
-"const"                 { return add_token(CONST); }
+"const"                 { lexerr("Unsupported token."); }
 "const_cast"            { lexerr("Unsupported token."); }
 "default"				{ return add_token(DEFAULT); }
 "delete"				{ return add_token(DELETE); }
@@ -148,7 +147,7 @@ stringtext				([^"])|(\\.)
 "private"				{ return add_token(PRIVATE); }
 "protected"				{ return add_token(PROTECTED); }
 "public"				{ return add_token(PUBLIC); }
-"register"              { return add_token(REGISTER); }
+"register"              { lexerr("Unsupported token."); }
 "reinterpret_cast"      { lexerr("Unsupported token."); }
 "return"				{ return add_token(RETURN); }
 "short"					{ return add_token(SHORT); }
@@ -261,6 +260,8 @@ stringtext				([^"])|(\\.)
 .					            { lexerr("Unrecognized token.\n"); }
 
 <<EOF>>                 {
+  struct typenametable_entry *tmp_head; 
+ 
   yypop_buffer_state();
   pop_file_node(&file_stack); // adapted from https://github.com/park2331
   if (file_stack == NULL) {

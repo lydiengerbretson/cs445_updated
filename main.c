@@ -65,8 +65,9 @@ int main(int argc, char **argv)
 		  push_file_node(&file_stack, filetext); // adapted from https://github.com/park2331
 		  yypush_buffer_state(yy_create_buffer(yyin, YY_BUF_SIZE));
 	   }
-
+	   
 		result = yyparse(); 
+
 
 	
 		 if (yyin) 
@@ -86,14 +87,10 @@ int main(int argc, char **argv)
 		 {
 			 return 2; 
 		 }
-		 
 		 	//free_tree(YYPROGRAM); // causes seg fault when only one file is called to command line 
 			yylex_destroy(); 
 			tmp_head = HEAD; 
 		    typenametable_clear(tmp_head); // this works! but only at end of program :(
-   }
+		}
      }
 
-
-	
-     

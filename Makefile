@@ -6,6 +6,9 @@ CFLAGS=-c -g
 
 token.o: token.c
 	$(CC) $(CFLAGS) token.c
+
+#list.o: list.c
+	#$(CC) $(CFLAGS) list.c
 	
 table.o: table.c
 	$(CC) $(CFLAGS) table.c

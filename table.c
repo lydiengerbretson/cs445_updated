@@ -4,14 +4,19 @@
 int typenametable_insert(char *s, int cat)
 {
    struct typenametable_entry *tmp = HEAD;
-   while (tmp) {
-      if (!strcmp(s, tmp->name)) {
-         fprintf(stderr,
-	    "warning, %s is already in the typename table as a %d\n",
-	    s, tmp->category );
+
+   while (tmp) 
+   {
+	  //if(tmp->name != NULL)
+	  //{
+      if (tmp->name && !strcmp(s, tmp->name)) {
+         //fprintf(stderr,
+	    //"warning, %s is already in the typename table as a %d\n",
+	   // s, tmp->category );
          return tmp->category;
          }
       tmp = tmp->next;
+	  //}
    }
    tmp = calloc(1, sizeof (struct typenametable_entry));
    //if(!tmp) { fprintf(stderr, "tnti out of memory\n"); return -1; }
@@ -26,9 +31,9 @@ int typenametable_lookup(char *s)
    struct typenametable_entry *tmp = HEAD;
    while (tmp) {
       if (!strcmp(s, tmp->name)) {
-         fprintf(stderr,
-	    "warning, %s is already in the typename table as a %d\n",
-	    s, tmp->category );
+        // fprintf(stderr,
+	    //"warning, %s is already in the typename table as a %d\n",
+	   // s, tmp->category );
          return tmp->category;
          }
       tmp = tmp->next;

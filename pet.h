@@ -10,7 +10,7 @@ using namespace std;
 class pet {
 public:
     pet();
-    pet(const pet& orig);
+    //pet(const pet& orig);
     //virtual ~pet();
     void print(int);
     void set_type(string);
