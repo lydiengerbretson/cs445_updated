@@ -30,7 +30,7 @@ int typenametable_lookup(char *s)
 {
    struct typenametable_entry *tmp = HEAD;
    while (tmp) {
-      if (!strcmp(s, tmp->name)) {
+      if (tmp->name && !strcmp(s, tmp->name)) {
         // fprintf(stderr,
 	    //"warning, %s is already in the typename table as a %d\n",
 	   // s, tmp->category );
@@ -57,6 +57,9 @@ void typenametable_clear(struct typenametable_entry *type)
 	}
 	else
 	{
+		free(type->name); 
+		type->name = NULL; 
+		type->category = 0; 
 		printf("type name table is cleared.\n"); 
 	}
 }

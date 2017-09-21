@@ -11,7 +11,7 @@
 Treeptr create_tree(char* prod_name, int category, int num_kids, ...)
 {
     va_list args;
-	struct tree *T = malloc(sizeof(*T));
+	struct tree *T = malloc(sizeof(struct tree));
 	int j;
 	
 	if(T == NULL)

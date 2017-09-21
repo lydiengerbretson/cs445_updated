@@ -3,8 +3,8 @@
  * A simple calculator program, controlled by a menu and
  *  divided into separate functions
  */
-/*#include<iostream>
-using namespace std;*/
+#include<iostream>
+using namespace std;
 //---------- Function Prototypes -----------
 void print_menu();
 double get_value();

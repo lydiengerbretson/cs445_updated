@@ -3,87 +3,37 @@
 
  // seg fault and pointer help from Tovah Whitesell
  
- // adapted from https://github.com/park2331
- char *get_sval(char *sval) {
-
-  int len = 0;
-  char* inc = sval;
-  char* updated_sval = malloc(strlen(sval)); 
-
-  // increment pointer past first quote
-  while (*inc++ != '\"') 
-  {
-    inc++;
-  }
-
-  // increment pointer to the final quote
-  while (*inc != '\"') 
-  {
-    if (inc[0] == '\\') 
+ // get_sval and get_cval remove the " and ' from each 
+ // string end respectively
+char * get_sval(char * in_str)
+{
+	char * temp = (char *)malloc(strlen(in_str) +1 );
+	memset(temp, 0, strlen(in_str));
+	int i = 1;
+	int j = i - 1;
+	for (i; in_str[i] != '"'; i++, j++)
 	{
-      char esc = inc[1];
-      if (esc == 'n' )
-	  {
-		updated_sval[len] = '\n';
-		// len++; // ?
-		inc++;
-		inc++;
-      } 
-	  else if (esc == 't')
-	  {
-		updated_sval[len] = '\t';
-		// len++; // ?
-		inc++;
-		inc++;
-	  }
-	  else if (esc == '0')
-	  {
-		updated_sval[len] = '\0';
-		// len++; // ?
-		inc++;
-		inc++;
-	  }
-	  else
-	  {
-		inc++;
-		inc++;
-	  }
-    } else 
-	{
-      updated_sval[len] = *inc;
-      len++;
-      inc++;
-    }
-  }
-  updated_sval[len] = '\0';
-  updated_sval = realloc(updated_sval, len);
-  return updated_sval;
- }
-
- char *get_cval(char *cval) {
-
-  int len = 0;
-  //int i = 0; 
-  char* inc = cval;
-  char* updated_sval = malloc(strlen(cval)); 
-
-  // increment pointer past first tick
-  while (*inc++ != '\'') 
-  {
-    inc++;
-  }
-
-  // increment pointer to the final tick
-  while (*inc != '\'') 
-  {
-      updated_sval[len] = *inc;
-      len++;
-      inc++;
-  }
-  updated_sval[len] = '\0';
-  updated_sval = realloc(updated_sval, len);
-  return updated_sval;
+		temp[j] = in_str[i];
+	}
+	temp[strlen(temp) - 1] = '\0';
+	strcpy(in_str, temp);
+	return in_str;
 }
+char * get_cval(char *cval)
+{
+	char * temp = (char *)malloc(strlen(cval) +1 );
+	memset(temp, 0, strlen(cval));
+	int i = 1;
+	int j = i - 1;
+	for (i; cval[i] != '\''; i++, j++)
+	{
+		temp[j] = cval[i];
+	}
+	temp[strlen(temp) - 1] = '\0';
+	strcpy(cval, temp);
+	return cval;
+}
+
  // create a new token 
  // transferring ownership of memory to struct token members 
   // adapted from https://github.com/andschwa/partial-cpp-compiler

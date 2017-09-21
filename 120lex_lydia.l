@@ -152,7 +152,7 @@ stringtext				([^"])|(\\.)
 "return"				{ return add_token(RETURN); }
 "short"					{ return add_token(SHORT); }
 "signed"				{ return add_token(SIGNED); }
-"sizeof"				{ return add_token(SIZEOF); }
+"sizeof"				{ lexerr("Unsupported token."); }
 "struct"				{ return add_token(STRUCT); }
 "static"                { return add_token(STATIC); }
 "static_cast"           { lexerr("Unsupported token."); }
@@ -349,7 +349,7 @@ void handle_include(char *s)
      printf("File %s is not recognized. \n", fname); 
 	 return; 
   }
-
+  yylineno = 1; 
   push_file_node(&file_stack, fname);   // adapted from https://github.com/park2331
   yypush_buffer_state(yy_create_buffer(yyin, YY_BUF_SIZE));
   

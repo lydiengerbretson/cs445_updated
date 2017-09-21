@@ -131,8 +131,8 @@ static void yyerror(char *s);
 %type <t> class_head class_key member_specification member_declaration 
 %type <t> member_declarator_list member_declarator pure_specifier constant_initializer 
 %type <t> access_specifier 
-%type <t> conversion_function_id conversion_type_id conversion_declarator ctor_initializer 
-%type <t> mem_initializer_list mem_initializer mem_initializer_id operator_function_id 
+%type <t> ctor_initializer 
+%type <t> mem_initializer_list mem_initializer mem_initializer_id 
 %type <t> try_block function_try_block exception_specification
 %type <t> handler_seq handler exception_declaration throw_expression 
 %type <t> type_id_list declaration_seq_opt nested_name_specifier_opt 
@@ -141,8 +141,8 @@ static void yyerror(char *s);
 %type <t> enumerator_list_opt initializer_opt constant_expression_opt
 %type <t> abstract_declarator_opt  COMMA_opt 
 %type <t> type_specifier_seq_opt direct_abstract_declarator_opt ctor_initializer_opt
-%type <t> member_specification_opt SEMICOLON_opt conversion_declarator_opt 
-%type <t> handler_seq_opt assignment_expression_opt type_id_list_opt operator
+%type <t> member_specification_opt SEMICOLON_opt 
+%type <t> handler_seq_opt assignment_expression_opt type_id_list_opt
 
 %type <t> namespace_name original_namespace_name
 
@@ -235,14 +235,12 @@ primary_expression:
 	;
 
 id_expression:
-        unqualified_id { $$ = $1; } 
+     unqualified_id { $$ = $1; } 
 	| qualified_id { $$ = $1; }
 	;
 
 unqualified_id:
         identifier { $$ = $1; }
-	| operator_function_id {$$ = $1;}
-	| conversion_function_id {$$ = $1;}
 	| '~' class_name {$$ = create_tree("unqualified_id_1", UNQUALIFIED_ID_1, 2, $1, $2);}
 	;
 
@@ -875,17 +873,6 @@ access_specifier:
  * Special member functions.
  *----------------------------------------------------------------------*/
 
-conversion_function_id:
-	OPERATOR conversion_type_id {$$ = create_tree("conversion_function_id_1", CONVERSION_FUNCTION_ID_1, 2, $1, $2);}
-	;
-
-conversion_type_id:
-	type_specifier_seq conversion_declarator_opt {$$ = create_tree("conversion_type_id_1", CONVERSION_TYPE_ID_1, 2, $1, $2);}
-	;
-
-conversion_declarator:
-	ptr_operator conversion_declarator_opt {$$ = create_tree("conversion_declarator_1", CONVERSION_DECLARATOR_1, 2, $1, $2);}
-	;
 
 ctor_initializer:
 	':' mem_initializer_list {$$ = create_tree("ctor_initializer_1", CTOR_INITIALIZER_1, 2, $1, $2);}
@@ -912,54 +899,8 @@ mem_initializer_id:
  * Overloading.
  *----------------------------------------------------------------------*/
 
-operator_function_id:
-	OPERATOR operator {$$ = create_tree("operator_function_id_1", OPERATOR_FUNCTION_ID_1, 2, $1, $2);}
-	;
 
-operator:
-	NEW {$$ = $1;}
-	| DELETE {$$ = $1;}
-	| NEW '[' ']' {$$ = create_tree("operator_1", OPERATOR_1, 3, $1, $2, $3);}
-	| DELETE '[' ']' {$$ = create_tree("operator_1", OPERATOR_1, 3, $1, $2, $3);}
-	| '+' {$$ = $1;}
-	| '_' {$$ = $1;}
-	| '*' {$$ = $1;}
-	| '/' {$$ = $1;}
-	| '%' {$$ = $1;}
-	| '^' {$$ = $1;}
-	| '&' {$$ = $1;}
-	| '|' {$$ = $1;}
-	| '~' {$$ = $1;}
-	| '!' {$$ = $1;}
-	| '=' {$$ = $1;}
-	| '<' {$$ = $1;}
-	| '>' {$$ = $1;}
-	| ADDEQ {$$ = $1;}
-	| SUBEQ {$$ = $1;}
-	| MULEQ {$$ = $1;}
-	| DIVEQ {$$ = $1;}
-	| MODEQ {$$ = $1;}
-	| XOREQ {$$ = $1;}
-	| ANDEQ {$$ = $1;}
-	| OREQ {$$ = $1;}
-	| SL {$$ = $1;}
-	| SR {$$ = $1;}
-	| SREQ {$$ = $1;}
-	| SLEQ {$$ = $1;}
-	| EQ {$$ = $1;}
-	| NOTEQ {$$ = $1;}
-	| LTEQ {$$ = $1;}
-	| GTEQ {$$ = $1;}
-	| ANDAND {$$ = $1;}
-	| OROR {$$ = $1;}
-	| PLUSPLUS {$$ = $1;}
-	| MINUSMINUS {$$ = $1;}
-	| ',' {$$ = $1;}
-	| ARROWSTAR {$$ = $1;}
-	| ARROW {$$ = $1;}
-	| '(' ')' {$$ = create_tree("operator_1", OPERATOR_1, 2, $1, $2);}
-	| '[' ']' {$$ = create_tree("operator_1", OPERATOR_1, 2, $1, $2);}
-	;
+
 
 
 /*----------------------------------------------------------------------
@@ -1104,11 +1045,6 @@ member_specification_opt:
 SEMICOLON_opt:
 	{$$ = NULL;}
 	| ';' {$$ = NULL;}
-	;
-
-conversion_declarator_opt:
-	{$$ = NULL;}
-	| conversion_declarator {$$ = $1;}
 	;
 
 handler_seq_opt:
