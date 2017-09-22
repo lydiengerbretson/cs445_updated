@@ -64,6 +64,10 @@ int main(int argc, char **argv)
 	      filetext = file_list[i]; 
 		  push_file_node(&file_stack, filetext); // adapted from https://github.com/park2331
 		  yypush_buffer_state(yy_create_buffer(yyin, YY_BUF_SIZE));
+		  /*if(i > 0)
+		  {
+			yy_switch_to_buffer(yy_create_buffer(yyin, YY_BUF_SIZE));
+		  }*/
 	   
 	   }
 		result = yyparse(); 
@@ -91,7 +95,11 @@ int main(int argc, char **argv)
 		 	//free_tree(YYPROGRAM); // causes seg fault when only one file is called to command line 
 			yylex_destroy(); 
 			tmp_head = HEAD; 
-		    typenametable_clear(tmp_head); // this works! but only at end of program :(
+			if(tmp_head != NULL)
+			{
+				typenametable_clear(tmp_head); // this works! but only at end of program :(
+				HEAD = NULL; // this clears entire list including head 
+			}
 			
 	   //}
    }

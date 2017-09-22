@@ -30,6 +30,10 @@ int typenametable_lookup(char *s)
 {
    struct typenametable_entry *tmp = HEAD;
    while (tmp) {
+	   printf("s: %s\n", s);
+	   fflush(stdout); 
+	   printf("tmp->name: %s \n", tmp->name); 
+	   fflush(stdout); 
       if (tmp->name && !strcmp(s, tmp->name)) {
         // fprintf(stderr,
 	    //"warning, %s is already in the typename table as a %d\n",

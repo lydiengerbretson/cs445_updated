@@ -100,7 +100,7 @@ void pop_file_node(filenodeptr *top)
 void push_file_node(filenodeptr *top, char *filename)
 {
   filenodeptr temp = (filenodeptr)malloc(sizeof(struct file_node));
-  temp->filename = malloc(sizeof(filename)+1);
+  temp->filename = malloc(strlen(filename)+1);
   temp->next = NULL;
   strcpy(temp->filename, filename);
 
