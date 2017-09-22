@@ -64,10 +64,6 @@ int main(int argc, char **argv)
 	      filetext = file_list[i]; 
 		  push_file_node(&file_stack, filetext); // adapted from https://github.com/park2331
 		  yypush_buffer_state(yy_create_buffer(yyin, YY_BUF_SIZE));
-		  /*if(i > 0)
-		  {
-			yy_switch_to_buffer(yy_create_buffer(yyin, YY_BUF_SIZE));
-		  }*/
 	   
 	   }
 		result = yyparse(); 
@@ -92,7 +88,7 @@ int main(int argc, char **argv)
 			 printf("This isn't a seg fault bad exit\n");
 			 return 2; 
 		 }
-		 	//free_tree(YYPROGRAM); // causes seg fault when only one file is called to command line 
+		 
 			yylex_destroy(); 
 			tmp_head = HEAD; 
 			if(tmp_head != NULL)

@@ -46,7 +46,6 @@ typedef struct file_node
  // create a new token 
 struct token* create_token(int category, char *text, int lineno, char *filename); 
 
-
 // pop file node from file stack 
 void pop_file_node(filenodeptr*); 
 

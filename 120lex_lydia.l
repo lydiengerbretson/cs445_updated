@@ -50,6 +50,10 @@
 int lineno;
 int saw_iostream, saw_string, saw_std;
 
+#define MAX_INCLUDE_DEPTH 10
+YY_BUFFER_STATE include_stack[MAX_INCLUDE_DEPTH]; 
+int include_stack_ptr = 0; 
+
 //static int yywrap(void);
 static void skip_until_eol(void);
 static void skip_comment(void);
@@ -260,7 +264,6 @@ stringtext				([^"])|(\\.)
 .					            { lexerr("Unrecognized token.\n"); }
 
 <<EOF>>                 {
-  struct typenametable_entry *tmp_head; 
  
   yypop_buffer_state();
   pop_file_node(&file_stack); // adapted from https://github.com/park2331
@@ -284,9 +287,9 @@ int add_token(int category)
     filetext = file_stack->filename;
    	YYTOKEN = create_token(category, yytext, yylineno, filetext);  
 	
-
-	yylval.t = create_tree(yytext, category, 0); 	// adapted from https://github.com/park2331
-	yylval.t->leaf = YYTOKEN; 	// adapted from https://github.com/park2331
+   // adapted from https://github.com/park2331
+	yylval.t = create_tree(yytext, category, 0); 	
+	yylval.t->leaf = YYTOKEN; 
 	
 	return category; 
    
