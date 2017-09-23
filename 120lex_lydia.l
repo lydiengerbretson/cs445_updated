@@ -54,7 +54,6 @@ int saw_iostream, saw_string, saw_std;
 YY_BUFFER_STATE include_stack[MAX_INCLUDE_DEPTH]; 
 int include_stack_ptr = 0; 
 
-//static int yywrap(void);
 static void skip_until_eol(void);
 static void skip_comment(void);
 static int check_identifier(char *);
@@ -115,83 +114,79 @@ stringtext				([^"])|(\\.)
 "/*"					{ skip_comment(); }
 "//"					{ skip_until_eol(); }
 
-
-"asm"                   { lexerr("Unsupported token."); }
-"auto"                  { lexerr("Unsupported token."); }
 "bool"					{ return add_token(BOOL); }
 "break"					{ return add_token(BREAK); }
 "case"					{ return add_token(CASE); }
 "char"					{ return add_token(CHAR); }
 "class"					{ return add_token(CLASS); }
 "continue"				{ return add_token(CONTINUE); }
-"const"                 { lexerr("Unsupported token."); }
-"const_cast"            { lexerr("Unsupported token."); }
 "default"				{ return add_token(DEFAULT); }
 "delete"				{ return add_token(DELETE); }
 "do"					{ return add_token(DO); }
 "double"				{ return add_token(DOUBLE); }
-"dynamic_cast"          { lexerr("Unsupported token."); }
 "else"					{ return add_token(ELSE); }
-"enum"                  { lexerr("Unsupported token.");}
-"explicit"              { return add_token(EXPLICIT); }
-"export"                { return add_token(EXPORT); }
-"extern"                { lexerr("Unsupported token."); }
 "false"					{ return add_token(FALSE); }
 "float"					{ return add_token(FLOAT); }
 "for"					{ return add_token(FOR); }
-"friend"                { lexerr("Unsupported token.");  }
 "if"					{ return add_token(IF); }
-"inline"                { return add_token(INLINE); }
 "int"					{ return add_token(INT); }
 "long"					{ return add_token(LONG); }
-"mutable"               { return add_token(MUTABLE); }
-"namespace"             { return add_token(NAMESPACE); }
 "new"					{ return add_token(NEW); }
-"operator" 	            { return add_token(OPERATOR); }
 "private"				{ return add_token(PRIVATE); }
 "protected"				{ return add_token(PROTECTED); }
 "public"				{ return add_token(PUBLIC); }
-"register"              { lexerr("Unsupported token."); }
-"reinterpret_cast"      { lexerr("Unsupported token."); }
 "return"				{ return add_token(RETURN); }
 "short"					{ return add_token(SHORT); }
 "signed"				{ return add_token(SIGNED); }
-"sizeof"				{ lexerr("Unsupported token."); }
 "struct"				{ return add_token(STRUCT); }
 "static"                { return add_token(STATIC); }
-"static_cast"           { lexerr("Unsupported token."); }
 "switch"				{ return add_token(SWITCH); }
-"template"              { return add_token(TEMPLATE); }
-"this"                  { return add_token(THIS); }
-"throw"                 { lexerr("Unsupported token."); }
 "true"					{ return add_token(TRUE); }
-"try"                   { lexerr("Unsupported token.");}
-"typedef"               { lexerr("Unsupported token.");  }
-"typeid"                { return add_token(TYPEID); }
-"typename"              { return add_token(TYPENAME); }
-"union"					{ lexerr("Unsupported token."); }
 "unsigned"				{ return add_token(UNSIGNED); }
+"void"					{ return add_token(VOID); }
+"while"					{ return add_token(WHILE); }
+
+"inline"                { lexerr("Unsupported token.");}
+"mutable"               { lexerr("Unsupported token.");}
+"namespace"             { lexerr("Unsupported token."); }
+"operator" 	            { lexerr("Unsupported token."); }
+"explicit"              { lexerr("Unsupported token."); }
+"export"                { lexerr("Unsupported token."); }
+"dynamic_cast"          { lexerr("Unsupported token."); }
+"enum"                  { lexerr("Unsupported token.");}
+"extern"                { lexerr("Unsupported token."); }
+"const"                 { lexerr("Unsupported token."); }
+"const_cast"            { lexerr("Unsupported token."); }
+"asm"                   { lexerr("Unsupported token."); }
+"auto"                  { lexerr("Unsupported token."); }
+"friend"                { lexerr("Unsupported token.");  }
+"register"              { lexerr("Unsupported token."); }
+"reinterpret_cast"      { lexerr("Unsupported token."); }
+"wchar_t"               { lexerr("Unsupported token.");}
+"volatile"              { lexerr("Unsupported token."); }
 "using"                 { lexerr("Unsupported token.");}
 "virtual"               { lexerr("Unsupported token."); }
-"void"					{ return add_token(VOID); }
-"volatile"              { lexerr("Unsupported token."); }
-"wchar_t"               { return add_token(WCHAR_T); }
-"while"					{ return add_token(WHILE); }
+"union"					{ lexerr("Unsupported token."); }
+"try"                   { lexerr("Unsupported token.");}
+"typedef"               { lexerr("Unsupported token.");  }
+"throw"                 { lexerr("Unsupported token."); }
+"template"              { lexerr("Unsupported token."); }
+"this"                  { lexerr("Unsupported token."); }
+"typeid"                { lexerr("Unsupported token.");}
+"typename"              { lexerr("Unsupported token."); }
+"static_cast"           { lexerr("Unsupported token."); }
+"sizeof"				{ lexerr("Unsupported token."); }
+"..."					{ lexerr("Unsupported token."); }
 
 
 "{"					    { return add_token('{'); }
-"<%"				    { return add_token('{'); }
 "}"					    { return add_token('}'); }
-"%>"					{ return add_token('}'); }
 "["					    { return add_token('['); }
-"<:"					{ return add_token('['); }
 "]"					    { return add_token(']'); }
-":>"					{ return add_token(']'); }
 "("					    { return add_token('('); }
 ")"					    { return add_token(')'); }
 ";"					    { return add_token(';'); }
 ":"					    { return add_token(':'); }
-"..."					{ lexerr("Unsupported token."); }
 "?"					    { return add_token('?'); }
 "::"					{ return add_token(COLONCOLON); }
 "."					    { return add_token('.'); }
@@ -202,15 +197,10 @@ stringtext				([^"])|(\\.)
 "/"					    { return add_token('/'); }
 "%"					    { return add_token('%'); }
 "^"					    { return add_token('^'); }
-"xor"					{ return add_token('^'); }
 "&"					    { return add_token('&'); }
-"bitand"				{ return add_token('&'); }
 "|"					    { return add_token('|'); }
-"bitor"					{ return add_token('|'); }
 "~"					    { return add_token('~'); }
-"compl"					{ return add_token('~'); }
 "!"					    { return add_token('!'); }
-"not"					{ return add_token('!'); }
 "="					    { return add_token('='); }
 "<"					    { return add_token('<'); }
 ">"					    { return add_token('>'); }
@@ -220,24 +210,18 @@ stringtext				([^"])|(\\.)
 "/="					{ return add_token(DIVEQ); }
 "%="					{ return add_token(MODEQ); }
 "^="					{ return add_token(XOREQ); }
-"xor_eq"				{ return add_token(XOREQ); }
 "&="					{ return add_token(ANDEQ); }
-"and_eq"				{ return add_token(ANDEQ); }
 "|="					{ return add_token(OREQ); }
-"or_eq"					{ return add_token(OREQ); }
 "<<"					{ return add_token(SL); }
 ">>"					{ return add_token(SR); }
 "<<="					{ return add_token(SLEQ); }
 ">>="					{ return add_token(SREQ); }
 "=="					{ return add_token(EQ); }
 "!="					{ return add_token(NOTEQ); }
-"not_eq"				{ return add_token(NOTEQ); }
 "<="					{ return add_token(LTEQ); }
 ">="					{ return add_token(GTEQ); }
 "&&"					{ return add_token(ANDAND); }
-"and"					{ return add_token(ANDAND); }
 "||"					{ return add_token(OROR); }
-"or"					{ return add_token(OROR); }
 "++"					{ return add_token(PLUSPLUS); }
 "--"					{ return add_token(MINUSMINUS); }
 ","					    { return add_token(','); }

@@ -60,15 +60,12 @@ int main(int argc, char **argv)
 			  return; 
 		  }
 		  // push file onto stack 
-		  // instead of pushing all of them onto stack. push them one at a time, call yyparse, close file, repeat. 
 	      filetext = file_list[i]; 
 		  push_file_node(&file_stack, filetext); // adapted from https://github.com/park2331
 		  yypush_buffer_state(yy_create_buffer(yyin, YY_BUF_SIZE));
 	   
 	   }
 		result = yyparse(); 
-
-
 	
 		 if (yyin) 
          {
@@ -85,7 +82,6 @@ int main(int argc, char **argv)
 		 }
 		 else
 		 {
-			 printf("This isn't a seg fault bad exit\n");
 			 return 2; 
 		 }
 		 
@@ -97,7 +93,6 @@ int main(int argc, char **argv)
 				HEAD = NULL; // this clears entire list including head 
 			}
 			
-	   //}
    }
  }
 

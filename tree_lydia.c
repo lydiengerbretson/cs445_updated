@@ -53,18 +53,17 @@ void print_tree(struct tree *treeptr, int depth)
   if(!treeptr)
   {
       // do nothing
-	  //printf("exit 1\n"); 
   }
   else 
   { 
 	  if (treeptr->nkids == 0)
 	  {
-		  printf("%*s  Leaf: \"%s\"  %d\n", depth*2, " ", 
+		  printf("%*s \"%s\": %d\n", depth*2, " ", 
 				 treeptr->leaf->text, treeptr->leaf->category); 
 	  }
 	  else
 	  {
-		printf("%*s  Kid: %s: %d\n", depth*2, " ", treeptr->prodrule_name, treeptr->nkids);
+		printf("%*s %s: %d\n", depth*2, " ", treeptr->prodrule_name, treeptr->nkids);
  
 		for(j=0; j<treeptr->nkids; j++)
 		{
