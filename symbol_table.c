@@ -169,8 +169,11 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
     key = get_key( t->prodrule_name );
     printf( "%s = %d\n",t->prodrule_name, key );
-
-    switch(key) {
+// switch(key)
+// TODO: function parameter types 
+// TODO: Fix function scoping/definitions
+// TODO: Add local scoping
+    switch(t->prodrule) {
 
 
     case FUNCTION_DEFINITION_1: 
