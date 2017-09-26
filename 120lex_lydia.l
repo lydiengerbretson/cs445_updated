@@ -45,7 +45,7 @@
 #include "120gram_lydia.tab.h"
 #include "token.h"
 #include "tree_lydia.h"
-#include "table.h"
+#include "symbol_table.h"
 
 int lineno;
 int saw_iostream, saw_string, saw_std;
@@ -56,14 +56,16 @@ int include_stack_ptr = 0;
 
 static void skip_until_eol(void);
 static void skip_comment(void);
-static int check_identifier(char *);
-void insert_typename_tree(struct tree *t, int category); 
+static int check_identifier(char *, SymbolTable);
+void insert_typename_tree(struct tree *t, SymbolTable table); 
+int typenametable_insert(char *s, SymbolTable table); 
 
 // extern variables
 extern filenodeptr file_stack;
 extern char* filetext; 
 extern FILE *yyin; 
 extern YYSTYPE yylval; 
+extern SymbolTable CLASSTABLE;
 extern struct typenametable_entry *HEAD; 
 
 // global variables
@@ -101,10 +103,10 @@ stringtext				([^"])|(\\.)
 }
 
 "using namespace std;"			{ saw_std = 1;
-		if (saw_string) typenametable_insert("string", CLASS_NAME);
+		if (saw_string) typenametable_insert("string", CLASSTABLE);
 		if (saw_iostream) {
-			typenametable_insert("ifstream", CLASS_NAME);
-			typenametable_insert("ofstream", CLASS_NAME);
+			typenametable_insert("ifstream", CLASSTABLE);
+			typenametable_insert("ofstream", CLASSTABLE);
 			}
 		}
 
@@ -228,7 +230,7 @@ stringtext				([^"])|(\\.)
 "->*"					{ return add_token(ARROWSTAR); }
 "->"					{ return add_token(ARROW); }
 
-[a-zA-Z_][a-zA-Z_0-9]*			    { return add_token(check_identifier(yytext));  }
+[a-zA-Z_][a-zA-Z_0-9]*			    { return add_token(check_identifier(yytext, CLASSTABLE));  }
 
 "0"[xX][0-9a-fA-F]+{intsuffix}?		{ return add_token(INTEGER); }
 "0"[0-7]+{intsuffix}?			    { return add_token(INTEGER); }
@@ -269,11 +271,12 @@ int add_token(int category)
 {
    // global YYTOKEN
     filetext = file_stack->filename;
-   	YYTOKEN = create_token(category, yytext, yylineno, filetext);  
+   	//YYTOKEN = create_token(category, yytext, yylineno, filetext);  
 	
-   // adapted from https://github.com/park2331
-	yylval.t = create_tree(yytext, category, 0); 	
-	yylval.t->leaf = YYTOKEN; 
+    // adapted from https://github.com/park2331
+	//yylval.t = create_tree(yytext, category, 0); 	
+	//yylval.t->leaf = YYTOKEN; 
+	yylval.t = create_leaf(category, yytext); 
 	
 	return category; 
    
@@ -313,10 +316,19 @@ static void skip_until_eol(void)
 }
  
 
-void insert_typename_tree(struct tree *t, int category)
+void insert_typename_tree(struct tree *t, SymbolTable table)
 {
     // adapted from https://github.com/andschwa/partial-cpp-compiler
-	typenametable_insert(yylval.t->leaf->text, category);	
+	
+	//typenametable_insert(t->u.t.lexeme, category);
+	insert_sym(t->u.t.lexeme, table); 
+    
+}
+
+// typenametable functions adapted from http://www2.cs.uidaho.edu/~jeffery/courses/445/120pp/120lex.l
+int typenametable_insert(char *s, SymbolTable t)
+{
+   insert_sym(s, t); 
 }
 
 // handle user include files
@@ -351,8 +363,16 @@ void lexerr(const char *s)
     exit (1); 
 }
 
-static int check_identifier(char *s)
+static int check_identifier(char *s, SymbolTable t)
 {
-	return typenametable_lookup(s);
+    // adapted from https://github.com/park2331/compiler
+	if(lookup(s, t) == true)
+	{
+		return CLASS_NAME; 
+	}
+	else
+	{
+		return IDENTIFIER; 
+	}
 
 }

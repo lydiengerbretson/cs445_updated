@@ -3,8 +3,8 @@
 #include "token.h"
 #include "tree_lydia.h"
 #include "120gram_lydia.tab.h"
-#include "table.h"
-
+#include "hash.h"
+#include "symbol_table.h"
 
 // code help from Tovah Whitesell (SEL)
 // ideas and program outline: https://github.com/andschwa/partial-cpp-compiler
@@ -18,8 +18,13 @@ extern char *yytext;
 extern struct token *YYTOKEN; 
 extern int yyparse(); 
 extern YYSTYPE yylval;
-extern Treeptr YYPROGRAM; 
+extern tree * YYPROGRAM; 
 extern struct typenametable_entry *HEAD; 
+
+SymbolTable CLASSTABLE;
+SymbolTable CLASS_FUNCTION_TABLE; 
+SymbolTable FUNCTION_TABLE; 
+SymbolTable GLOBAL_TABLE; 
 
 char *filetext; 
 filenodeptr file_stack = NULL; 
@@ -34,8 +39,11 @@ int main(int argc, char **argv)
    char *file_list[argc]; 
    int result = 0; 
    YYPROGRAM = NULL; 
-   struct typenametable_entry *tmp_head; 
-
+  //struct typenametable_entry *tmp_head; 
+  CLASSTABLE = new_table( "classtable" );
+  CLASS_FUNCTION_TABLE = new_table("class_function_table"); 
+  FUNCTION_TABLE = new_table("function_table"); 
+  GLOBAL_TABLE = new_table("global_table"); 
    
    ++argv, --argc;  /* skip over program name */
    
@@ -77,7 +85,10 @@ int main(int argc, char **argv)
          }
 		 if(result == 0)
 		 {			 
-			print_tree(YYPROGRAM, 0); 
+			//print_tree(YYPROGRAM, 0); 
+			// populate symbol table
+			  populate_symbol_table( YYPROGRAM , GLOBAL_TABLE );
+			  //populate_symbol_table( YYPROGRAM , FUNCTION_TABLE );
 
 		 }
 		 else
@@ -86,12 +97,6 @@ int main(int argc, char **argv)
 		 }
 		 
 			yylex_destroy(); 
-			tmp_head = HEAD; 
-			if(tmp_head != NULL)
-			{
-				typenametable_clear(tmp_head); // this works! but only at end of program :(
-				HEAD = NULL; // this clears entire list including head 
-			}
 			
    }
  }

@@ -54,6 +54,8 @@
 #include "token.h"
 #include "tree_lydia.h"
 #include "nonterms.h"
+#include "hash.h"
+#include "symbol_table.h"
 
 
 #define YYDEBUG 1
@@ -62,12 +64,13 @@ extern char *yytext;
 
 char *filetext; 
 filenodeptr file_stack;
+extern SymbolTable CLASSTABLE;
 
 /* extern in 120++.c 
  * Head pointer to start of program (translation unit).
  */
  
-Treeptr YYPROGRAM; 
+tree* YYPROGRAM; 
 
  
 int yydebug=0;
@@ -812,8 +815,8 @@ class_specifier:
 	;
 
 class_head:
-        class_key identifier { $$ = create_tree("class_head_1", CLASS_HEAD_1, 2, $1, $2);  insert_typename_tree($2, CLASS_NAME);  } 
-	| class_key nested_name_specifier identifier { $$ = create_tree("class_head_2", CLASS_HEAD_1, 3, $1, $2, $3); insert_typename_tree($3, CLASS_NAME); }
+        class_key identifier { $$ = create_tree("class_head_1", CLASS_HEAD_1, 2, $1, $2);  insert_typename_tree($2, CLASSTABLE);  } 
+	| class_key nested_name_specifier identifier { $$ = create_tree("class_head_2", CLASS_HEAD_1, 3, $1, $2, $3); insert_typename_tree($3, CLASSTABLE); }
   
 	;
 
