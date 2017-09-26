@@ -271,12 +271,11 @@ int add_token(int category)
 {
    // global YYTOKEN
     filetext = file_stack->filename;
-   	//YYTOKEN = create_token(category, yytext, yylineno, filetext);  
+   	YYTOKEN = create_token(category, yytext, yylineno, filetext);  
 	
     // adapted from https://github.com/park2331
-	//yylval.t = create_tree(yytext, category, 0); 	
-	//yylval.t->leaf = YYTOKEN; 
-	yylval.t = create_leaf(category, yytext); 
+	yylval.t = create_tree(yytext, category, 0); 	
+	yylval.t->leaf = YYTOKEN; 
 	
 	return category; 
    
@@ -319,9 +318,18 @@ static void skip_until_eol(void)
 void insert_typename_tree(struct tree *t, SymbolTable table)
 {
     // adapted from https://github.com/andschwa/partial-cpp-compiler
-	
-	//typenametable_insert(t->u.t.lexeme, category);
-	insert_sym(t->u.t.lexeme, table); 
+	// adapted from https://github.com/park2331/compiler
+    // checking 
+   if ( lookup( t->leaf->text , table ) == true) {
+        fprintf(stderr,
+	    "warning, %s is already in the typename table as a %d\n",
+            t->leaf->text, t->leaf->category );
+   } else {
+
+     printf("INSERTED %s: %d\n ",t->leaf->text, t->leaf->category);
+     insert_sym( t->leaf->text , table );
+
+   }
     
 }
 

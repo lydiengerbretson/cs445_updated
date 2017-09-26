@@ -70,7 +70,7 @@ extern SymbolTable CLASSTABLE;
  * Head pointer to start of program (translation unit).
  */
  
-tree* YYPROGRAM; 
+Treeptr YYPROGRAM; 
 
  
 int yydebug=0;

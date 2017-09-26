@@ -24,7 +24,7 @@ Entry new_entry(char* n) {
 }
 
 
-/* Initialize new table for use; init mem and store name. */
+// Initialize new table for use, initialize memory and store name. 
 SymbolTable new_table(char* n) {
 
   int i;
@@ -121,20 +121,20 @@ bool lookup(char *n, SymbolTable t) {
   
 }
 
-struct tree * handlefuncdef( struct tree *t, SymbolTable scope ) {
+struct tree * handle_funcdef( struct tree *t, SymbolTable scope ) {
 
   int i;
 
   if ( t->nkids == 0 ) {
 
-    if ( t->u.t.lexeme);
+    if ( t->leaf);
       return t;
   
   } else if( t->nkids > 0 ) {
 
     for(i=0; i < t->nkids; i++) {
 
-      return populate_symbol_table( t->u.nt.child[i] , scope );
+      return populate_symbol_table( t->kid[i] , scope );
 
     }
 
@@ -157,8 +157,8 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
   } else if (t->nkids == 0 ) {
 
-    if (t->category == IDENTIFIER) {
-      insert_sym(t->u.t.lexeme , scope);
+    if (t->prodrule == IDENTIFIER) {
+      insert_sym(t->leaf->text , scope);
       
       return t;
 
@@ -167,8 +167,8 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
     }
   } else if( t->nkids > 0 ) {
 
-    key = get_key( t->u.t.lexeme );
-    printf( "%s = %d\n",t->u.t.lexeme, key );
+    key = get_key( t->prodrule_name );
+    printf( "%s = %d\n",t->prodrule_name, key );
 
     switch(key) {
 
@@ -177,15 +177,15 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
       local = new_scope("local");
       for (j=0; j < t->nkids; j++) 
 	  {
-		populate_symbol_table( t->u.nt.child[j] , local->entrytable );
+		populate_symbol_table( t->kid[j] , local->entrytable );
       }
-	  // make type 
+	  
       insert_sym( local->entrytable->name, scope );
-
+      // make type??
+	  
     case DIRECT_DECLARATOR_1:
 
-     // scope->name = strdup(t->child[0]->leaf->text);
-	 scope->name = strdup(t->u.t.lexeme); 
+     scope->name = strdup(t->kid[0]->leaf->text);	 
      // make type??
       break;
 
@@ -193,7 +193,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
       for (i=0; i < t->nkids; i++) 
 	  {
-	    populate_symbol_table( t->u.nt.child[i] , scope );
+	    populate_symbol_table( t->kid[i] , scope );
       }
       break;
     }

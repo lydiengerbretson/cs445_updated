@@ -18,7 +18,7 @@ extern char *yytext;
 extern struct token *YYTOKEN; 
 extern int yyparse(); 
 extern YYSTYPE yylval;
-extern tree * YYPROGRAM; 
+extern Treeptr YYPROGRAM; 
 extern struct typenametable_entry *HEAD; 
 
 SymbolTable CLASSTABLE;
