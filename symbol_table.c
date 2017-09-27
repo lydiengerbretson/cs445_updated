@@ -60,7 +60,7 @@ void insert(Entry e, SymbolTable t) {
 
   t->entry[key] = e;
 
-  fprintf( stdout , "%s was INSERTED into %s at location %d.\n" , e->name , t->name , key );
+  fprintf( stdout , "%s was INSERTED into %s.\n" , e->name , t->name);
   
 }
 
@@ -83,7 +83,7 @@ void insert_scope(char* n, SymbolTable t) {
 
   insert(e, t);
 
-  fprintf( stdout , "%s was INSERTED into scope %s at location %d.\n" , e->name , t->name , key );
+  fprintf( stdout , "%s was INSERTED into scope %s.\n" , e->name , t->name );
   
 }
 
@@ -109,12 +109,12 @@ bool lookup(char *n, SymbolTable t) {
 
   if (t->entry[key]) {
 
-    fprintf(stdout, "Entry: \"%s\" found in table \"%s\" at location %d\n", n, t->name , key );
+   // fprintf(stdout, "Entry: \"%s\" found in table \"%s\" at location %d\n", n, t->name , key );
     return true;
     
   } else {
 
-    fprintf(stdout, "Entry: \"%s\" NOT found in table \"%s\"\n", n, t->name );
+    // fprintf(stdout, "Entry: \"%s\" NOT found in table \"%s\"\n", n, t->name );
     return false;
     
   }
@@ -155,41 +155,47 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
   if ( !t ) {
     return NULL;
 
-  } else if (t->nkids == 0 ) {
+  } else if (t->nkids == 0 ) 
+  {
 
-    if (t->prodrule == IDENTIFIER) {
+    if (t->prodrule == IDENTIFIER) 
+	{
       insert_sym(t->leaf->text , scope);
       
       return t;
 
-    } else {
+    } else 
+	{
       return NULL;
     }
-  } else if( t->nkids > 0 ) {
+  } else if( t->nkids > 0 ) 
+  {
 
     key = get_key( t->prodrule_name );
-    printf( "%s = %d\n",t->prodrule_name, key );
-// switch(key)
-// TODO: function parameter types 
-// TODO: Fix function scoping/definitions
-// TODO: Add local scoping
+    //printf( "%s = %d\n",t->prodrule_name, key );
+
+// TODO: Add function parameter scoping  
+// TODO: Fix function name scoping/definitions
+
     switch(t->prodrule) {
 
-
     case FUNCTION_DEFINITION_1: 
+	  printf("FUNCTION_DEFINITION_1\n"); 
       local = new_scope("local");
+	  handle_funcdef(t->kid[1], local->entrytable);
       for (j=0; j < t->nkids; j++) 
 	  {
-		populate_symbol_table( t->kid[j] , local->entrytable );
+		// insert into local symbol table 
+		populate_symbol_table( t->kid[j] , local->entrytable );     
+		 
       }
-	  
+
       insert_sym( local->entrytable->name, scope );
-      // make type??
+	  break; 
 	  
     case DIRECT_DECLARATOR_1:
-
-     scope->name = strdup(t->kid[0]->leaf->text);	 
-     // make type??
+      printf("DIRECT_DECLARATOR_1\n");
+      scope->name = strdup(t->kid[0]->leaf->text);	 
       break;
 
     default:
