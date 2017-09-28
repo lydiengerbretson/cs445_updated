@@ -72,4 +72,3 @@ bool lookup( char *, SymbolTable );
 
 struct tree * populate_symbol_table( struct tree *, SymbolTable );
 struct tree * handle_funcdef( struct tree * , SymbolTable );
-  

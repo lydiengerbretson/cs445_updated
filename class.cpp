@@ -3,34 +3,33 @@
 using namespace std; 
 
 class LYD {
-	int e; 
-	int f; 
+	int LYD_e; 
+	int LYD_d; 
 }; 
 
-int func(int a); 
+int func(int a, int b); 
 
 int yay(double b); 
 
 int main()
 {
-	string s; 
-	int y; 
+	//int array[]; 
+	string s;  
 	LYD l; 
 	
 	return 0; 
 }
 
-int func(int a)
+int func(int a, int b)
 {
-	int x; 
-	int y; 
-	x = y + a; 
+	int func_x; 
+	int func_y; 
 }
 
 int yay(double b)
 {
-	char *s; 
-	double g; 
+	char yay_s; 
+	double yay_g; 
 }
 
  

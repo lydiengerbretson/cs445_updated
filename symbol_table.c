@@ -160,6 +160,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
     if (t->prodrule == IDENTIFIER) 
 	{
+	 // printf("---IDENTIFIER----\n"); 
       insert_sym(t->leaf->text , scope);
       
       return t;
@@ -176,12 +177,14 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
 // TODO: Add function parameter scoping  
 // TODO: Fix function name scoping/definitions
+// TODO: Add semantic error for redeclarations
 
     switch(t->prodrule) {
 
-    case FUNCTION_DEFINITION_1: 
-	  printf("FUNCTION_DEFINITION_1\n"); 
-      local = new_scope("local");
+    case FUNCTION_DEFINITION_1:
+    //case SIMPLE_DECLARATION_1:	
+	  printf("\n------FUNCTION_DEFINITION_1------\n"); 
+      local = new_scope("global");//t->kid[0]->leaf->text
 	  handle_funcdef(t->kid[1], local->entrytable);
       for (j=0; j < t->nkids; j++) 
 	  {
@@ -189,19 +192,21 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		populate_symbol_table( t->kid[j] , local->entrytable );     
 		 
       }
-
-      insert_sym( local->entrytable->name, scope );
+     // insert_sym( local->entrytable->name, scope ); // not needed ? 
 	  break; 
 	  
     case DIRECT_DECLARATOR_1:
-      printf("DIRECT_DECLARATOR_1\n");
-      scope->name = strdup(t->kid[0]->leaf->text);	 
-      break;
-
+	case DECLARATOR_1:
+      printf("\n ------DIRECT_DECLARATOR_1------\n");
+	
+      scope->name = strdup(t->kid[0]->leaf->text);
+	 // printf("Inserting direct declarator... %s\n", scope->name); 
+      //break; // when break is commented, parameters show up 
     default:
-
+     //printf(" ------DEFAULT------\n");
       for (i=0; i < t->nkids; i++) 
-	  {
+	  { 
+        //printf("Calling default pop table...\n"); 
 	    populate_symbol_table( t->kid[i] , scope );
       }
       break;
@@ -211,5 +216,3 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
     return NULL;
   }
 };
-
-
