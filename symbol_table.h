@@ -70,5 +70,7 @@ void insert_sym( char* , SymbolTable );
 SymbolTable get_scope(char* , SymbolTable );
 bool lookup( char *, SymbolTable );
 
+void populate_params(struct tree *); 
+
 struct tree * populate_symbol_table( struct tree *, SymbolTable );
 struct tree * handle_funcdef( struct tree * , SymbolTable );
