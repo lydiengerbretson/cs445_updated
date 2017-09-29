@@ -14,22 +14,43 @@ int yay(double b);
 int main()
 {
 	//int array[]; 
-	string s;  
+	//string s;  
 	LYD l; 
+    int int_l;
+	int int_y;
+	
+	int int_l; 
+	
+	//int int_l; 
 	
 	return 0; 
+}
+
+
+
+int yay(double b)
+{
+	//string YAY; 
+
+	//int f; 
+	char yay_s; 
+	double yay_g; 
+	
+	//LYD s; 
+	//int x; 
+	//double e; 
+
+
 }
 
 int func(int a, int b)
 {
 	int func_x; 
 	int func_y; 
-}
+	//func_x = 1; 
+	//int a = b; 
 
-int yay(double b)
-{
-	char yay_s; 
-	double yay_g; 
-}
 
+	//int func_y; 
+}
  

@@ -69,6 +69,7 @@ void insert( Entry, SymbolTable );
 void insert_sym( char* , SymbolTable );
 SymbolTable get_scope(char* , SymbolTable );
 bool lookup( char *, SymbolTable );
+void semanticerror(char *s, struct tree *n); 
 
 void populate_params(struct tree *); 
 void check_declared(struct tree *); 

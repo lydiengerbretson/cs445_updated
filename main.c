@@ -21,10 +21,10 @@ extern YYSTYPE yylval;
 extern Treeptr YYPROGRAM; 
 extern struct typenametable_entry *HEAD; 
 
-SymbolTable CLASSTABLE;
-SymbolTable CLASS_FUNCTION_TABLE; 
-SymbolTable FUNCTION_TABLE; 
-SymbolTable GLOBAL_TABLE; 
+SymbolTable CLASSTABLE; // SymbolTable is a struct table *
+SymbolTable CLASS_FUNCTION_TABLE; // ??
+SymbolTable FUNCTION_TABLE; // ??
+SymbolTable GLOBAL_TABLE; // Globals 
 
 char *filetext; 
 filenodeptr file_stack = NULL; 
@@ -86,9 +86,9 @@ int main(int argc, char **argv)
 		 if(result == 0)
 		 {			 
 			//print_tree(YYPROGRAM, 0); 
-			// populate symbol table
+			//populate symbol table
 			  populate_symbol_table( YYPROGRAM , GLOBAL_TABLE );
-			  populate_symbol_table(YYPROGRAM, CLASSTABLE); 
+			  //populate_symbol_table(YYPROGRAM, CLASSTABLE); 
 			  //populate_symbol_table(YYPROGRAM, FUNCTION_TABLE); 
 
 		 }

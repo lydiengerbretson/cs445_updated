@@ -28,13 +28,13 @@ Entry new_entry(char* n) {
 // Initialize new table for use, initialize memory and store name. 
 SymbolTable new_table(char* n) {
 
-  int i;
+
   SymbolTable t = calloc(1, sizeof(SymbolTable));
-  
+
   t->entry[10000] = calloc(10000, sizeof(Entry));
 
   t->name = strdup(n);
-
+  
   return t;
 }
 
@@ -59,9 +59,10 @@ void insert(Entry e, SymbolTable t) {
 
   int key = get_key(e->name);
 
-  t->entry[key] = e;
+  
+    t->entry[key] = e;
 
-  fprintf( stdout , "%s was INSERTED into scope: %s.\n" , e->name , t->name);
+    fprintf( stdout , "%s was INSERTED into scope: %s.\n" , e->name , t->name);
   
 }
 
@@ -152,24 +153,35 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
   int i,j, key;
   struct tree * temp;
   Entry local;
-
+  static bool direct_declare = false;
+  
   if ( !t ) {
     return NULL;
 
   } else if (t->nkids == 0 ) 
   {
 
-    if (t->prodrule == IDENTIFIER) 
-	{
-	 // printf("---IDENTIFIER----\n"); 
-      insert_sym(t->leaf->text , scope);
-      
-      return t;
+    if (!direct_declare) // This fixes foo was instered into scope foo problem
+    {
+        if (t->prodrule == IDENTIFIER) 
+        {
+         // printf("---IDENTIFIER----\n"); 
 
+          insert_sym(t->leaf->text , scope);
+          
+          return t;
+
+        }
+        else 
+        {
+          return NULL;
+        }
+        
+       
     }
-	else 
-	{
-      return NULL;
+   else
+    {
+        direct_declare = false;
     }
   } else if( t->nkids > 0 ) 
   {
@@ -180,10 +192,11 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 // TODO: Add function parameter scoping: Kinda done. 
 // TODO: Fix function name scoping/definitions: Kinda done.
 // TODO: Add semantic error for redeclarations
-
+    if (direct_declare){direct_declare=false;};
     switch(t->prodrule) {
 
-    case FUNCTION_DEFINITION_1:   	
+    case FUNCTION_DEFINITION_1:   
+
 	  printf("\n------FUNCTION------\n"); 
       local = new_scope("global");//t->kid[0]->leaf->text
 	  handle_funcdef(t->kid[1], local->entrytable);
@@ -197,21 +210,36 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 	   //populate_params(t->kid[1]);
 	   //check_declared(t->kid[1])
 	  break; 
-	  
+	case ASSIGNMENT_EXPRESSION_1:
+    break;
+    case JUMP_STATEMENT_1:
+    break;
     case DIRECT_DECLARATOR_1:
+      direct_declare = true;
+
 	//case DECLARATOR_1:
       printf("\n ------DECLARED VARIABLES------\n");
-	
+
       scope->name = strdup(t->kid[0]->leaf->text);
 	  //break; // when break is commented, parameters show up  
-
+    case INIT_DECLARATOR_1:
+		if(lookup(t->kid[0]->prodrule_name, scope) && t->prodrule != DIRECT_DECLARATOR_1 && t->prodrule != ASSIGNMENT_EXPRESSION_1)
+		{
+			//printf("ERROR: FOUND THE SAME SYMBOL: %s in scope %s : %d\n", 
+			// t->kid[0]->prodrule_name, scope->name, t->kid[0]->prodrule); 
+			semanticerror("Redeclared symbol", t); 
+			//return; 
+			
+		}
     default:
      //printf(" ------DEFAULT------\n");
+     
       for (i=0; i < t->nkids; i++) 
 	  { 
         //printf("Calling default pop table...\n"); 
 	    populate_symbol_table( t->kid[i] , scope );
       }
+     
       break;
     }
 
@@ -244,4 +272,10 @@ void check_declared(struct tree * t)
 {
 
 
+}
+
+void semanticerror(char *s, struct tree *n)
+{
+	printf("symantic error.\n"); 
+	exit(3); 
 }
