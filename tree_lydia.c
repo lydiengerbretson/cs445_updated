@@ -23,7 +23,7 @@ Treeptr create_tree(char* prod_name, int category, int num_kids, ...)
 	char* prod_name_t = strdup(prod_name); 
 	T->prodrule_name = prod_name_t; 
 	// product rule number 
-	T->prodrule = category; // add as a parameter
+	T->prodrule = category; // This is type 
 	// number of kids
 	T->nkids = num_kids; 
 

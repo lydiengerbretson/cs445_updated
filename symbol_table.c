@@ -19,6 +19,7 @@ Entry new_entry(char* n) {
 
   /* Initialize type */
   e->entrytype = t;
+  //e->entrytype->basetype = type; 
   
   return e;
 }
@@ -194,6 +195,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
       }
      // insert_sym( local->entrytable->name, scope ); // apparently this is not needed 
 	   //populate_params(t->kid[1]);
+	   //check_declared(t->kid[1])
 	  break; 
 	  
     case DIRECT_DECLARATOR_1:
@@ -236,4 +238,10 @@ void populate_params(struct tree *t)
 				populate_params(t->kid[i]); 
 			}
 	}
+}
+
+void check_declared(struct tree * t)
+{
+
+
 }
