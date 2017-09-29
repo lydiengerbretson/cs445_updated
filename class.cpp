@@ -7,7 +7,7 @@ class LYD {
 	int LYD_d; 
 }; 
 
-int func(int a, int b); 
+int func(int a); 
 
 int yay(double b); 
 
@@ -19,7 +19,7 @@ int main()
     int int_l;
 	int int_y;
 	
-	int int_l; 
+	//int int_l; 
 	
 	//int int_l; 
 	
@@ -27,6 +27,19 @@ int main()
 }
 
 
+
+
+
+int func(int a)
+{
+	int func_x; 
+	int func_y; 
+	func_x = 1; 
+	//int a = b; 
+
+
+	//int func_y; 
+}
 
 int yay(double b)
 {
@@ -41,16 +54,5 @@ int yay(double b)
 	//double e; 
 
 
-}
-
-int func(int a, int b)
-{
-	int func_x; 
-	int func_y; 
-	//func_x = 1; 
-	//int a = b; 
-
-
-	//int func_y; 
 }
  

@@ -235,8 +235,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
      //printf(" ------DEFAULT------\n");
      
       for (i=0; i < t->nkids; i++) 
-	  { 
-        //printf("Calling default pop table...\n"); 
+	  {  
 	    populate_symbol_table( t->kid[i] , scope );
       }
      
@@ -276,6 +275,12 @@ void check_declared(struct tree * t)
 
 void semanticerror(char *s, struct tree *n)
 {
-	printf("symantic error.\n"); 
-	exit(3); 
+   while (n && (n->nkids > 0)) n=n->kid[0];
+   if (n) {
+     fprintf(stderr, "%s:%d: ", n->leaf->filename, n->leaf->lineno);
+   }
+  fprintf(stderr, "%s", s);
+  if (n && n->prodrule == IDENTIFIER) fprintf(stderr, " %s", n->leaf->text);
+  fprintf(stderr, "\n");
+  exit(3); 
 }
