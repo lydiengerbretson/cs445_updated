@@ -165,7 +165,6 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
     {
         if (t->prodrule == IDENTIFIER) 
         {
-         // printf("---IDENTIFIER----\n"); 
 
           insert_sym(t->leaf->text , scope);
           
@@ -187,11 +186,10 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
   {
 
     key = get_key( t->prodrule_name );
-    //printf( "%s = %d\n",t->prodrule_name, key );
 
 // TODO: Add function parameter scoping: Kinda done. 
 // TODO: Fix function name scoping/definitions: Kinda done.
-// TODO: Add semantic error for redeclarations
+// TODO: Add semantic error for redeclarations: Kinda done 
     if (direct_declare){direct_declare=false;};
     switch(t->prodrule) {
 
@@ -206,7 +204,6 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		populate_symbol_table( t->kid[j] , local->entrytable );     
 		 
       }
-     // insert_sym( local->entrytable->name, scope ); // apparently this is not needed 
 	   //populate_params(t->kid[1]);
 	   //check_declared(t->kid[1])
 	  break; 
@@ -216,8 +213,6 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
     break;
     case DIRECT_DECLARATOR_1:
       direct_declare = true;
-
-	//case DECLARATOR_1:
       printf("\n ------DECLARED VARIABLES------\n");
 
       scope->name = strdup(t->kid[0]->leaf->text);
@@ -225,14 +220,10 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
     case INIT_DECLARATOR_1:
 		if(lookup(t->kid[0]->prodrule_name, scope) && t->prodrule != DIRECT_DECLARATOR_1 && t->prodrule != ASSIGNMENT_EXPRESSION_1)
 		{
-			//printf("ERROR: FOUND THE SAME SYMBOL: %s in scope %s : %d\n", 
-			// t->kid[0]->prodrule_name, scope->name, t->kid[0]->prodrule); 
 			semanticerror("Redeclared symbol", t); 
-			//return; 
 			
 		}
     default:
-     //printf(" ------DEFAULT------\n");
      
       for (i=0; i < t->nkids; i++) 
 	  {  
@@ -273,6 +264,7 @@ void check_declared(struct tree * t)
 
 }
 
+// adapted from http://www2.cs.uidaho.edu/~jeffery/courses/445/symt.c
 void semanticerror(char *s, struct tree *n)
 {
    while (n && (n->nkids > 0)) n=n->kid[0];
