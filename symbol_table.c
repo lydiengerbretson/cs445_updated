@@ -111,7 +111,7 @@ bool lookup(char *n, SymbolTable t) {
 
   if (t->entry[key]) {
 
-   // fprintf(stdout, "Entry: \"%s\" found in table \"%s\" at location %d\n", n, t->name , key );
+   //fprintf(stdout, "Entry: \"%s\" found in table \"%s\" at location %d\n", n, t->name , key );
     return true;
     
   } else {
@@ -218,11 +218,18 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
       scope->name = strdup(t->kid[0]->leaf->text);
 	  //break; // when break is commented, parameters show up  
     case INIT_DECLARATOR_1:
-		if(lookup(t->kid[0]->prodrule_name, scope) && t->prodrule != DIRECT_DECLARATOR_1 && t->prodrule != ASSIGNMENT_EXPRESSION_1)
+	    // very odd, doesn't work when redeclare symbol of one character in different scope
+		if(lookup(t->kid[0]->prodrule_name, scope) /*&& t->prodrule != DIRECT_DECLARATOR_1 &&*/ && t->prodrule == INIT_DECLARATOR_1)
 		{
+			
+			printf("***%s is ALREADY in symbol table with prodrule:  %d , kids: %d ***\n", t->kid[0]->prodrule_name, t->kid[0]->prodrule, t->kid[0]->nkids); 
 			semanticerror("Redeclared symbol", t); 
 			
 		}
+	case SIMPLE_DECLARATION_1:
+      // check declared
+	  // this may need to be recurse
+		
     default:
      
       for (i=0; i < t->nkids; i++) 
@@ -274,5 +281,5 @@ void semanticerror(char *s, struct tree *n)
   fprintf(stderr, "%s", s);
   if (n && n->prodrule == IDENTIFIER) fprintf(stderr, " %s", n->leaf->text);
   fprintf(stderr, "\n");
-  exit(3); 
+  //exit(3); 
 }

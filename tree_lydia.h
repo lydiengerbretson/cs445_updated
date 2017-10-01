@@ -9,6 +9,7 @@ typedef struct tree {
    char* prodrule_name; 
    int prodrule;
    int nkids;
+   struct type *typ; 
    struct tree *kid[9];
    struct token *leaf;
 } * Treeptr;
