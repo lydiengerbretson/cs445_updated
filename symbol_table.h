@@ -26,8 +26,8 @@ typedef struct entry {
 typedef struct table {
 
   char *name;
+
   Entry entry[];
-	
     
 } * SymbolTable;
 

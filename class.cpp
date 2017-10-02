@@ -18,6 +18,7 @@ int main()
     int int_l;
 	int int_y;
 
+	int x; 
 	
 	return 0; 
 }
@@ -29,7 +30,7 @@ int yay(double b)
 	char yay_s; 
 	double yay_g;
 	double yay_g; 
-	x = b; 
+	
 
 
 }
@@ -38,6 +39,10 @@ int func(int a, int b)
 {
 	int func_x; 
 	int func_lyd; 
+	
+	int func_lyd; 
+	
+	int x; 
 	
 	func_x = 1; 
 	func_y = 2; 
