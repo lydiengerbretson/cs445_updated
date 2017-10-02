@@ -153,6 +153,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
   int i,j, key;
   struct tree * temp;
   Entry local;
+  char *lex;
   static bool direct_declare = false;
   
   if ( !t ) {
@@ -190,13 +191,14 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 // TODO: Add function parameter scoping: Kinda done. 
 // TODO: Fix function name scoping/definitions: Kinda done.
 // TODO: Add semantic error for redeclarations: Kinda done 
+// TODO: Add semantic error for undeclarations: 
     if (direct_declare){direct_declare=false;};
     switch(t->prodrule) {
 
     case FUNCTION_DEFINITION_1:   
 
 	  printf("\n------FUNCTION------\n"); 
-      local = new_scope("global");//t->kid[0]->leaf->text
+      local = new_scope("global");
 	  handle_funcdef(t->kid[1], local->entrytable);
       for (j=0; j < t->nkids; j++) 
 	  {
@@ -205,12 +207,12 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		 
       }
 	   //populate_params(t->kid[1]);
-	   //check_declared(t->kid[1])
+	   //check_declared(t->kid[1], scope); 
 	  break; 
 	case ASSIGNMENT_EXPRESSION_1:
-    break;
+		break;
     case JUMP_STATEMENT_1:
-    break;
+		break;
     case DIRECT_DECLARATOR_1:
       direct_declare = true;
       printf("\n ------DECLARED VARIABLES------\n");
@@ -218,20 +220,15 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
       scope->name = strdup(t->kid[0]->leaf->text);
 	  //break; // when break is commented, parameters show up  
     case INIT_DECLARATOR_1:
-	    // very odd, doesn't work when redeclare symbol of one character in different scope
-		if(lookup(t->kid[0]->prodrule_name, scope) && !direct_declare)
-		{
-			printf("***%s is ALREADY in symbol table with prodrule:  %d , kids: %d ***\n", t->kid[0]->prodrule_name, t->kid[0]->prodrule, t->kid[0]->nkids); 
-			
-			semanticerror("Redeclared symbol", t); 
-			
-		}
+	case DECLARATOR_1:
+    case INIT_DECLARATOR_LIST_1:
+	if(lookup(t->kid[0]->prodrule_name, scope) && !direct_declare)
+	{
+		semanticerror("***Redeclared variable.*** :", t->kid[0]);  
+	}
 
-		
-	case SIMPLE_DECLARATION_1:
-      // check declared
-	  // this may need to be recursive
-		
+	case INITIALIZER_LIST_1:
+		//break; 
     default:
      
       for (i=0; i < t->nkids; i++) 
@@ -241,11 +238,15 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
      
       break;
     }
+}
 
-  } else {
-    return NULL;
-  }
-};
+	else
+	{
+		return NULL; 
+	}
+
+  };
+
 
 void populate_params(struct tree *t)
 {
@@ -267,9 +268,8 @@ void populate_params(struct tree *t)
 	}
 }
 
-void check_declared(struct tree * t)
+void check_declared(struct tree * t, SymbolTable ST)
 {
-
 
 }
 

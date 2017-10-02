@@ -27,6 +27,7 @@ typedef struct table {
 
   char *name;
   Entry entry[];
+	
     
 } * SymbolTable;
 
@@ -72,7 +73,7 @@ bool lookup( char *, SymbolTable );
 void semanticerror(char *s, struct tree *n); 
 
 void populate_params(struct tree *); 
-void check_declared(struct tree *); 
+void check_declared(struct tree *, SymbolTable); 
 
 struct tree * populate_symbol_table( struct tree *, SymbolTable );
 struct tree * handle_funcdef( struct tree * , SymbolTable );
