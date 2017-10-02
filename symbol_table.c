@@ -62,7 +62,7 @@ void insert(Entry e, SymbolTable t) {
   
     t->entry[key] = e;
 
-    fprintf( stdout , "%s was INSERTED into scope: %s.\n" , e->name , t->name);
+    fprintf( stdout , "%s was INSERTED into scope: %s at location %d \n" , e->name , t->name, key);
   
 }
 
@@ -116,7 +116,7 @@ bool lookup(char *n, SymbolTable t) {
     
   } else {
 
-    // fprintf(stdout, "Entry: \"%s\" NOT found in table \"%s\"\n", n, t->name );
+    //fprintf(stdout, "Entry: \"%s\" NOT found in table \"%s\"\n", n, t->name );
     return false;
     
   }
@@ -219,16 +219,18 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 	  //break; // when break is commented, parameters show up  
     case INIT_DECLARATOR_1:
 	    // very odd, doesn't work when redeclare symbol of one character in different scope
-		if(lookup(t->kid[0]->prodrule_name, scope) /*&& t->prodrule != DIRECT_DECLARATOR_1 &&*/ && t->prodrule == INIT_DECLARATOR_1)
+		if(lookup(t->kid[0]->prodrule_name, scope) && !direct_declare)
 		{
-			
 			printf("***%s is ALREADY in symbol table with prodrule:  %d , kids: %d ***\n", t->kid[0]->prodrule_name, t->kid[0]->prodrule, t->kid[0]->nkids); 
+			
 			semanticerror("Redeclared symbol", t); 
 			
 		}
+
+		
 	case SIMPLE_DECLARATION_1:
       // check declared
-	  // this may need to be recurse
+	  // this may need to be recursive
 		
     default:
      
