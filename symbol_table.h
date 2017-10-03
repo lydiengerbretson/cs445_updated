@@ -26,6 +26,7 @@ typedef struct entry {
 typedef struct table {
 
   char *name;
+  char *sym_name; 
 
   Entry entry[];
     

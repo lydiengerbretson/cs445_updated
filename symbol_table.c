@@ -72,7 +72,6 @@ void insert_sym(char* n, SymbolTable t) {
 
   Entry e = new_entry(n);
   
-
   insert(e, t);
   
 }
@@ -108,12 +107,6 @@ SymbolTable get_scope(char *n, SymbolTable t) {
 bool lookup(char *n, SymbolTable t) {
 
   int key = get_key(n);
-  
-  if(strcmp(n, t->name) == 0)
-  {
-	  
-  }
-
 
   if (t->entry[key]) {
 

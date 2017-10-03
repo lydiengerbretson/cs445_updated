@@ -88,8 +88,8 @@ int main(int argc, char **argv)
 			//print_tree(YYPROGRAM, 0); 
 			//populate symbol table
 			 populate_symbol_table( YYPROGRAM , GLOBAL_TABLE );
-			  //populate_symbol_table(YYPROGRAM, CLASSTABLE); 
-			  //populate_symbol_table(YYPROGRAM, FUNCTION_TABLE); 
+			//populate_symbol_table(YYPROGRAM, CLASSTABLE); 
+			//populate_symbol_table(YYPROGRAM, FUNCTION_TABLE); 
 
 		 }
 		 else
