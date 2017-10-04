@@ -147,6 +147,10 @@ struct tree * handle_funcdef( struct tree *t, SymbolTable scope ) {
 
 }
 
+extern SymbolTable FUNCTION_TABLE; 
+extern SymbolTable GLOBAL_TABLE; 
+extern SymbolTable PARAM_TABLE; 
+
 struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
   int i,j, key;
@@ -163,7 +167,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
   } else if (t->nkids == 0 ) 
   {
 
-    if (!direct_declare) // This fixes foo was instered into scope foo problem
+   if (!direct_declare) // This fixes foo was instered into scope foo problem
     {
         if (t->prodrule == IDENTIFIER) 
         {
@@ -180,7 +184,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
         
        
     }
-   else
+  else
     {
         direct_declare = false;
     }
@@ -200,12 +204,11 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
     case FUNCTION_DEFINITION_1:   
 
 	  printf("\n------FUNCTION------\n"); 
-      local = new_scope("global");
-	  handle_funcdef(t->kid[1], local->entrytable);
+	  handle_funcdef(t->kid[1], GLOBAL_TABLE); 
       for (j=0; j < t->nkids; j++) 
 	  {
 		// insert into local symbol table 
-		populate_symbol_table( t->kid[j] , local->entrytable );     
+		populate_symbol_table( t->kid[j] , FUNCTION_TABLE );     
 		 
       }
 	  break; 
@@ -216,31 +219,24 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
     case DIRECT_DECLARATOR_1:
       direct_declare = true;
       printf("\n ------DECLARED VARIABLES------\n");
+	  for (j=0; j < t->nkids; j++) 
+	  {
+		// insert into local symbol table 
+		populate_symbol_table( t->kid[j] , scope );     
+		 
+      }
+	  
+      break; 
+	case PARAMETER_DECLARATION_1:
+	  printf("Found a parameter!\n");
+	  for (j=0; j < t->nkids; j++) 
+	  {
+		// insert into local symbol table 
+		populate_symbol_table( t->kid[j] , PARAM_TABLE );     
+		 
+      }		
+       break; 
 
-      scope->name = strdup(t->kid[0]->leaf->text);
-	  //break; // when break is commented, parameters show up  
-    case INIT_DECLARATOR_1:
-	case DECLARATOR_1:
-    case INIT_DECLARATOR_LIST_1:
-	    if(lookup(t->kid[0]->prodrule_name, scope) && !direct_declare)
-	    {
-		    semanticerror("***Redeclared variable.*** :", t->kid[0]);  
-	    }
-
-	case SIMPLE_DECLARATION_1:
-            if(t->prodrule != INIT_DECLARATOR_1)
-			{ 
-			//printf("found type: %s, %d\n", t->kid[0]->leaf->text, t->nkids); 				
-		    }
-			
-	case PRIMARY_EXPRESSION_1:
-	 	//printf("found primary exp: %s, %d\n", t->kid[0]->prodrule_name, t->nkids); 
-		if(t->kid[0]->prodrule_name == NULL)
-		{
-			printf("Undeclared variable\n"); 
-		}
-		
-		//break; 
     default:
      
       for (i=0; i < t->nkids; i++) 
@@ -349,7 +345,7 @@ void semanticerror(char *s, struct tree *n)
   fprintf(stderr, "%s", s);
   if (n && n->prodrule == IDENTIFIER) fprintf(stderr, " %s", n->leaf->text);
   fprintf(stderr, "\n");
-  //exit(3); 
+  exit(3); 
 }
 
 

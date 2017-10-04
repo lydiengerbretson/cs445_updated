@@ -31,7 +31,7 @@ int yay(double b)
 	
 	char yay_s; 
 	double yay_g;
-	//double yay_g;  this causes problems
+	//double yay_g;  //this causes problems
 	//int y; // this causes problems, makes sstr "redeclared" for some reason
 
 }
@@ -40,7 +40,7 @@ int func(int a, int b)
 {
 	int func_x; 
 	int func_lyd; 
-	int func_lyd;  
+	//int func_lyd;  
 	
 	
 	//func_x = 1; 

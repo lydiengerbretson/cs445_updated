@@ -25,6 +25,7 @@ SymbolTable CLASSTABLE; // SymbolTable is a struct table *
 SymbolTable CLASS_FUNCTION_TABLE; // ??
 SymbolTable FUNCTION_TABLE; // ??
 SymbolTable GLOBAL_TABLE; // Globals 
+SymbolTable PARAM_TABLE;
 
 char *filetext; 
 filenodeptr file_stack = NULL; 
@@ -44,6 +45,7 @@ int main(int argc, char **argv)
   CLASS_FUNCTION_TABLE = new_table("class_function_table"); 
   FUNCTION_TABLE = new_table("function_table"); 
   GLOBAL_TABLE = new_table("global_table"); 
+  PARAM_TABLE = new_table("parameter_table"); 
    
    ++argv, --argc;  /* skip over program name */
    
@@ -65,7 +67,7 @@ int main(int argc, char **argv)
 		  if(yyin == NULL)
 		  {
 			  printf("File does not exist.\n"); 
-			  return; 
+			  return -1; 
 		  }
 		  // push file onto stack 
 	      filetext = file_list[i]; 
