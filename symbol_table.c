@@ -227,10 +227,14 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
       for (j=0; j < t->nkids; j++) 
 	  {
 		// insert into local function symbol table 
-		populate_symbol_table( t->kid[j] , FUNCTION_TABLE );   
-        //checkdeclared(t->kid[j], FUNCTION_TABLE); 		
+		populate_symbol_table( t->kid[j] , FUNCTION_TABLE );   		
 		 
       }
+	  printf("Checking variables in scope: %s\n", FUNCTION_TABLE->name); 
+	  for(j=0; j < t->nkids; j++)
+	  {
+		  checkdeclared(t->kid[j], FUNCTION_TABLE);  
+	  }	
 	  break; 
 	case ASSIGNMENT_EXPRESSION_1:
 		break;
@@ -247,18 +251,17 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
 		FUNCTION_TABLE->name = strdup(t->kid[0]->leaf->text); 
 		populate_symbol_table( t->kid[j] , FUNCTION_TABLE );     
-		//checkdeclared(t->kid[j], scope); 
 		 
-      }	  
+      }	
+	  
       break;
 	  
 	case PARAMETER_DECLARATION_1:
-	  printf("Found a parameter!\n");
+	 // printf("Found a parameter!\n");
 	  for (j=0; j < t->nkids; j++) 
 	  {
 		// insert into local parameter symbol table 
 		populate_symbol_table( t->kid[j] , FUNCTION_TABLE );     
-		//checkdeclared(t->kid[j], PARAM_TABLE); 
 		 
       }		
        break; 
@@ -268,7 +271,6 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
       for (i=0; i < t->nkids; i++) 
 	  {  
 	    populate_symbol_table( t->kid[i] , scope );
-		//checkdeclared(t->kid[i], scope); 
       }
      
       break;
@@ -286,40 +288,33 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 // adapted from http://www2.cs.uidaho.edu/~jeffery/courses/445/semantic.c
 void checkdeclared(struct tree * t, SymbolTable ST)
 {
-   int i;
-   char *s;
+  int j; 
 
-   if (t == NULL) return;
-   switch(t->prodrule) {
-   case PRIMARY_EXPRESSION_1: 
-   {
-      // this treenode denotes a variable reference 
-      if (!lookup(t->kid[0]->prodrule_name, ST)) 
+  //if(strcmp(ST->name, "yay") == 0)
+  //{
+  if(!t)
+  {
+      // do nothing
+  }
+  else 
+  { 
+    // lookup variable somewhere in here
+	  if (t->nkids == 0)
 	  {
-		printf("Undeclared variable\n");
-		return; 
-
+		  printf("	LEAF within symbol table %s: \"%s\": %d\n",  
+				 ST->name, t->leaf->text, t->leaf->category); 
 	  }
-
-   }
-   case FUNCTION_DEFINITION_1:
-
-	 if (!lookup(t->kid[0]->prodrule_name, ST)) 
-	 {
-	    fprintf(stderr, "can't find symtab for function %s\n", s);
-	    return;
-	 } 
-     break;;
-
-   case DECLARATION_1:
-      break;
-    
-
-   default:
-      for (i=0; i < t->nkids; i++)
-	  checkdeclared(t->kid[i], ST);
-}
+	  else
+	  {
+		printf("	KID within symbol table %s: %s: %d\n", ST->name, t->prodrule_name, t->nkids);
  
+		for(j=0; j<t->nkids; j++)
+		{
+			checkdeclared(t->kid[j], ST);
+		}
+	  }
+}
+  //}
 }
 
 
