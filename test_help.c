@@ -1,9 +1,10 @@
 
 int main()
 {
-    int z;
+    int z, y;
     z = 0;
     
+ 
     z = use_foo(11);
     
     return 0;

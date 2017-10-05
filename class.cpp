@@ -19,6 +19,8 @@ int main()
 	int int_y;
 
 	int x; 
+	x = 1; 
+	//int x; 
 	//y = 10; 
 	//a + b; 
 	//int int_y; 
@@ -31,6 +33,8 @@ int yay(double b)
 	
 	char yay_s; 
 	double yay_g;
+	yay_g = 1.0; 
+	int x; 
 	//double yay_g;  //this causes problems
 	//int y; // this causes problems, makes sstr "redeclared" for some reason
 

@@ -43,7 +43,7 @@ int main(int argc, char **argv)
   //struct typenametable_entry *tmp_head; 
   CLASSTABLE = new_table( "classtable" );
   CLASS_FUNCTION_TABLE = new_table("class_function_table"); 
-  FUNCTION_TABLE = new_table("function_table"); 
+  FUNCTION_TABLE = new_table("local_table"); 
   GLOBAL_TABLE = new_table("global_table"); 
   PARAM_TABLE = new_table("parameter_table"); 
    

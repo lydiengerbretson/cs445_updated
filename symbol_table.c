@@ -7,6 +7,10 @@
 #include "nonterms.h"
 #include "120gram_lydia.tab.h"
 
+extern SymbolTable CLASSTABLE; 
+extern SymbolTable FUNCTION_TABLE; 
+extern SymbolTable GLOBAL_TABLE; 
+extern SymbolTable PARAM_TABLE; 
 
 // adapted from https://github.com/park2331/compiler
 
@@ -147,9 +151,6 @@ struct tree * handle_funcdef( struct tree *t, SymbolTable scope ) {
 
 }
 
-extern SymbolTable FUNCTION_TABLE; 
-extern SymbolTable GLOBAL_TABLE; 
-extern SymbolTable PARAM_TABLE; 
 
 struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
@@ -172,7 +173,14 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
         if (t->prodrule == IDENTIFIER) 
         {
 
+		  if(lookup(t->leaf->text, FUNCTION_TABLE))
+		  {
+			  printf("Already in symbol table %s : %s \n",  scope->name, t->leaf->text); 
+			  //semanticerror("Error: redeclared variable", t); 
+		  }
+		  
           insert_sym(t->leaf->text , scope);
+		  //checkdeclared(t, scope); 
           
           return t;
 
@@ -194,21 +202,33 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
     key = get_key( t->prodrule_name );
 
 // TODO: Add function parameter scoping: Kinda done. 
-// TODO: Fix function name scoping/definitions: Kinda done.
-// TODO: Add semantic error for redeclarations: Kinda done 
+// TODO: Add function name scoping/definitions: Kinda done.
+// TODO: Add global scoping: Done 
+// TODO: Add semantic error for redeclarations: 
 // TODO: Add semantic error for undeclarations: 
-// TODO: Possibly write a better function that searches the table
+// TODO: Multiple variable declarations on the same line: Done
+
     if (direct_declare){direct_declare=false;};
     switch(t->prodrule) {
 
+	case CLASS_HEAD_1:
+	case MEMBER_SPECIFICATION_1:
+	for (j=0; j < t->nkids; j++) 
+	  {
+		// insert into class symbol table 
+		populate_symbol_table( t->kid[j] , CLASSTABLE );   
+			 
+      }
+	break; 
     case FUNCTION_DEFINITION_1:   
 
 	  printf("\n------FUNCTION------\n"); 
 	  handle_funcdef(t->kid[1], GLOBAL_TABLE); 
       for (j=0; j < t->nkids; j++) 
 	  {
-		// insert into local symbol table 
-		populate_symbol_table( t->kid[j] , FUNCTION_TABLE );     
+		// insert into local function symbol table 
+		populate_symbol_table( t->kid[j] , FUNCTION_TABLE );   
+        //checkdeclared(t->kid[j], FUNCTION_TABLE); 		
 		 
       }
 	  break; 
@@ -221,18 +241,24 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
       printf("\n ------DECLARED VARIABLES------\n");
 	  for (j=0; j < t->nkids; j++) 
 	  {
-		// insert into local symbol table 
-		populate_symbol_table( t->kid[j] , scope );     
+		// insert into local current symbol table 
+		// need to create new scope i.e. SymbolTable for each new function? 
+		// this doesn't fix the issue
+
+		FUNCTION_TABLE->name = strdup(t->kid[0]->leaf->text); 
+		populate_symbol_table( t->kid[j] , FUNCTION_TABLE );     
+		//checkdeclared(t->kid[j], scope); 
 		 
-      }
+      }	  
+      break;
 	  
-      break; 
 	case PARAMETER_DECLARATION_1:
 	  printf("Found a parameter!\n");
 	  for (j=0; j < t->nkids; j++) 
 	  {
-		// insert into local symbol table 
-		populate_symbol_table( t->kid[j] , PARAM_TABLE );     
+		// insert into local parameter symbol table 
+		populate_symbol_table( t->kid[j] , FUNCTION_TABLE );     
+		//checkdeclared(t->kid[j], PARAM_TABLE); 
 		 
       }		
        break; 
@@ -242,6 +268,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
       for (i=0; i < t->nkids; i++) 
 	  {  
 	    populate_symbol_table( t->kid[i] , scope );
+		//checkdeclared(t->kid[i], scope); 
       }
      
       break;
@@ -256,83 +283,45 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
   };
 
 
-void populate_params(struct tree *t)
-{
-	int i; 
-	if(t==NULL)
-	{
-		return; 
-	}
-	
-	switch(t->prodrule)
-	{
-		case DIRECT_DECLARATOR_1:
-		return; 
-		default:
-			for(i=0; i < t->nkids; i++)
-			{
-				populate_params(t->kid[i]); 
-			}
-	}
-}
-
 // adapted from http://www2.cs.uidaho.edu/~jeffery/courses/445/semantic.c
-void check_declared(struct tree * t, SymbolTable ST)
+void checkdeclared(struct tree * t, SymbolTable ST)
 {
-	
    int i;
    char *s;
-   int integer_type = 0; // testing
 
    if (t == NULL) return;
-   switch(t->prodrule) 
-   {
-   case INTEGER:
-      //t->typ = integer_type;
-      return;
-   case MULTIPLICATIVE_EXPRESSION_1:
-   case ADDITIVE_EXPRESSION_1:
-   {
-      check_declared(t->kid[0], ST);
-      check_declared(t->kid[1], ST);
-   }
-   
-   return;
+   switch(t->prodrule) {
    case PRIMARY_EXPRESSION_1: 
    {
-      /* this treenode denotes a variable reference */
-      //struct st_entry *ste;
-      if (t->kid[0]->prodrule_name == NULL) 
+      // this treenode denotes a variable reference 
+      if (!lookup(t->kid[0]->prodrule_name, ST)) 
 	  {
-	 printf("undeclared variable\n");
-	 //t->type = error_type;
+		printf("Undeclared variable\n");
+		return; 
+
 	  }
-      else 
-	  {
-	 //t->type = ste->type;
-	  }
-    }
-      case COMPOUND_STATEMENT_1:
-	 check_declared(t->kid[0], ST);
-	 return;
+
+   }
    case FUNCTION_DEFINITION_1:
-	 check_declared(t->kid[1], ST);	 
-      return;
+
+	 if (!lookup(t->kid[0]->prodrule_name, ST)) 
+	 {
+	    fprintf(stderr, "can't find symtab for function %s\n", s);
+	    return;
+	 } 
+     break;;
 
    case DECLARATION_1:
       break;
-      
+    
+
    default:
-	break;
-   }
-   if (t->prodrule > 0) {
-      
-
       for (i=0; i < t->nkids; i++)
-	 check_declared(t->kid[i], ST);
+	  checkdeclared(t->kid[i], ST);
+}
+ 
+}
 
-   }
-   }
 
 
 // adapted from http://www2.cs.uidaho.edu/~jeffery/courses/445/symt.c
