@@ -6,6 +6,7 @@
 #include "hash.h"
 #include "nonterms.h"
 #include "120gram_lydia.tab.h"
+#include "utility_func.h"
 
 extern SymbolTable CLASSTABLE; 
 extern SymbolTable FUNCTION_TABLE; 
@@ -34,9 +35,9 @@ Entry new_entry(char* n) {
 SymbolTable new_table(char* n) {
 
 
-  SymbolTable t = calloc(1, sizeof(SymbolTable));
+  SymbolTable t = malloc(sizeof(SymbolTable));
 
-  t->entry[10000] = calloc(10000, sizeof(Entry));
+  t->entry[10000] = malloc(10000 * sizeof(Entry));
 
   t->name = strdup(n);
   
@@ -152,14 +153,19 @@ struct tree * handle_funcdef( struct tree *t, SymbolTable scope ) {
 }
 
 
+
 struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
   int i,j, key;
   struct tree * temp;
   Entry local;
   char *lex;
-
-
+  static int nlocaltables = 0;
+  static int nclasstables = 0;
+  SymbolTable func_table = NULL;
+  SymbolTable class_table = NULL;
+  char * func_name = NULL;
+  char * class_name = NULL;
   static bool direct_declare = false;
   
   if ( !t ) {
@@ -211,30 +217,39 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
     if (direct_declare){direct_declare=false;};
     switch(t->prodrule) {
 
-	case CLASS_HEAD_1:
-	case MEMBER_SPECIFICATION_1:
-	for (j=0; j < t->nkids; j++) 
+	case CLASS_SPECIFIER_1:
+      printf("\n------CLASS------\n"); 
+      class_name = get_class_name(t);
+      insert_sym(class_name, GLOBAL_TABLE); // Insert into global table
+      
+      class_table = new_table(class_name);
+      class_tables[nclasstables++] = class_table;
+      scope = class_table;
+      for (j=0; j < t->nkids; j++) 
 	  {
-		// insert into class symbol table 
-		populate_symbol_table( t->kid[j] , CLASSTABLE );   
-			 
+		// insert into local function symbol table 
+		populate_symbol_table( t->kid[j] , scope);   		
+		 
       }
+
 	break; 
     case FUNCTION_DEFINITION_1:   
 
 	  printf("\n------FUNCTION------\n"); 
-	  handle_funcdef(t->kid[1], GLOBAL_TABLE); 
+      func_name = get_func_name(t);
+      insert_sym(func_name, GLOBAL_TABLE); // Insert into global table
+	  //handle_funcdef(t->kid[1], GLOBAL_TABLE);       
+      func_table = new_table(func_name);
+      local_tables[nlocaltables++] = func_table;
+      scope = func_table;
       for (j=0; j < t->nkids; j++) 
 	  {
 		// insert into local function symbol table 
-		populate_symbol_table( t->kid[j] , FUNCTION_TABLE );   		
+		populate_symbol_table( t->kid[j] , scope);   		
 		 
       }
-	  printf("Checking variables in scope: %s\n", FUNCTION_TABLE->name); 
-	  for(j=0; j < t->nkids; j++)
-	  {
-		  checkdeclared(t->kid[j], FUNCTION_TABLE);  
-	  }	
+ 
+
 	  break; 
 	case ASSIGNMENT_EXPRESSION_1:
 		break;
@@ -249,19 +264,17 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		// need to create new scope i.e. SymbolTable for each new function? 
 		// this doesn't fix the issue
 
-		FUNCTION_TABLE->name = strdup(t->kid[0]->leaf->text); 
-		populate_symbol_table( t->kid[j] , FUNCTION_TABLE );     
+		populate_symbol_table( t->kid[j] , scope );     
 		 
       }	
 	  
       break;
-	  
 	case PARAMETER_DECLARATION_1:
-	 // printf("Found a parameter!\n");
+
 	  for (j=0; j < t->nkids; j++) 
 	  {
 		// insert into local parameter symbol table 
-		populate_symbol_table( t->kid[j] , FUNCTION_TABLE );     
+		populate_symbol_table( t->kid[j] , scope);     
 		 
       }		
        break; 

@@ -5,6 +5,7 @@
 #include "120gram_lydia.tab.h"
 #include "hash.h"
 #include "symbol_table.h"
+#include "utility_func.h"
 
 // code help from Tovah Whitesell (SEL)
 // ideas and program outline: https://github.com/andschwa/partial-cpp-compiler
@@ -90,6 +91,7 @@ int main(int argc, char **argv)
 			//print_tree(YYPROGRAM, 0); 
 			//populate symbol table
 			 populate_symbol_table( YYPROGRAM , GLOBAL_TABLE );
+             print_tables(1);
 			 //printf("Checking symbols in symbol table: %s \n", FUNCTION_TABLE->name); 
 			 //checkdeclared(YYPROGRAM, FUNCTION_TABLE); 
 			//populate_symbol_table(YYPROGRAM, CLASSTABLE); 

@@ -1,12 +1,15 @@
 CC=gcc
 CFLAGS=-c -g
 
-120++: main.o token.o tree_lydia.o 120gram_lydia.tab.o lex.yy.o hash.o symbol_table.o
-	$(CC) -o 120++ main.o lex.yy.o token.o 120gram_lydia.tab.o tree_lydia.o hash.o symbol_table.o
+120++: main.o token.o tree_lydia.o 120gram_lydia.tab.o lex.yy.o hash.o utility_func.o symbol_table.o 
+	$(CC) -o 120++ main.o lex.yy.o token.o 120gram_lydia.tab.o tree_lydia.o hash.o utility_func.o symbol_table.o 
 
 token.o: token.c
 	$(CC) $(CFLAGS) token.c
-
+    
+utility_func.o: utility_func.c
+	$(CC) $(CFLAGS) utility_func.c
+    
 symbol_table.o: symbol_table.c
 	$(CC) $(CFLAGS) symbol_table.c
 	
@@ -32,5 +35,5 @@ clean:
 	rm lex.yy.c
 	rm 120gram_lydia.tab.c
 	rm 120gram_lydia.output
-	rm 120++
 	rm *.o
+	rm 120++

@@ -1,3 +1,5 @@
+#ifndef SYMBOL_TABLE_H
+#define SYMBOL_TABLE_H
 
 #include <stdbool.h>
 #include <stdio.h>
@@ -23,14 +25,14 @@ typedef struct entry {
 
 
 // hash table structure that holds name and scope info.
-typedef struct table {
+struct table {
 
   char *name;
 
   Entry entry[];
     
-} * SymbolTable;
-
+};
+typedef struct table  * SymbolTable;
 
 // structure that holds type information 
 typedef struct type {
@@ -76,3 +78,4 @@ void checkdeclared(struct tree *, SymbolTable);
 
 struct tree * populate_symbol_table( struct tree *, SymbolTable );
 struct tree * handle_funcdef( struct tree * , SymbolTable );
+#endif
