@@ -8,7 +8,7 @@ void print_tables(int type)
 {
     int i = 0;
     char * temp_name = "";
-   if (1) // FUNCTIONS
+   if (type == 1) // FUNCTIONS
     {
        for (i = 0; i < TABLE_SIZE ; i++)
        {
@@ -31,8 +31,26 @@ void print_tables(int type)
          
 
     }
-    else if(2) // Classes
+    else if(type == 2) // Classes
     {
+	   for (i = 0; i < TABLE_SIZE ; i++)
+       {
+         if (class_tables[i])
+         {
+             if (class_tables[i] == NULL)
+             {
+                 printf("Null on %d", i);
+             }
+             else
+             {
+               printf("Class Table %d: %s\n", i + 1, class_tables[i]->name);
+             }
+         }
+         else
+         {
+            break;
+         }
+       }
     }
 
 }
@@ -40,7 +58,7 @@ void print_tables(int type)
 
 char * get_func_name(struct tree * t)
 {
-   char * error = "Crap didn't find name";
+   char * error = "Could not find a name.";
    int seenfunc = 0;
    while (1) {
       switch (t->prodrule) {
@@ -67,7 +85,7 @@ char * get_func_name(struct tree * t)
 
 char * get_class_name(struct tree *t)
 {
-     char * error = "Crap didn't find name";
+     char * error = "Could not find a name.";
      int classdef = 0;
      while (1)
      {

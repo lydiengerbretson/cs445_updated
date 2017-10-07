@@ -66,6 +66,7 @@ extern char* filetext;
 extern FILE *yyin; 
 extern YYSTYPE yylval; 
 extern SymbolTable CLASSTABLE;
+extern SymbolTable GLOBAL_TABLE; 
 extern struct typenametable_entry *HEAD; 
 
 // global variables
@@ -105,8 +106,8 @@ stringtext				([^"])|(\\.)
 "using namespace std;"			{ saw_std = 1;
 		if (saw_string) typenametable_insert("string", CLASSTABLE);
 		if (saw_iostream) {
-			typenametable_insert("ifstream", CLASSTABLE);
-			typenametable_insert("ofstream", CLASSTABLE);
+			typenametable_insert("ifstream", GLOBAL_TABLE);
+			typenametable_insert("ofstream", GLOBAL_TABLE);
 			}
 		}
 
@@ -326,7 +327,7 @@ void insert_typename_tree(struct tree *t, SymbolTable table)
             t->leaf->text, t->leaf->category );
    } else {
 
-     printf("INSERTED %s: %d\n ",t->leaf->text, t->leaf->category);
+     //printf("INSERTED %s: %d\n ",t->leaf->text, t->leaf->category);
      insert_sym( t->leaf->text , table );
 
    }

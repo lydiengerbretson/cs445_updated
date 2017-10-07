@@ -816,7 +816,7 @@ class_specifier:
 
 class_head:
         class_key identifier { $$ = create_tree("class_head_1", CLASS_HEAD_1, 2, $1, $2);  insert_typename_tree($2, CLASSTABLE);  } 
-	| class_key nested_name_specifier identifier { $$ = create_tree("class_head_2", CLASS_HEAD_1, 3, $1, $2, $3); insert_typename_tree($3, CLASSTABLE); }
+	| class_key nested_name_specifier identifier { $$ = create_tree("class_head_2", CLASS_HEAD_1, 3, $1, $2, $3); insert_typename_tree($3, CLASSTABLE);}
   
 	;
 

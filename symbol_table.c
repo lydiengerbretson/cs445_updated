@@ -167,6 +167,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
   char * func_name = NULL;
   char * class_name = NULL;
   static bool direct_declare = false;
+  static bool class_declare = false; 
   
   if ( !t ) {
     return NULL;
@@ -176,6 +177,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
    if (!direct_declare) // This fixes foo was instered into scope foo problem
     {
+
         if (t->prodrule == IDENTIFIER) 
         {
 
@@ -184,23 +186,27 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 			  printf("Already in symbol table %s : %s \n",  scope->name, t->leaf->text); 
 			  //semanticerror("Error: redeclared variable", t); 
 		  }
-		  
-          insert_sym(t->leaf->text , scope);
+		  //printf("Checking declared... \n"); 
 		  //checkdeclared(t, scope); 
+		  //printf("\n"); 
+		  if(lookup(t->leaf->text, scope))
+		  {
+			  printf("Double: %s \n", t->leaf->text); 
+		  }
+          insert_sym(t->leaf->text , scope);
           
           return t;
-
+		
         }
         else 
         {
           return NULL;
         }
-        
-       
+         
     }
   else
     {
-        direct_declare = false;
+        direct_declare = false; 
     }
   } else if( t->nkids > 0 ) 
   {
@@ -248,7 +254,6 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		populate_symbol_table( t->kid[j] , scope);   		
 		 
       }
- 
 
 	  break; 
 	case ASSIGNMENT_EXPRESSION_1:
@@ -303,8 +308,6 @@ void checkdeclared(struct tree * t, SymbolTable ST)
 {
   int j; 
 
-  //if(strcmp(ST->name, "yay") == 0)
-  //{
   if(!t)
   {
       // do nothing
@@ -312,22 +315,32 @@ void checkdeclared(struct tree * t, SymbolTable ST)
   else 
   { 
     // lookup variable somewhere in here
+
 	  if (t->nkids == 0)
 	  {
-		  printf("	LEAF within symbol table %s: \"%s\": %d\n",  
+		  if(t->leaf->category == IDENTIFIER)
+		  {
+			 if(lookup(t->leaf->text, ST))
+			  {
+				  // this need to be only init declarators
+				  printf("Redeclared!! %s \n", t->leaf->text); 
+		          printf("	LEAF within symbol table %s: \"%s\": %d\n",  
 				 ST->name, t->leaf->text, t->leaf->category); 
+			  }
+		  }
 	  }
 	  else
-	  {
-		printf("	KID within symbol table %s: %s: %d\n", ST->name, t->prodrule_name, t->nkids);
- 
+	  {	  
+
+		printf("	KID [%d] within symbol table %s: %s: %d %d \n", j, ST->name, t->prodrule_name, t->nkids, t->prodrule);
 		for(j=0; j<t->nkids; j++)
 		{
 			checkdeclared(t->kid[j], ST);
 		}
+		
 	  }
-}
-  //}
+
+  }
 }
 
 
