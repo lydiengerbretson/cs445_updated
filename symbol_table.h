@@ -74,7 +74,8 @@ SymbolTable get_scope(char* , SymbolTable );
 bool lookup( char *, SymbolTable );
 void semanticerror(char *s, struct tree *n); 
 
-void checkdeclared(struct tree *, SymbolTable); 
+void checkredeclared(struct tree *, SymbolTable); 
+void checkundeclared(struct tree *, SymbolTable); 
 
 struct tree * populate_symbol_table( struct tree *, SymbolTable );
 struct tree * handle_funcdef( struct tree * , SymbolTable );

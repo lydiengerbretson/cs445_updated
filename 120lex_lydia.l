@@ -106,8 +106,8 @@ stringtext				([^"])|(\\.)
 "using namespace std;"			{ saw_std = 1;
 		if (saw_string) typenametable_insert("string", CLASSTABLE);
 		if (saw_iostream) {
-			typenametable_insert("ifstream", GLOBAL_TABLE);
-			typenametable_insert("ofstream", GLOBAL_TABLE);
+			typenametable_insert("ifstream", CLASSTABLE);
+			typenametable_insert("ofstream", CLASSTABLE);
 			}
 		}
 

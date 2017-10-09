@@ -110,6 +110,10 @@ char * get_class_name(struct tree *t)
                 t = t->kid[1];
                 break;
             }
+			case DIRECT_DECLARATOR_7:
+			  classdef = 1;
+              t = t->kid[2];
+              break;
             default:
             {
                 return error;

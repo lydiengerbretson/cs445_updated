@@ -1,0 +1,77 @@
+file list ant.cpp
+Opening ant.cpp
+ ant.h
+ ifstream was INSERTED into scope: global_table at location 8838 
+ofstream was INSERTED into scope: global_table at location 1998 
+ant was INSERTED into scope: classtable at location 1939 
+
+------CLASS------
+ant was INSERTED into scope: global_table at location 1939 
+ant was INSERTED into scope: ant at location 1939 
+I'm a class member specification
+I'm a class member specification
+
+ ------DECLARED VARIABLES------
+I'm a class member specification
+
+ ------DECLARED VARIABLES------
+I'm a class member specification
+
+ ------DECLARED VARIABLES------
+I'm a class member specification
+
+ ------DECLARED VARIABLES------
+I'm a class member specification
+
+ ------DECLARED VARIABLES------
+I'm a class member specification
+
+ ------DECLARED VARIABLES------
+I'm a class member specification
+
+ ------DECLARED VARIABLES------
+I'm a class member specification
+
+ ------DECLARED VARIABLES------
+I'm a class member specification
+
+ ------DECLARED VARIABLES------
+I'm a class member specification
+I'm a class member specification
+x was INSERTED into scope: ant at location 4440 
+y was INSERTED into scope: ant at location 4477 
+I'm a class member specification
+dir was INSERTED into scope: ant at location 7357 
+I'm a class member specification
+energy was INSERTED into scope: ant at location 3616 
+I'm a class member specification
+ant was INSERTED into scope: ant at location 1939 
+I'm a class member specification
+I'm a class member specification
+
+ ------DECLARED VARIABLES------
+I'm a class member specification
+
+ ------DECLARED VARIABLES------
+I'm a class member specification
+
+ ------DECLARED VARIABLES------
+I'm a class member specification
+
+ ------DECLARED VARIABLES------
+I'm a class member specification
+
+ ------DECLARED VARIABLES------
+I'm a class member specification
+
+ ------DECLARED VARIABLES------
+I'm a class member specification
+
+ ------DECLARED VARIABLES------
+I'm a class member specification
+
+ ------DECLARED VARIABLES------
+I'm a class member specification
+
+ ------DECLARED VARIABLES------
+I'm a class mem

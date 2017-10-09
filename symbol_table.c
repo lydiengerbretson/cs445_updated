@@ -37,7 +37,7 @@ SymbolTable new_table(char* n) {
 
   SymbolTable t = malloc(sizeof(SymbolTable));
 
-  t->entry[10000] = malloc(10000 * sizeof(Entry));
+  t->entry[9973 ] = malloc(9973  * sizeof(Entry));
 
   t->name = strdup(n);
   
@@ -181,19 +181,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
         if (t->prodrule == IDENTIFIER) 
         {
 
-		  if(lookup(t->leaf->text, FUNCTION_TABLE))
-		  {
-			  printf("Already in symbol table %s : %s \n",  scope->name, t->leaf->text); 
-			  //semanticerror("Error: redeclared variable", t); 
-		  }
-		  //printf("Checking declared... \n"); 
-		  //checkdeclared(t, scope); 
-		  //printf("\n"); 
-		  if(lookup(t->leaf->text, scope))
-		  {
-			  printf("Double: %s \n", t->leaf->text); 
-		  }
-          insert_sym(t->leaf->text , scope);
+          insert_sym(t->leaf->text, scope);
           
           return t;
 		
@@ -222,6 +210,13 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
     if (direct_declare){direct_declare=false;};
     switch(t->prodrule) {
+	
+	// this is where i check if a variable is redeclared
+	case INIT_DECLARATOR_1:
+        // will exit with error if redeclared
+		checkredeclared(t->kid[0], scope); 
+		populate_symbol_table(t->kid[0], scope); 
+		break; 
 
 	case CLASS_SPECIFIER_1:
       printf("\n------CLASS------\n"); 
@@ -237,8 +232,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		populate_symbol_table( t->kid[j] , scope);   		
 		 
       }
-
-	break; 
+	  break; 
     case FUNCTION_DEFINITION_1:   
 
 	  printf("\n------FUNCTION------\n"); 
@@ -257,12 +251,17 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
 	  break; 
 	case ASSIGNMENT_EXPRESSION_1:
+	    checkundeclared(t->kid[0], scope); 
+		populate_symbol_table(t->kid[0], scope); 
 		break;
+		
     case JUMP_STATEMENT_1:
 		break;
+	  
     case DIRECT_DECLARATOR_1:
       direct_declare = true;
       printf("\n ------DECLARED VARIABLES------\n");
+	  
 	  for (j=0; j < t->nkids; j++) 
 	  {
 		// insert into local current symbol table 
@@ -304,7 +303,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
 
 // adapted from http://www2.cs.uidaho.edu/~jeffery/courses/445/semantic.c
-void checkdeclared(struct tree * t, SymbolTable ST)
+void checkredeclared(struct tree * t, SymbolTable ST)
 {
   int j; 
 
@@ -320,22 +319,65 @@ void checkdeclared(struct tree * t, SymbolTable ST)
 	  {
 		  if(t->leaf->category == IDENTIFIER)
 		  {
+			  //printf("	LEAF within symbol table %s: \"%s\": %d at lineno: %d\n",  
+			  //ST->name, t->leaf->text, t->leaf->category, t->leaf->lineno); 
+			  
 			 if(lookup(t->leaf->text, ST))
 			  {
 				  // this need to be only init declarators
-				  printf("Redeclared!! %s \n", t->leaf->text); 
-		          printf("	LEAF within symbol table %s: \"%s\": %d\n",  
-				 ST->name, t->leaf->text, t->leaf->category); 
+				  printf("DOUBLE: %s \n", t->leaf->text); 
+				 //semanticerror("Redeclared variable:", t); 
 			  }
 		  }
 	  }
 	  else
 	  {	  
 
-		printf("	KID [%d] within symbol table %s: %s: %d %d \n", j, ST->name, t->prodrule_name, t->nkids, t->prodrule);
+		//printf("	KID [%d] within symbol table %s: %s: %d %d \n", j, ST->name, t->prodrule_name, t->nkids, t->prodrule);
 		for(j=0; j<t->nkids; j++)
 		{
-			checkdeclared(t->kid[j], ST);
+			checkredeclared(t->kid[j], ST);
+		}
+		
+	  }
+
+  }
+}
+
+// adapted from http://www2.cs.uidaho.edu/~jeffery/courses/445/semantic.c
+void checkundeclared(struct tree * t, SymbolTable ST)
+{
+  int j; 
+
+  if(!t)
+  {
+      // do nothing
+  }
+  else 
+  { 
+    // lookup variable somewhere in here
+
+	  if (t->nkids == 0)
+	  {
+		  if(t->leaf->category == IDENTIFIER)
+		  {
+			  //printf("	LEAF within symbol table %s: \"%s\": %d at lineno: %d\n",  
+			  //ST->name, t->leaf->text, t->leaf->category, t->leaf->lineno); 
+			  
+			 if(!lookup(t->leaf->text, ST))
+			  {
+				  // this need to be only init declarators
+				 semanticerror("Undeclared variable:", t); 
+			  }
+		  }
+	  }
+	  else
+	  {	  
+
+		//printf("	KID [%d] within symbol table %s: %s: %d %d \n", j, ST->name, t->prodrule_name, t->nkids, t->prodrule);
+		for(j=0; j<t->nkids; j++)
+		{
+			checkundeclared(t->kid[j], ST);
 		}
 		
 	  }

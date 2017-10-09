@@ -1,9 +1,13 @@
+#include <iostream>
+#include <string>
+using namespace std; 
 
 int main()
 {
-    int z, y;
+    int z; 
+	int yay;
     z = 0;
-    
+	//string s; 
  
     z = use_foo(11);
     
@@ -12,17 +16,20 @@ int main()
 
 int foo()
 {
-    int y;
-    y = 3;
-    
-    return y;
+    int yas;
+    yas = 3;
+   
+   
+    return yas;
 }
 
 int use_foo(int c)
 {
-    int w;
-    w = foo();
+    int woah;
+    woah = foo();
+	 
+	//yes = foo(); 
     
-    return w + c;
+    return woah + c;
 
 }
