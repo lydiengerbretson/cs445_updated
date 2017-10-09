@@ -48,7 +48,18 @@
 #include "symbol_table.h"
 
 int lineno;
-int saw_iostream, saw_string, saw_std;
+int saw_iostream;
+int saw_string;
+int saw_std;
+int saw_ctime; 
+int saw_iomanip;
+int saw_cmath; 
+int saw_cstdlib; 
+int saw_cstring; 
+int saw_fstream;
+int saw_ofstream; 
+int saw_ifstream; 
+int using_n_std;
 
 #define MAX_INCLUDE_DEPTH 10
 YY_BUFFER_STATE include_stack[MAX_INCLUDE_DEPTH]; 
@@ -89,33 +100,45 @@ chartext				([^'])|(\\.)
 stringtext				([^"])|(\\.)
 
 %%
-"#include"              {BEGIN(INCLUDE);}
-<INCLUDE>{
-"<iostream>"            { saw_iostream = 1; BEGIN(INITIAL); }
-"<fstream>"             { BEGIN(INITIAL); }
-"<cstdlib>"             { BEGIN(INITIAL); }
-"<cstring>"             { BEGIN(INITIAL); }
-"<string>"              { saw_string = 1; BEGIN(INITIAL);  }
-"<ctime>" 				{ BEGIN(INITIAL); }
-"<cmath>"               { BEGIN(INITIAL); }
-"<iomanip>"             { BEGIN(INITIAL); }
 
-\"[^\"]+\"              { handle_include(yytext); BEGIN(INITIAL); }
-}
 
-"using namespace std;"			{ saw_std = 1;
-		if (saw_string) typenametable_insert("string", CLASSTABLE);
-		if (saw_iostream) {
-			typenametable_insert("ifstream", CLASSTABLE);
-			typenametable_insert("ofstream", CLASSTABLE);
-			}
-		}
 
 "\n"					{ ++lineno; }
 [\t\f\v\r ]+			{ /* Ignore whitespace. */ }
 
 "/*"					{ skip_comment(); }
 "//"					{ skip_until_eol(); }
+
+"#include"              { BEGIN(INCLUDE); }
+
+<INCLUDE>{
+        [ \t]*          { /* eat whitespace */ }
+        "<cstdlib>"     { saw_cstdlib = 1; BEGIN(INITIAL); }
+        "<cmath>"       { saw_cmath = 1; BEGIN(INITIAL); }
+        "<ctime>"       { saw_ctime = 1; BEGIN(INITIAL); }
+        "<cstring>"     { saw_cstring = 1; BEGIN(INITIAL); }
+        "<fstream>"     { saw_fstream  = 1;
+                          if (using_n_std)
+						  {
+                              insert_sym("ifstream", CLASSTABLE);
+							  insert_sym("ofstream", CLASSTABLE); 
+						  }
+                          BEGIN(INITIAL); }
+        "<iostream>"    { saw_iostream = 1; BEGIN(INITIAL); }
+        "<string>"      { saw_string   = 1;
+                          if (using_n_std)
+                                  insert_sym("string", CLASSTABLE);
+                          BEGIN(INITIAL); }
+        "<iomanip>"     { saw_iomanip  = 1; BEGIN(INITIAL); }
+        \"[^\"]+\"      { handle_include(yytext); BEGIN(INITIAL); }
+}
+
+  /* only allowed namespace directive */
+"using namespace std;"  { using_n_std = 1;
+                          if (saw_fstream)
+                                  insert_sym("ifstream", CLASSTABLE);
+                          if (saw_string)
+                                  insert_sym("string", CLASSTABLE);}
 
 "bool"					{ return add_token(BOOL); }
 "break"					{ return add_token(BREAK); }
@@ -337,6 +360,7 @@ void insert_typename_tree(struct tree *t, SymbolTable table)
 // typenametable functions adapted from http://www2.cs.uidaho.edu/~jeffery/courses/445/120pp/120lex.l
 int typenametable_insert(char *s, SymbolTable t)
 {
+
    insert_sym(s, t); 
 }
 

@@ -1,5 +1,6 @@
 file list test_help.c
 Opening test_help.c
+string was INSERTED into scope: classtable at location 48 
   KID: program: 1
    KID: declaration_seq_1: 2
      KID: declaration_seq_1: 2
@@ -12,25 +13,37 @@ Opening test_help.c
            KID: statement_seq_1: 2
              KID: statement_seq_1: 2
                KID: statement_seq_1: 2
-                 KID: simple_declaration_1: 2
-                   LEAF: "int": 319
-                   KID: init_declarator_list_1: 2
+                 KID: statement_seq_1: 2
+                   KID: statement_seq_1: 2
+                     KID: statement_seq_1: 2
+                       KID: simple_declaration_1: 2
+                         LEAF: "int": 319
+                         KID: init_declarator_1: 2
+                           LEAF: "zoo": 258
+                       KID: simple_declaration_1: 2
+                         LEAF: "int": 319
+                         KID: init_declarator_1: 2
+                           LEAF: "yay": 258
+                     KID: assignment_expression_1: 3
+                       LEAF: "zoo": 258
+                       LEAF: "=": 61
+                       LEAF: "0": 259
+                   KID: simple_declaration_1: 2
+                     LEAF: "string": 264
                      KID: init_declarator_1: 2
-                       LEAF: "z": 258
-                     KID: init_declarator_1: 2
-                       LEAF: "y": 258
+                       LEAF: "s": 258
                  KID: assignment_expression_1: 3
-                   LEAF: "z": 258
+                   LEAF: "zoo": 258
                    LEAF: "=": 61
-                   LEAF: "0": 259
+                   KID: postfix_expression_2: 4
+                     LEAF: "use_foo": 258
+                     LEAF: "(": 40
+                     LEAF: "11": 259
+                     LEAF: ")": 41
                KID: assignment_expression_1: 3
                  LEAF: "z": 258
                  LEAF: "=": 61
-                 KID: postfix_expression_2: 4
-                   LEAF: "use_foo": 258
-                   LEAF: "(": 40
-                   LEAF: "11": 259
-                   LEAF: ")": 41
+                 LEAF: "10": 259
              KID: jump_statement_1: 2
                LEAF: "return": 330
                LEAF: "0": 259
@@ -46,14 +59,14 @@ Opening test_help.c
                KID: simple_declaration_1: 2
                  LEAF: "int": 319
                  KID: init_declarator_1: 2
-                   LEAF: "y": 258
+                   LEAF: "yas": 258
                KID: assignment_expression_1: 3
-                 LEAF: "y": 258
+                 LEAF: "yas": 258
                  LEAF: "=": 61
                  LEAF: "3": 259
              KID: jump_statement_1: 2
                LEAF: "return": 330
-               LEAF: "y": 258
+               LEAF: "yas": 258
            LEAF: "}": 125
      KID: function_definition_2: 4
        LEAF: "int": 319
@@ -69,9 +82,9 @@ Opening test_help.c
              KID: simple_declaration_1: 2
                LEAF: "int": 319
                KID: init_declarator_1: 2
-                 LEAF: "w": 258
+                 LEAF: "woah": 258
              KID: assignment_expression_1: 3
-               LEAF: "w": 258
+               LEAF: "woah": 258
                LEAF: "=": 61
                KID: postfix_expression_2: 4
                  LEAF: "foo": 258
@@ -80,7 +93,7 @@ Opening test_help.c
            KID: jump_statement_1: 2
              LEAF: "return": 330
              KID: additive_expression_1: 3
-               LEAF: "w": 258
+               LEAF: "woah": 258
                LEAF: "+": 43
                LEAF: "c": 258
          LEAF: "}": 125

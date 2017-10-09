@@ -37,7 +37,7 @@ SymbolTable new_table(char* n) {
 
   SymbolTable t = malloc(sizeof(SymbolTable));
 
-  t->entry[9973 ] = malloc(9973  * sizeof(Entry));
+  t->entry[8741 ] = malloc(8741   * sizeof(Entry));
 
   t->name = strdup(n);
   
@@ -221,6 +221,8 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 	case CLASS_SPECIFIER_1:
       printf("\n------CLASS------\n"); 
       class_name = get_class_name(t);
+	  if(lookup(class_name, GLOBAL_TABLE))
+		  semanticerror("Redeclared variable.", t); 
       insert_sym(class_name, GLOBAL_TABLE); // Insert into global table
       
       class_table = new_table(class_name);
@@ -237,6 +239,8 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
 	  printf("\n------FUNCTION------\n"); 
       func_name = get_func_name(t);
+	  if(lookup(func_name, GLOBAL_TABLE))
+		  semanticerror("Redeclared variable.", t); 
       insert_sym(func_name, GLOBAL_TABLE); // Insert into global table
 	  //handle_funcdef(t->kid[1], GLOBAL_TABLE);       
       func_table = new_table(func_name);
@@ -251,11 +255,15 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
 	  break; 
 	case ASSIGNMENT_EXPRESSION_1:
+	    // will exit if it finds an undeclared variable
 	    checkundeclared(t->kid[0], scope); 
 		populate_symbol_table(t->kid[0], scope); 
 		break;
 		
     case JUMP_STATEMENT_1:
+	 // will exit if it finds an undeclared variable
+		//checkundeclared(t->kid[1], scope); 
+		//populate_symbol_table(t->kid[1], scope); 
 		break;
 	  
     case DIRECT_DECLARATOR_1:

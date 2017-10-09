@@ -4,14 +4,15 @@ using namespace std;
 
 int main()
 {
-    int z; 
+    int zoo; 
 	int yay;
-    z = 0;
-	//string s; 
+    zoo = 0;
+	string s; 
  
-    z = use_foo(11);
+    zoo = use_foo(11);
+	//z = 10;
     
-    return 0;
+    return z;
 }
 
 int foo()
@@ -19,7 +20,7 @@ int foo()
     int yas;
     yas = 3;
    
-   
+    
     return yas;
 }
 

@@ -14,7 +14,7 @@ int hash( char *s)
       h *= 37;
       }
    if (h < 0) h = -h;
-   return h % 10007  ; // does 10007 fix it?
+   return h % 8741       ; // does 10007 fix it?
 }
 
 // adapted from https://github.com/park2331/compiler/blob/master/tomorrow/hasht.c
