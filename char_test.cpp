@@ -1,10 +1,12 @@
 #include <iostream>
+//#include <string>
 
 using namespace std;  
  
 int main ()
 {
-   char a[5][9] = { "every", "good", "bear", "deserves", "fudge" };
+	// if #include string is commented, then hello is a double
+   char hello[5][9] = { "every", "good", "bear", "deserves", "fudge" };
 
    char b0[5][9] = {'e','v','e','r','y',
                     'g','o','o','d',

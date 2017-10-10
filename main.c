@@ -46,7 +46,6 @@ int main(int argc, char **argv)
   CLASS_FUNCTION_TABLE = new_table("class_function_table"); 
   FUNCTION_TABLE = new_table("local_table"); 
   GLOBAL_TABLE = new_table("global_table"); 
-  PARAM_TABLE = new_table("parameter_table"); 
    
    ++argv, --argc;  /* skip over program name */
    

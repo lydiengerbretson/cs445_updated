@@ -709,7 +709,7 @@ direct_declarator:
 	| CLASS_NAME '('parameter_declaration_clause ')' {$$ = create_tree("direct_declarator_5", DIRECT_DECLARATOR_5, 3, $1, $2, $3);}
 	| CLASS_NAME COLONCOLON declarator_id '('parameter_declaration_clause ')' {$$ = create_tree("direct_declarator_6", DIRECT_DECLARATOR_6, 3, $1, $3, $5);}
 	| CLASS_NAME COLONCOLON CLASS_NAME '('parameter_declaration_clause ')' {$$ = create_tree("direct_declarator_7", DIRECT_DECLARATOR_7, 5, $1, $2, $3, $4, $5);}
-	| direct_declarator '[' constant_expression_opt ']' {$$ = create_tree("direct_declarator_8", DIRECT_DECLARATOR_1, 4, $1, $2, $3, $4);}
+	| direct_declarator '[' constant_expression_opt ']' {$$ = create_tree("direct_declarator_8", DIRECT_DECLARATOR_8, 4, $1, $2, $3, $4);}
 	| '(' declarator ')' {$$ = create_tree("direct_declarator_9", DIRECT_DECLARATOR_1, 3, $1, $2, $3);}
 	;
 

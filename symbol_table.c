@@ -11,11 +11,10 @@
 extern SymbolTable CLASSTABLE; 
 extern SymbolTable FUNCTION_TABLE; 
 extern SymbolTable GLOBAL_TABLE; 
-extern SymbolTable PARAM_TABLE; 
 
 // adapted from https://github.com/park2331/compiler
 
-/* Creates 'type' entry; init memory and store name */
+// creates 'type' entry; init memory and store name 
 Entry new_entry(char* n) {
 
   Entry e = calloc(1, sizeof(Entry));
@@ -23,8 +22,9 @@ Entry new_entry(char* n) {
 
   e->name = strdup(n);
 
-  /* Initialize type */
+  // initialize type
   e->entrytype = t;
+  
   //e->entrytype->basetype = type; 
   
   return e;
@@ -34,10 +34,13 @@ Entry new_entry(char* n) {
 // Initialize new table for use, initialize memory and store name. 
 SymbolTable new_table(char* n) {
 
-
-  SymbolTable t = malloc(sizeof(SymbolTable));
-
-  t->entry[8741 ] = malloc(8741   * sizeof(Entry));
+ // possibly change to calloc instead of malloc: Done
+ 
+  //SymbolTable t = malloc(sizeof(SymbolTable));
+  SymbolTable t = calloc(1, sizeof(SymbolTable));
+  
+  //t->entry[8741 ] = malloc(8741   * sizeof(Entry));
+  t->entry[10000] = calloc(10000, sizeof(Entry));
 
   t->name = strdup(n);
   
@@ -45,9 +48,8 @@ SymbolTable new_table(char* n) {
 }
 
 
-/* Init mem for entry, stores name, inits table field of entry struct. 
- * Returns entry pointer.
- */
+// init mem for entry, stores name, inits table field of entry struct. 
+// returns entry pointer.
 Entry new_scope(char *n) {
 
   Entry e = new_entry(n);
@@ -60,7 +62,7 @@ Entry new_scope(char *n) {
 }
 
 
-// Insert entry; takes entry struct as param 
+// insert entry; takes entry struct as param 
 void insert(Entry e, SymbolTable t) {
 
   int key = get_key(e->name);
@@ -72,7 +74,7 @@ void insert(Entry e, SymbolTable t) {
 }
 
 
-/* Inserts entry by name */
+// inserts entry by name 
 void insert_sym(char* n, SymbolTable t) {
 
   Entry e = new_entry(n);
@@ -81,7 +83,7 @@ void insert_sym(char* n, SymbolTable t) {
   
 }
 
-/* Function creates and inserts a scope table into table t*/
+// function creates and inserts a scope table into table t 
 void insert_scope(char* n, SymbolTable t) {
 
   Entry e = new_scope(n);
@@ -94,6 +96,7 @@ void insert_scope(char* n, SymbolTable t) {
   
 }
 
+// return entry at specific key n
 Entry get_entry( char *n , SymbolTable t ) {
 
   return t->entry[get_key(n)];
@@ -127,33 +130,8 @@ bool lookup(char *n, SymbolTable t) {
   
 }
 
-struct tree * handle_funcdef( struct tree *t, SymbolTable scope ) {
-
-  int i;
-
-  if ( t->nkids == 0 ) {
-
-    if ( t->leaf);
-      return t;
-  
-  } else if( t->nkids > 0 ) {
-
-    for(i=0; i < t->nkids; i++) {
-
-      return populate_symbol_table( t->kid[i] , scope );
-
-    }
-
-  } else {
-
-    return NULL;
-
-  }
-
-}
-
-
-
+// overall populate_symbol_table layout adapted from https://github.com/park2331/compiler/blob/master/tomorrow/symtab.c
+// this function populates symbol tables for classes, functions, and globals
 struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
   int i,j, key;
@@ -201,12 +179,16 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
     key = get_key( t->prodrule_name );
 
-// TODO: Add function parameter scoping: Kinda done. 
-// TODO: Add function name scoping/definitions: Kinda done.
+// TODO: Add function parameter scoping: Done. 
+// TODO: Add function name scoping/definitions: Done.
 // TODO: Add global scoping: Done 
-// TODO: Add semantic error for redeclarations: 
-// TODO: Add semantic error for undeclarations: 
+// TODO: Add semantic error for redeclarations: Kinda done.
+// TODO: Add semantic error for undeclarations: Kinda done.
 // TODO: Multiple variable declarations on the same line: Done
+// TODO: Implement array declarations: Kinda done.
+// TODO: Implement class function scoping:
+// TODO: Fix ant.cpp/ant.h problem:
+// TODO: Fix #include string or hash problem: 
 
     if (direct_declare){direct_declare=false;};
     switch(t->prodrule) {
@@ -241,8 +223,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
       func_name = get_func_name(t);
 	  if(lookup(func_name, GLOBAL_TABLE))
 		  semanticerror("Redeclared variable.", t); 
-      insert_sym(func_name, GLOBAL_TABLE); // Insert into global table
-	  //handle_funcdef(t->kid[1], GLOBAL_TABLE);       
+      insert_sym(func_name, GLOBAL_TABLE); // Insert into global table     
       func_table = new_table(func_name);
       local_tables[nlocaltables++] = func_table;
       scope = func_table;
@@ -256,13 +237,14 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 	  break; 
 	case ASSIGNMENT_EXPRESSION_1:
 	    // will exit if it finds an undeclared variable
+		// else populate symbol table for assignment symbols
 	    checkundeclared(t->kid[0], scope); 
 		populate_symbol_table(t->kid[0], scope); 
 		break;
 		
     case JUMP_STATEMENT_1:
-	 // will exit if it finds an undeclared variable
-		//checkundeclared(t->kid[1], scope); 
+	    // will exit if it finds an undeclared variable
+		//checkundeclared(t->kid[1], scope); // this doesn't work with returning class.member
 		//populate_symbol_table(t->kid[1], scope); 
 		break;
 	  
@@ -273,9 +255,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 	  for (j=0; j < t->nkids; j++) 
 	  {
 		// insert into local current symbol table 
-		// need to create new scope i.e. SymbolTable for each new function? 
-		// this doesn't fix the issue
-
+		// this will create new scope i.e. SymbolTable for each new function 
 		populate_symbol_table( t->kid[j] , scope );     
 		 
       }	
@@ -310,7 +290,8 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
   };
 
 
-// adapted from http://www2.cs.uidaho.edu/~jeffery/courses/445/semantic.c
+// check redeclared variables
+// if they are in symbol table, then they are already declared
 void checkredeclared(struct tree * t, SymbolTable ST)
 {
   int j; 
@@ -327,8 +308,6 @@ void checkredeclared(struct tree * t, SymbolTable ST)
 	  {
 		  if(t->leaf->category == IDENTIFIER)
 		  {
-			  //printf("	LEAF within symbol table %s: \"%s\": %d at lineno: %d\n",  
-			  //ST->name, t->leaf->text, t->leaf->category, t->leaf->lineno); 
 			  
 			 if(lookup(t->leaf->text, ST))
 			  {
@@ -341,7 +320,6 @@ void checkredeclared(struct tree * t, SymbolTable ST)
 	  else
 	  {	  
 
-		//printf("	KID [%d] within symbol table %s: %s: %d %d \n", j, ST->name, t->prodrule_name, t->nkids, t->prodrule);
 		for(j=0; j<t->nkids; j++)
 		{
 			checkredeclared(t->kid[j], ST);
@@ -352,7 +330,8 @@ void checkredeclared(struct tree * t, SymbolTable ST)
   }
 }
 
-// adapted from http://www2.cs.uidaho.edu/~jeffery/courses/445/semantic.c
+// check undeclared variables
+// if they are not in symbol table, then they are not declared
 void checkundeclared(struct tree * t, SymbolTable ST)
 {
   int j; 
@@ -369,8 +348,6 @@ void checkundeclared(struct tree * t, SymbolTable ST)
 	  {
 		  if(t->leaf->category == IDENTIFIER)
 		  {
-			  //printf("	LEAF within symbol table %s: \"%s\": %d at lineno: %d\n",  
-			  //ST->name, t->leaf->text, t->leaf->category, t->leaf->lineno); 
 			  
 			 if(!lookup(t->leaf->text, ST))
 			  {
@@ -382,7 +359,6 @@ void checkundeclared(struct tree * t, SymbolTable ST)
 	  else
 	  {	  
 
-		//printf("	KID [%d] within symbol table %s: %s: %d %d \n", j, ST->name, t->prodrule_name, t->nkids, t->prodrule);
 		for(j=0; j<t->nkids; j++)
 		{
 			checkundeclared(t->kid[j], ST);
