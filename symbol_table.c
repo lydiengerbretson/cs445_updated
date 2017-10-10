@@ -368,13 +368,17 @@ void checkredeclared(struct tree * t, SymbolTable ST)
 	  {
 		  if(t->leaf->category == IDENTIFIER)
 		  {
-			 
+			  // lookup checks for symbol in correct scoping
+			  // find_sym_in_list just double checks if lookup
+              // did its job and scans to find if symbol is 
+			  // in a linked list of entries. 
+			  // because lookup is stupid sometimes... :/
 			 if(lookup(t->leaf->text, ST) && find_sym_in_list(t->leaf->text))
 			  {
 				   
 				  // this need to be only init declarators
-				  printf("\n DOUBLE: %s in SCOPE: %s, %d \n", t->leaf->text, ST->name, t->leaf->category); 
-				 //semanticerror("Redeclared variable:", t); 
+				 //printf("\n DOUBLE: %s in SCOPE: %s, %d \n", t->leaf->text, ST->name, t->leaf->category); 
+				 semanticerror("Redeclared variable:", t); 
 			  }
 		  }
 	  }
@@ -441,6 +445,7 @@ void semanticerror(char *s, struct tree *n)
    }
   fprintf(stderr, "%s", s);
   if (n && n->prodrule == IDENTIFIER) fprintf(stderr, " %s", n->leaf->text);
+  
   fprintf(stderr, "\n");
   exit(3); 
 }
