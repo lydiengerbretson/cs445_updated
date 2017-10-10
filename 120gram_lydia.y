@@ -152,7 +152,7 @@ static void yyerror(char *s);
 
 %start translation_unit
 
-%debug
+%debug 
 %%
 
 /*----------------------------------------------------------------------

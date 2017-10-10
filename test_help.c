@@ -1,18 +1,28 @@
-#include <iostream>
+//#include <iostream>
 //#include <string>
+
 using namespace std; 
+
 
 int main()
 {
+	//ofstream cout; 
+	//ofstream cin; 
     int zoo; // shows up as double if #include string is commented!!
 	int yay;
+	int x; // shows up as double if it is x whether or not string is commented
+	int yowzer; // shows up as double if it is y whether or not string is commented
     zoo = 0;
+	int y; 
+	int zane; 
+	//int zane;
+
 	//string sstr; // fails if it is string s 
  
     zoo = use_foo(11);
 	//z = 10;
     
-    return z;
+    return 0;
 }
 
 int foo()
@@ -23,6 +33,7 @@ int foo()
     int x; 
     yas = 3;
 	//int yas; 
+	int zane;
 	
 	y = 3; // will fail with zoo
 

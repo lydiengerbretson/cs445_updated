@@ -11,6 +11,7 @@
 extern SymbolTable CLASSTABLE; 
 extern SymbolTable FUNCTION_TABLE; 
 extern SymbolTable GLOBAL_TABLE; 
+int G = 0; 
 
 // adapted from https://github.com/park2331/compiler
 
@@ -39,8 +40,12 @@ SymbolTable new_table(char* n) {
   //SymbolTable t = malloc(sizeof(SymbolTable));
   SymbolTable t = calloc(1, sizeof(SymbolTable));
   
-  //t->entry[8741 ] = malloc(8741   * sizeof(Entry));
-  t->entry[10000] = calloc(10000, sizeof(Entry));
+  t->entry[10000 ] = calloc(10000 , sizeof(Entry));
+  //memset(t->entry, 0, 10000); 
+  
+  //int i; 
+  //for(i=0; i < 10000; i++)
+	  // t->entry[i ] = calloc(1, sizeof(Entry));
 
   t->name = strdup(n);
   
@@ -65,18 +70,70 @@ Entry new_scope(char *n) {
 // insert entry; takes entry struct as param 
 void insert(Entry e, SymbolTable t) {
 
-  int key = get_key(e->name);
+   int key = get_key(e->name);
   
-    t->entry[key] = e;
+   insert_sym_list(e->name);
+   
+   t->entry[key] = e;
+		
+   fprintf( stdout , "%s was INSERTED into scope: %s at location %d \n" , e->name , t->name, key);
 
-    fprintf( stdout , "%s was INSERTED into scope: %s at location %d \n" , e->name , t->name, key);
-  
+    // need to handle collisions!!
+	// insert symbol after walking through a linked list symbol table entries
+	
+}
+
+void insert_sym_list(char *s)
+{
+    struct entry *new_node = (struct entry *)malloc(sizeof(struct entry));
+    struct entry *curr, *temp;
+	
+	new_node->name = strdup(s); 
+	new_node->next = NULL; 
+	
+	if(start == NULL)
+	{
+		// insert first node
+		//printf("**Inserting first node: %s\n", new_node->name); 
+		start = new_node; 
+		curr = new_node;
+	}
+	else
+	{
+		temp = start; 
+		while(temp->next != NULL)
+		{
+			temp = temp->next; 
+		}
+		//printf("**Inserting the rest: %s\n", new_node->name); 
+		temp->next = new_node; 
+	}
+	
+}
+
+bool find_sym_in_list(char *s)
+{
+	struct entry *temp;
+	temp = start; 
+	
+	while(temp != NULL)
+	{
+		if(strcmp(s, temp->name) == 0)
+		{
+		printf("**Printing the wanted symbol: %s\n", temp->name); 
+		return true; 
+		}
+		temp = temp->next;
+		
+	}
+	return false;
+		
 }
 
 
 // inserts entry by name 
 void insert_sym(char* n, SymbolTable t) {
-
+ 
   Entry e = new_entry(n);
   
   insert(e, t);
@@ -116,17 +173,19 @@ bool lookup(char *n, SymbolTable t) {
 
   int key = get_key(n);
 
-  if (t->entry[key]) {
-
-   //fprintf(stdout, "Entry: \"%s\" found in table \"%s\" at location %d\n", n, t->name , key );
+  if (t->entry[key] ) 
+  {
+    //fprintf(stdout, "Entry: \"%s\" found in table \"%s\" at location %d\n", n, t->name , key );
     return true;
     
-  } else {
+  } 
+  else 
+  {
 
     //fprintf(stdout, "Entry: \"%s\" NOT found in table \"%s\"\n", n, t->name );
     return false;
-    
   }
+    
   
 }
 
@@ -158,7 +217,6 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
         if (t->prodrule == IDENTIFIER) 
         {
-
           insert_sym(t->leaf->text, scope);
           
           return t;
@@ -183,12 +241,14 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 // TODO: Add function name scoping/definitions: Done.
 // TODO: Add global scoping: Done 
 // TODO: Add semantic error for redeclarations: Kinda done.
-// TODO: Add semantic error for undeclarations: Kinda done.
+// TODO: Add semantic error for undeclarations: Add more cases!! Kinda done.
 // TODO: Multiple variable declarations on the same line: Done
 // TODO: Implement array declarations: Kinda done.
 // TODO: Implement class function scoping:
 // TODO: Fix ant.cpp/ant.h problem:
 // TODO: Fix #include string or hash problem: 
+// TODO: Implement cout, cin, endl: Kinda done.
+// TODO: Fix function prototypes, insert it into global table
 
     if (direct_declare){direct_declare=false;};
     switch(t->prodrule) {
@@ -303,16 +363,17 @@ void checkredeclared(struct tree * t, SymbolTable ST)
   else 
   { 
     // lookup variable somewhere in here
-
+      
 	  if (t->nkids == 0)
 	  {
 		  if(t->leaf->category == IDENTIFIER)
 		  {
-			  
-			 if(lookup(t->leaf->text, ST))
+			 
+			 if(lookup(t->leaf->text, ST) && find_sym_in_list(t->leaf->text))
 			  {
+				   
 				  // this need to be only init declarators
-				  printf("DOUBLE: %s \n", t->leaf->text); 
+				  printf("\n DOUBLE: %s in SCOPE: %s, %d \n", t->leaf->text, ST->name, t->leaf->category); 
 				 //semanticerror("Redeclared variable:", t); 
 			  }
 		  }

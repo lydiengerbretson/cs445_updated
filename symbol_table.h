@@ -19,9 +19,12 @@ typedef struct entry {
   
   struct type *entrytype;
   struct table *entrytable;
+  
+  struct entry *next; 
 
 } * Entry;
 
+Entry start;
 
 
 // hash table structure that holds name and scope info.
@@ -29,7 +32,8 @@ struct table {
 
   char *name;
 
-  Entry entry[];
+  //Entry entry[10000];
+  Entry entry[10000];
     
 };
 typedef struct table  * SymbolTable;
@@ -73,6 +77,8 @@ void insert_sym( char* , SymbolTable );
 SymbolTable get_scope(char* , SymbolTable );
 bool lookup( char *, SymbolTable );
 void semanticerror(char *s, struct tree *n); 
+void insert_sym_list(char *s); 
+bool find_sym_in_list(char *s); 
 
 void checkredeclared(struct tree *, SymbolTable); 
 void checkundeclared(struct tree *, SymbolTable); 

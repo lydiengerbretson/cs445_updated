@@ -118,16 +118,9 @@ stringtext				([^"])|(\\.)
         "<ctime>"       { saw_ctime = 1; BEGIN(INITIAL); }
         "<cstring>"     { saw_cstring = 1; BEGIN(INITIAL); }
         "<fstream>"     { saw_fstream  = 1;
-                          if (using_n_std)
-						  {
-                              insert_sym("ifstream", CLASSTABLE);
-							  insert_sym("ofstream", CLASSTABLE); 
-						  }
                           BEGIN(INITIAL); }
         "<iostream>"    { saw_iostream = 1; BEGIN(INITIAL); }
         "<string>"      { saw_string   = 1;
-                          if (using_n_std)
-                                  insert_sym("string", CLASSTABLE);
                           BEGIN(INITIAL); }
         "<iomanip>"     { saw_iomanip  = 1; BEGIN(INITIAL); }
         \"[^\"]+\"      { handle_include(yytext); BEGIN(INITIAL); }
@@ -137,6 +130,7 @@ stringtext				([^"])|(\\.)
 "using namespace std;"  { using_n_std = 1;
                           if (saw_fstream)
                                   insert_sym("ifstream", CLASSTABLE);
+								  insert_sym("ofstream", CLASSTABLE); 
                           if (saw_string)
                                   insert_sym("string", CLASSTABLE);}
 
@@ -350,7 +344,7 @@ void insert_typename_tree(struct tree *t, SymbolTable table)
             t->leaf->text, t->leaf->category );
    } else {
 
-     //printf("INSERTED %s: %d\n ",t->leaf->text, t->leaf->category);
+     printf("INSERTED %s: %d\n ",t->leaf->text, t->leaf->category);
      insert_sym( t->leaf->text , table );
 
    }
@@ -401,10 +395,13 @@ static int check_identifier(char *s, SymbolTable t)
     // adapted from https://github.com/park2331/compiler
 	if(lookup(s, t) == true)
 	{
+		//printf("This is a class name: %s \n", s); 
 		return CLASS_NAME; 
+
 	}
 	else
 	{
+	   // printf("This is NOT a class name: %s \n", s); 
 		return IDENTIFIER; 
 	}
 
