@@ -120,7 +120,7 @@ bool find_sym_in_list(char *s)
 	{
 		if(strcmp(s, temp->name) == 0)
 		{
-		printf("**Printing the wanted symbol: %s\n", temp->name); 
+		//printf("**Printing the wanted symbol: %s\n", temp->name); 
 		return true; 
 		}
 		temp = temp->next;
@@ -240,13 +240,13 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 // TODO: Add function parameter scoping: Done. 
 // TODO: Add function name scoping/definitions: Done.
 // TODO: Add global scoping: Done 
-// TODO: Add semantic error for redeclarations: Kinda done.
+// TODO: Add semantic error for redeclarations: Done.
 // TODO: Add semantic error for undeclarations: Add more cases!! Kinda done.
 // TODO: Multiple variable declarations on the same line: Done
 // TODO: Implement array declarations: Kinda done.
 // TODO: Implement class function scoping:
 // TODO: Fix ant.cpp/ant.h problem:
-// TODO: Fix #include string or hash problem: 
+// TODO: Fix #include string or hash problem: Done.
 // TODO: Implement cout, cin, endl: Kinda done.
 // TODO: Fix function prototypes, insert it into global table
 

@@ -17,7 +17,7 @@ int main()
 	int zane; 
 	int a; 
 	int b; 
-	int zane;
+	//int zane;
 
 	string sstr; // fails if it is string s 
  
@@ -56,6 +56,7 @@ int help(int a)
 int use_foo(int c)
 {
     int woah;
+	//double woah; 
     woah = foo();
 	 
 	//yes = foo(); 
