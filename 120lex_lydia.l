@@ -247,6 +247,8 @@ stringtext				([^"])|(\\.)
 ","					    { return add_token(','); }
 "->*"					{ return add_token(ARROWSTAR); }
 "->"					{ return add_token(ARROW); }
+				  
+
 
 [a-zA-Z_][a-zA-Z_0-9]*			    { return add_token(check_identifier(yytext, CLASSTABLE));  }
 

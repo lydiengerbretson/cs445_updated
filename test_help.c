@@ -15,6 +15,7 @@ int main()
     int zoo = 0;
 	int y; 
 	int zane; 
+	//int a; 
 	int a; 
 	int b; 
 	//int zane;
@@ -51,6 +52,7 @@ int help(int a)
 	int y; 
 	
 	y = foo(); 
+	u = foo(); 
 }
 
 int use_foo(int c)

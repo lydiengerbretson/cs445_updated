@@ -1,15 +1,7 @@
-/*#include <iostream>
-using namespace std; */
-#include "hello.h"
-//typedef int x xr; 
-//int hello(); 
+#include <iostream>
+using namespace std;
+
 int main()
 {
-	int i; 
-   cout << "hey there\n";
-   i++; 
+   cout << "hey there" << endl;
 }
-
-class CLASS_LYD{
-	int a; 
-}; 

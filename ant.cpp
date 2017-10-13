@@ -19,19 +19,19 @@ ant::ant() {
 
 // Accessors: return the requested data member
 
-ant::GetX() {
+int ant::GetX() {
     return x;
 }
 
-ant::GetY() {
+int ant::GetY() {
     return y;
 }
 
-ant::GetEnergy() {
+int ant::GetEnergy() {
     return energy;
 }
 
-ant::Print() {
+char ant::Print() {
     return dir;
 }
 

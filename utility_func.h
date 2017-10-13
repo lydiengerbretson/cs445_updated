@@ -8,7 +8,8 @@ SymbolTable local_tables[TABLE_SIZE];
 SymbolTable class_tables[TABLE_SIZE];
 
 void print_tables(int type);
-char * get_func_name(struct tree *);
+char * get_func_name(struct tree *, int *is_class);
 char * get_class_name(struct tree *);
+int get_declarator_type(struct tree *);
 
 #endif

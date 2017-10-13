@@ -21,7 +21,12 @@ Entry new_entry(char* n) {
   Entry e = calloc(1, sizeof(Entry));
   TypeTable t = calloc(1, sizeof(TypeTable));
 
-  e->name = strdup(n);
+ // e->name = strdup(n);
+ e->name = malloc(strlen(n) +1); // added this 
+ e->name = strdup(n); // did this help?
+ 
+ //free(e->name); 
+
 
   // initialize type
   e->entrytype = t;
@@ -37,15 +42,9 @@ SymbolTable new_table(char* n) {
 
  // possibly change to calloc instead of malloc: Done
  
-  //SymbolTable t = malloc(sizeof(SymbolTable));
   SymbolTable t = calloc(1, sizeof(SymbolTable));
-  
-  t->entry[10000 ] = calloc(10000 , sizeof(Entry));
-  //memset(t->entry, 0, 10000); 
-  
-  //int i; 
-  //for(i=0; i < 10000; i++)
-	  // t->entry[i ] = calloc(1, sizeof(Entry));
+  t->entry[0] = calloc(10000, sizeof(Entry));
+  //t->entry[10000] = calloc(10000 , sizeof(Entry));
 
   t->name = strdup(n);
   
@@ -197,6 +196,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
   struct tree * temp;
   Entry local;
   char *lex;
+  int class_func = 0; // 1 for class method, 0 otherwise
   static int nlocaltables = 0;
   static int nclasstables = 0;
   SymbolTable func_table = NULL;
@@ -204,7 +204,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
   char * func_name = NULL;
   char * class_name = NULL;
   static bool direct_declare = false;
-  static bool class_declare = false; 
+  int declarator = 0;
   
   if ( !t ) {
     return NULL;
@@ -266,14 +266,14 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
       class_name = get_class_name(t);
 	  if(lookup(class_name, GLOBAL_TABLE))
 	  {
-		  semanticerror("Redeclared variable.", t); 
+		//  semanticerror("Redeclared variable.", t); 
 	  }
 	  // get type and check type before inserting
       insert_sym(class_name, GLOBAL_TABLE); // Insert into global table
       
-      class_table = new_table(class_name);
-      class_tables[nclasstables++] = class_table;
-      scope = class_table;
+      //class_table = new_table(class_name);
+      //class_tables[nclasstables++] = class_table;
+      //scope = class_table;
       for (j=0; j < t->nkids; j++) 
 	  {
 		// insert into local function symbol table 
@@ -281,19 +281,34 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		 
       }
 	  break; 
+
     case FUNCTION_DEFINITION_1:   
 
 	  printf("\n------FUNCTION------\n"); 
-      func_name = get_func_name(t);
+      func_name = get_func_name(t, &class_func);
+	  if (func_name == NULL)
+	  {
+		  printf("Error, function has no name\n");
+	  }
+	  func_table = new_table(func_name);
+	  scope = func_table;
+	  // get type and check type before inserting
+	  if (class_func == 0)
+	  {		        
+		// not a class method
+        insert_sym(func_name, GLOBAL_TABLE); // Insert into global table 
+		local_tables[nlocaltables++] = func_table;
+	  }
+	  else
+	  {
+		 insert_sym(func_name, scope); // Insert into global table 
+		 class_tables[nclasstables++] = func_table;		
+	  }
 	  if(lookup(func_name, GLOBAL_TABLE))
 	  {
-		  semanticerror("Redeclared variable.", t); 
+		 //semanticerror("Redeclared variable.", t); 
 	  }
-	  // get type and check type before inserting
-      insert_sym(func_name, GLOBAL_TABLE); // Insert into global table     
-      func_table = new_table(func_name);
-      local_tables[nlocaltables++] = func_table;
-      scope = func_table;
+      
       for (j=0; j < t->nkids; j++) 
 	  {
 		// insert into local function symbol table 
@@ -306,16 +321,19 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 	    // will exit if it finds an undeclared variable
 		// else populate symbol table for assignment symbols
 	    checkundeclared(t->kid[0], scope); 
-		populate_symbol_table(t->kid[0], scope); 
+		//populate_symbol_table(t->kid[0], scope); 
 		break;
 		
     case JUMP_STATEMENT_1:
 	    // will exit if it finds an undeclared variable
-		//checkundeclared(t->kid[1], scope); // this doesn't work with returning class.member
+		checkundeclared(t->kid[1], scope); // this doesn't work with returning class.member
 		//populate_symbol_table(t->kid[1], scope); 
 		break;
 	  
     case DIRECT_DECLARATOR_1:
+	case DIRECT_DECLARATOR_5:
+    case DIRECT_DECLARATOR_6:
+	case DIRECT_DECLARATOR_7:
       direct_declare = true;
       printf("\n ------DECLARED VARIABLES------\n");
 	  
@@ -421,7 +439,7 @@ void checkundeclared(struct tree * t, SymbolTable ST)
 		  if(t->leaf->category == IDENTIFIER)
 		  {
 			  
-			 if(!lookup(t->leaf->text, ST))
+			 if(!lookup(t->leaf->text, ST) && !find_sym_in_list(t->leaf->text))
 			  {
 				  // this need to be only init declarators
 				 semanticerror("Undeclared variable:", t); 
