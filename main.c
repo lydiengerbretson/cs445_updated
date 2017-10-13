@@ -87,9 +87,9 @@ int main(int argc, char **argv)
          }
 		 if(result == 0)
 		 {			 
-			//print_tree(YYPROGRAM, 0); 
+			print_tree(YYPROGRAM, 0); 
 			//populate symbol table
-			 populate_symbol_table( YYPROGRAM , GLOBAL_TABLE );
+			 //populate_symbol_table( YYPROGRAM , GLOBAL_TABLE );
              print_tables(1);
 			 print_tables(2);
 			 //printf("Checking symbols in symbol table: %s \n", FUNCTION_TABLE->name); 

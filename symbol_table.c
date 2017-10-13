@@ -217,6 +217,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
         if (t->prodrule == IDENTIFIER) 
         {
+		  // get type and check type before inserting
           insert_sym(t->leaf->text, scope);
           
           return t;
@@ -264,7 +265,10 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
       printf("\n------CLASS------\n"); 
       class_name = get_class_name(t);
 	  if(lookup(class_name, GLOBAL_TABLE))
+	  {
 		  semanticerror("Redeclared variable.", t); 
+	  }
+	  // get type and check type before inserting
       insert_sym(class_name, GLOBAL_TABLE); // Insert into global table
       
       class_table = new_table(class_name);
@@ -282,7 +286,10 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 	  printf("\n------FUNCTION------\n"); 
       func_name = get_func_name(t);
 	  if(lookup(func_name, GLOBAL_TABLE))
+	  {
 		  semanticerror("Redeclared variable.", t); 
+	  }
+	  // get type and check type before inserting
       insert_sym(func_name, GLOBAL_TABLE); // Insert into global table     
       func_table = new_table(func_name);
       local_tables[nlocaltables++] = func_table;
