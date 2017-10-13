@@ -86,16 +86,16 @@ int main(int argc, char **argv)
             printf("File Input/Output Error: %s. \nPlease check if this file exists or if there is an error within the file.\n", filetext); 
          }
 		 if(result == 0)
-		 {			 
+		 {		
+            //print the parse tree if needed (used for testing purposes now)	 
 			//print_tree(YYPROGRAM, 0); 
-			//populate symbol table
+			//populate the symbol table, inserting variables into symbol tables
 			 populate_symbol_table( YYPROGRAM , GLOBAL_TABLE );
+			 
+			 // print the names of the symbol tables
              print_tables(1);
 			 print_tables(2);
-			 //printf("Checking symbols in symbol table: %s \n", FUNCTION_TABLE->name); 
-			 //checkdeclared(YYPROGRAM, FUNCTION_TABLE); 
-			//populate_symbol_table(YYPROGRAM, CLASSTABLE); 
-			//populate_symbol_table(YYPROGRAM, FUNCTION_TABLE); 
+
 
 		 }
 		 else

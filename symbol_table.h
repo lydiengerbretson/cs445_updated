@@ -17,6 +17,8 @@ typedef struct entry {
 
   char *name;
   
+  char *sym_table_name;
+  
   struct type *entrytype;
   struct table *entrytable;
   
@@ -76,8 +78,8 @@ void insert_sym( char* , SymbolTable );
 SymbolTable get_scope(char* , SymbolTable );
 bool lookup( char *, SymbolTable );
 void semanticerror(char *s, struct tree *n); 
-void insert_sym_list(char *s); 
-bool find_sym_in_list(char *s); 
+void insert_sym_list(char *s, char *t); 
+bool find_sym_in_list(char *s, char *t); 
 
 void checkredeclared(struct tree *, SymbolTable); 
 void checkundeclared(struct tree *, SymbolTable); 

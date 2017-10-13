@@ -108,7 +108,8 @@ char * get_func_name(struct tree * t, int *is_class)
 			return t->leaf->text;
 		}
 		return error;
-      case DIRECT_DECLARATOR_1: // May have to have for class's or other direct_declarers
+      case DIRECT_DECLARATOR_1: 
+	  case DIRECT_DECLARATOR_4:// May have to have for class's or other direct_declarers
 	 /* now we have seen function syntax, want the ident */
         seenfunc = 1;
         t = t->kid[0];

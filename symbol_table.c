@@ -11,7 +11,6 @@
 extern SymbolTable CLASSTABLE; 
 extern SymbolTable FUNCTION_TABLE; 
 extern SymbolTable GLOBAL_TABLE; 
-int G = 0; 
 
 // adapted from https://github.com/park2331/compiler
 
@@ -22,10 +21,8 @@ Entry new_entry(char* n) {
   TypeTable t = calloc(1, sizeof(TypeTable));
 
  // e->name = strdup(n);
- e->name = malloc(strlen(n) +1); // added this 
- e->name = strdup(n); // did this help?
- 
- //free(e->name); 
+ //e->name = malloc(strlen(n) +1); // nope this doesn't help LOL
+ e->name = strdup(n); 
 
 
   // initialize type
@@ -71,7 +68,7 @@ void insert(Entry e, SymbolTable t) {
 
    int key = get_key(e->name);
   
-   insert_sym_list(e->name);
+   insert_sym_list(e->name, t->name);
    
    t->entry[key] = e;
 		
@@ -82,12 +79,17 @@ void insert(Entry e, SymbolTable t) {
 	
 }
 
-void insert_sym_list(char *s)
+void insert_sym_list(char *s, char *t)
 {
     struct entry *new_node = (struct entry *)malloc(sizeof(struct entry));
     struct entry *curr, *temp;
 	
+    //new_node->sym_table_name = malloc(strlen(t)+1); 
+	new_node->sym_table_name = strdup(t); 
+	
+	//new_node->name = malloc(strlen(s)+1); 
 	new_node->name = strdup(s); 
+	
 	new_node->next = NULL; 
 	
 	if(start == NULL)
@@ -110,14 +112,14 @@ void insert_sym_list(char *s)
 	
 }
 
-bool find_sym_in_list(char *s)
+bool find_sym_in_list(char *s, char *t)
 {
 	struct entry *temp;
 	temp = start; 
 	
 	while(temp != NULL)
 	{
-		if(strcmp(s, temp->name) == 0)
+		if(strcmp(s, temp->name) == 0 && strcmp(temp->sym_table_name, t) ==0)
 		{
 		//printf("**Printing the wanted symbol: %s\n", temp->name); 
 		return true; 
@@ -188,6 +190,19 @@ bool lookup(char *n, SymbolTable t) {
   
 }
 
+// TODO: Add function parameter scoping: Done. 
+// TODO: Add function name scoping/definitions: Done.
+// TODO: Add global scoping: Done 
+// TODO: Add semantic error for redeclarations: Done.
+// TODO: Add semantic error for undeclarations: Kinda done. Add more cases.
+// TODO: Multiple variable declarations on the same line: Done
+// TODO: Implement array declarations: Done.
+// TODO: Implement class function scoping: Kinda done. Need to create class function tables?
+// TODO: Fix ant.cpp/ant.h problem: Done.
+// TODO: Fix #include string or hash problem: Done.
+// TODO: Implement cout, cin, endl: Kinda done.
+// TODO: Fix function prototypes, insert it into global table: Done
+
 // overall populate_symbol_table layout adapted from https://github.com/park2331/compiler/blob/master/tomorrow/symtab.c
 // this function populates symbol tables for classes, functions, and globals
 struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
@@ -238,19 +253,6 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
     key = get_key( t->prodrule_name );
 
-// TODO: Add function parameter scoping: Done. 
-// TODO: Add function name scoping/definitions: Done.
-// TODO: Add global scoping: Done 
-// TODO: Add semantic error for redeclarations: Done.
-// TODO: Add semantic error for undeclarations: Add more cases!! Kinda done.
-// TODO: Multiple variable declarations on the same line: Done
-// TODO: Implement array declarations: Kinda done.
-// TODO: Implement class function scoping:
-// TODO: Fix ant.cpp/ant.h problem:
-// TODO: Fix #include string or hash problem: Done.
-// TODO: Implement cout, cin, endl: Kinda done.
-// TODO: Fix function prototypes, insert it into global table
-
     if (direct_declare){direct_declare=false;};
     switch(t->prodrule) {
 	
@@ -271,9 +273,9 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 	  // get type and check type before inserting
       insert_sym(class_name, GLOBAL_TABLE); // Insert into global table
       
-      //class_table = new_table(class_name);
-      //class_tables[nclasstables++] = class_table;
-      //scope = class_table;
+      class_table = new_table(class_name);
+      class_tables[nclasstables++] = class_table;
+      scope = class_table;
       for (j=0; j < t->nkids; j++) 
 	  {
 		// insert into local function symbol table 
@@ -304,10 +306,6 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		 insert_sym(func_name, scope); // Insert into global table 
 		 class_tables[nclasstables++] = func_table;		
 	  }
-	  if(lookup(func_name, GLOBAL_TABLE))
-	  {
-		 //semanticerror("Redeclared variable.", t); 
-	  }
       
       for (j=0; j < t->nkids; j++) 
 	  {
@@ -318,16 +316,30 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
 	  break; 
 	case ASSIGNMENT_EXPRESSION_1:
-	    // will exit if it finds an undeclared variable
-		// else populate symbol table for assignment symbols
-	    checkundeclared(t->kid[0], scope); 
-		//populate_symbol_table(t->kid[0], scope); 
-		break;
-		
+	    // checking the left hand side of assignment expression
+		if(t->kid[2]->prodrule == ADDITIVE_EXPRESSION_1)
+		{
+			printf("found additive expression!\n"); 
+			// only finds the first thing in the additive expression
+			checkundeclared(t->kid[2]->kid[0], scope); 
+		}
+		else
+		{
+	     checkundeclared(t->kid[0], scope); 
+		}
+		break;		
+    case POSTFIX_EXPRESSION_1:
+	     // checking if a function has been declared in the global scope
+		 if(strcmp(t->kid[0]->leaf->text, "printf") != 0 && (strcmp(t->kid[0]->leaf->text, "scanf")) != 0 ) // slightly cheating here
+	     checkundeclared(t->kid[0], GLOBAL_TABLE); 
+		 break; 		
     case JUMP_STATEMENT_1:
-	    // will exit if it finds an undeclared variable
+	    // checking the return value 
 		checkundeclared(t->kid[1], scope); // this doesn't work with returning class.member
-		//populate_symbol_table(t->kid[1], scope); 
+		break;		
+	case SELECTION_STATEMENT_1:
+	    // checking inside if and switch statements
+	    checkundeclared(t->kid[2], scope); // this doesn't work with returning class.member
 		break;
 	  
     case DIRECT_DECLARATOR_1:
@@ -398,7 +410,7 @@ void checkredeclared(struct tree * t, SymbolTable ST)
               // did its job and scans to find if symbol is 
 			  // in a linked list of entries. 
 			  // because lookup is stupid sometimes... :/
-			 if(lookup(t->leaf->text, ST) && find_sym_in_list(t->leaf->text))
+			 if(lookup(t->leaf->text, ST) && find_sym_in_list(t->leaf->text, ST->name))
 			  {
 				   
 				  // this need to be only init declarators
@@ -439,9 +451,8 @@ void checkundeclared(struct tree * t, SymbolTable ST)
 		  if(t->leaf->category == IDENTIFIER)
 		  {
 			  
-			 if(!lookup(t->leaf->text, ST) && !find_sym_in_list(t->leaf->text))
+			 if(!lookup(t->leaf->text, ST) && !find_sym_in_list(t->leaf->text, ST->name) && !find_sym_in_list(t->leaf->text, "global_table"))
 			  {
-				  // this need to be only init declarators
 				 semanticerror("Undeclared variable:", t); 
 			  }
 		  }

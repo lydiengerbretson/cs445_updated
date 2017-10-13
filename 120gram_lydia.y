@@ -705,7 +705,7 @@ direct_declarator:
 	| direct_declarator '('parameter_declaration_clause ')' cv_qualifier_seq exception_specification {$$ = create_tree("direct_declarator_1", DIRECT_DECLARATOR_1, 5, $1, $2, $3, $4, $5);}
 	| direct_declarator '('parameter_declaration_clause ')' cv_qualifier_seq {$$ = create_tree("direct_declarator_2", DIRECT_DECLARATOR_1, 4, $1, $2, $3, $4);}
 	| direct_declarator '('parameter_declaration_clause ')' exception_specification {$$ = create_tree("direct_declarator_3", DIRECT_DECLARATOR_1, 4, $1, $2, $3, $4);}
-        | direct_declarator '('parameter_declaration_clause ')' {$$ = create_tree("direct_declarator_4", DIRECT_DECLARATOR_1, 2, $1 , $3 );}
+        | direct_declarator '('parameter_declaration_clause ')' {$$ = create_tree("direct_declarator_4", DIRECT_DECLARATOR_4, 2, $1 , $3 );}
 	| CLASS_NAME '('parameter_declaration_clause ')' {$$ = create_tree("direct_declarator_5", DIRECT_DECLARATOR_5, 3, $1, $2, $3);}
 	| CLASS_NAME COLONCOLON declarator_id '('parameter_declaration_clause ')' {$$ = create_tree("direct_declarator_6", DIRECT_DECLARATOR_6, 3, $1, $3, $5);}
 	| CLASS_NAME COLONCOLON CLASS_NAME '('parameter_declaration_clause ')' {$$ = create_tree("direct_declarator_7", DIRECT_DECLARATOR_7, 5, $1, $2, $3, $4, $5);}

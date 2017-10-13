@@ -29,6 +29,7 @@ int foo()
 	int x; 
 	//int int_l; 
 	printf("hello.\n"); 
+	scanf(x); 
 }
 
 
