@@ -12,9 +12,10 @@ int main()
 	int yay;
 
 	int x; 
-	
+	//int x;
 	x =  yay;
 	string sstr; // fails if it is string s 
+	//string sstr;
     
 	//xo = 1; 
 	

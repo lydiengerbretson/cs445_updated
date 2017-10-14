@@ -203,6 +203,7 @@ bool lookup(char *n, SymbolTable t) {
 // TODO: Implement cout, cin, endl: Kinda done.
 // TODO: Fix function prototypes, insert it into global table: Done
 // TODO: Work on class.member handling!! 
+// TODO: Work on class constructor members (not undeclared)!
 
 // overall populate_symbol_table layout adapted from https://github.com/park2331/compiler/blob/master/tomorrow/symtab.c
 // this function populates symbol tables for classes, functions, and globals
@@ -334,9 +335,11 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		 if(t->kid[0]->prodrule == POSTFIX_EXPRESSION_4)
 		 {
 			 // need to check if this function has been declared in the correct scoping
-			 printf("Found postfix expr: %s \n", t->kid[0]->kid[0]->leaf->text);
-			 printf("Found postfix expr: %s \n", t->kid[0]->kid[1]->leaf->text);
-			 printf("Found postfix expr: %s \n", t->kid[0]->kid[2]->leaf->text);
+			 int i; 
+			 for(i=0; i<t->kid[0]->nkids; i++)
+			 {
+			 printf("Found postfix expr: %s \n", t->kid[0]->kid[i]->leaf->text);
+			 }
 			 break;
 		 }
 		 if(t->kid[0] != NULL || t->kid[0]->leaf->text != NULL)
