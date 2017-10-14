@@ -17,7 +17,7 @@ double x, y;
 	z = 0;
 
 	
-	return 0;
+	return goof();
 }
 
 
@@ -31,5 +31,5 @@ double goof(double branflakes)
 {
     double bf2 = branflakes + 2.0;
     cout << "bf2 is " << bf2 << endl;
-    return goof(bf2);
+    return myfunc(bf2);
 }

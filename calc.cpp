@@ -16,7 +16,7 @@ int main()
         operand2,
 	answer;
    
-  //answer = apple + banana;
+  answer = apple + banana;
   int choice, valid_choice;
   do {
     print_menu();

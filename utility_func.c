@@ -227,8 +227,8 @@ void check_class_members_jump(struct tree *t)
 	{
 		if(class_tables[i])
 		{
-			if(!find_sym_in_list(t->kid[1]->kid[2]->leaf->text, class_tables[i]->name))
-				semanticerror("Undeclared variable.", t->kid[1]->kid[2]);
+			if(!find_sym_in_list(t->kid[1]->kid[0]->kid[2]->leaf->text, class_tables[i]->name))
+				semanticerror("Undeclared variable.", t->kid[1]->kid[0]->kid[2]);
 		}
 
 	}

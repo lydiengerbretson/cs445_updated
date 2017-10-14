@@ -348,7 +348,26 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
     case JUMP_STATEMENT_1:
 	    // checking the return value 
-		checkundeclared(t->kid[1], scope);
+		if(t->kid[1]->prodrule == POSTFIX_EXPRESSION_1)
+		{
+			if(t->kid[1]->kid[0]->prodrule == POSTFIX_EXPRESSION_4)
+			{
+			// somehow need to check if this has been declared in class scope
+			printf("Returning postfix\n");
+			check_class_members_jump(t);
+			//break;
+			}
+			else
+			{
+				// check undeclared for regular postfix
+				checkundeclared(t->kid[1], scope);
+
+			}
+		}
+		else
+		{
+			checkundeclared(t->kid[1], scope);
+		}
 		
 		break;
 	case SELECTION_STATEMENT_1:
