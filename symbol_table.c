@@ -202,6 +202,7 @@ bool lookup(char *n, SymbolTable t) {
 // TODO: Fix #include string or hash problem: Done.
 // TODO: Implement cout, cin, endl: Kinda done.
 // TODO: Fix function prototypes, insert it into global table: Done
+// TODO: Work on class.member handling!! 
 
 // overall populate_symbol_table layout adapted from https://github.com/park2331/compiler/blob/master/tomorrow/symtab.c
 // this function populates symbol tables for classes, functions, and globals
@@ -330,9 +331,21 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		break;		
     case POSTFIX_EXPRESSION_1:
 	     // checking if a function has been declared in the global scope
-		 if(strcmp(t->kid[0]->leaf->text, "printf") != 0 && (strcmp(t->kid[0]->leaf->text, "scanf")) != 0 ) // slightly cheating here
+		 if(t->kid[0]->prodrule == POSTFIX_EXPRESSION_4)
+		 {
+			 // need to check if this function has been declared in the correct scoping
+			 printf("Found postfix expr: %s \n", t->kid[0]->kid[0]->leaf->text);
+			 printf("Found postfix expr: %s \n", t->kid[0]->kid[1]->leaf->text);
+			 printf("Found postfix expr: %s \n", t->kid[0]->kid[2]->leaf->text);
+			 break;
+		 }
+		 if(t->kid[0] != NULL || t->kid[0]->leaf->text != NULL)
+		 {
+		 if(strcmp(t->kid[0]->leaf->text, "printf") != 0 && (strcmp(t->kid[0]->leaf->text, "scanf") != 0 )) // slightly cheating here
 	     checkundeclared(t->kid[0], GLOBAL_TABLE); 
-		 break; 		
+		 }
+		 break; 	
+
     case JUMP_STATEMENT_1:
 	    // checking the return value 
 		checkundeclared(t->kid[1], scope); // this doesn't work with returning class.member

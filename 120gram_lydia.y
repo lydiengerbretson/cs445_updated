@@ -264,7 +264,7 @@ postfix_expression:
 	| postfix_expression '(' expression_list_opt ')' {$$ = create_tree("postfix_expression_2", POSTFIX_EXPRESSION_1, 4, $1, $2, $3, $4);}
 
 	| postfix_expression '.' COLONCOLON id_expression {$$ = create_tree("postfix_expression_3", POSTFIX_EXPRESSION_1, 4, $1, $2, $3, $4);}
-	| postfix_expression '.' id_expression {$$ = create_tree("postfix_expression_4", POSTFIX_EXPRESSION_1, 3, $1, $2, $3);}
+	| postfix_expression '.' id_expression {$$ = create_tree("postfix_expression_4", POSTFIX_EXPRESSION_4, 3, $1, $2, $3);}
 
 	| postfix_expression ARROW COLONCOLON id_expression {$$ = create_tree("postfix_expression_5", POSTFIX_EXPRESSION_1, 4, $1, $2, $3, $4);}
 	| postfix_expression ARROW id_expression {$$ = create_tree("postfix_expression_6", POSTFIX_EXPRESSION_1, 3, $1, $2, $3);}

@@ -23,7 +23,7 @@ int main() {
        << "Probably to get new career chips or something.\n\n"
        << "Good luck, and have fun! - Andrew Schwartzmeyer\n\n"
        << "Press enter to continue..." << endl;
-  cin.ignore();
+  //cin.ignore();
   // play the game
   score = play(PlanetExpress);
   // exit game
@@ -43,8 +43,8 @@ int play(Crew PlanetExpress) {
     // ask until it is valid.
 
     // at the end of each turn, check stability of crew (if not exiting)
-    if (PlanetExpress.stable) PlanetExpress.stable = PlanetExpress.check();
+    //if (PlanetExpress.stable) PlanetExpress.stable = PlanetExpress.check();
   }
   // return the game's score
-  return PlanetExpress.score();
+  //return PlanetExpress.score();
 }
