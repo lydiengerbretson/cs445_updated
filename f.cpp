@@ -10,6 +10,7 @@ int main()
 double x, y;
 	double z;
 	//int a[10];
+	//double z;
 	z = myfunc(x, y);
 	cout << "zed was " << z << endl;
 	cout << "yay\n";

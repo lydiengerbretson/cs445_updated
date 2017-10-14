@@ -52,7 +52,7 @@ int main(int argc, char **argv)
    for (i = 0; i < argc; i++) 
    {
 		file_list[i] = argv[i];
-		printf("file list %s\n", file_list[i]); 
+		//printf("file list %s\n", file_list[i]); 
    }
    
 
@@ -61,12 +61,12 @@ int main(int argc, char **argv)
 	   for(i = 0; i < argc; i++)
 	   { 
 
-		  printf("Opening %s\n", file_list[i]); 
+		  //printf("Opening %s\n", file_list[i]); 
 		  yyin = fopen(file_list[i], "r"); 
 		  
 		  if(yyin == NULL)
 		  {
-			  printf("File does not exist.\n"); 
+			  fprintf(stderr, "File does not exist.\n"); 
 			  return -1; 
 		  }
 		  // push file onto stack 
@@ -93,9 +93,9 @@ int main(int argc, char **argv)
 			// TODO: add user option to print out symbol table
 			 populate_symbol_table( YYPROGRAM , GLOBAL_TABLE );
 			 
-			 // print the names of the symbol tables
-             print_tables(1);
-			 print_tables(2);
+			 // print the names of the symbol tables for testing purposes
+             //print_tables(1);
+			 //print_tables(2);
 			 
 			 // return with no errors
 			 return 0;

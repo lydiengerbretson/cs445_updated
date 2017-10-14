@@ -20,8 +20,6 @@ Entry new_entry(char* n) {
   Entry e = calloc(1, sizeof(Entry));
   TypeTable t = calloc(1, sizeof(TypeTable));
 
- // e->name = strdup(n);
- //e->name = malloc(strlen(n) +1); // nope this doesn't help LOL
  e->name = strdup(n); 
 
 
@@ -72,10 +70,8 @@ void insert(Entry e, SymbolTable t) {
    
    t->entry[key] = e;
 		
-   fprintf( stdout , "%s was INSERTED into scope: %s at location %d \n" , e->name , t->name, key);
+   //fprintf( stdout , "%s was INSERTED into scope: %s at location %d \n" , e->name , t->name, key);
 
-    // need to handle collisions!!
-	// insert symbol after walking through a linked list symbol table entries
 	
 }
 
@@ -84,10 +80,8 @@ void insert_sym_list(char *s, char *t)
     struct entry *new_node = (struct entry *)malloc(sizeof(struct entry));
     struct entry *curr, *temp;
 	
-    //new_node->sym_table_name = malloc(strlen(t)+1); 
 	new_node->sym_table_name = strdup(t); 
 	
-	//new_node->name = malloc(strlen(s)+1); 
 	new_node->name = strdup(s); 
 	
 	new_node->next = NULL; 
@@ -150,7 +144,7 @@ void insert_scope(char* n, SymbolTable t) {
 
   insert(e, t);
 
-  fprintf( stdout , "%s was INSERTED into scope: %s.\n" , e->name , t->name );
+  //fprintf( stdout , "%s was INSERTED into scope: %s.\n" , e->name , t->name );
   
 }
 
@@ -202,7 +196,7 @@ bool lookup(char *n, SymbolTable t) {
 // TODO: Fix #include string or hash problem: Done.
 // TODO: Implement cout, cin, endl: Kinda done.
 // TODO: Fix function prototypes, insert it into global table: Done
-// TODO: Work on class.member handling!! 
+// TODO: Work on class.member handling: Done
 // TODO: Work on class constructor members (not undeclared)!
 
 // overall populate_symbol_table layout adapted from https://github.com/park2331/compiler/blob/master/tomorrow/symtab.c
@@ -266,7 +260,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		break; 
 
 	case CLASS_SPECIFIER_1:
-      printf("\n------CLASS------\n"); 
+      //printf("\n------CLASS------\n"); 
       class_name = get_class_name(t);
 	  if(lookup(class_name, GLOBAL_TABLE))
 	  {
@@ -288,7 +282,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
     case FUNCTION_DEFINITION_1:   
 
-	  printf("\n------FUNCTION------\n"); 
+	  //printf("\n------FUNCTION------\n"); 
       func_name = get_func_name(t, &class_func);
 	  if (func_name == NULL)
 	  {
@@ -353,9 +347,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 			if(t->kid[1]->kid[0]->prodrule == POSTFIX_EXPRESSION_4)
 			{
 			// somehow need to check if this has been declared in class scope
-			printf("Returning postfix\n");
 			check_class_members_jump(t);
-			//break;
 			}
 			else
 			{
@@ -401,7 +393,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
     case DIRECT_DECLARATOR_6:
 	case DIRECT_DECLARATOR_7:
       direct_declare = true;
-      printf("\n ------DECLARED VARIABLES------\n");
+      //printf("\n ------DECLARED VARIABLES------\n");
 	  
 	  for (j=0; j < t->nkids; j++) 
 	  {

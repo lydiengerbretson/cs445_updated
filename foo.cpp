@@ -43,10 +43,7 @@ int main()
       // choice is invalid
       cout << "Invalid Choice." << endl;
     }
-    if (valid_choice) {
-      // if choice is valid, print the answer
-      cout << endl << "Answer = " << answer << endl;
-    }
+    
   } while (choice != 0);
   // if the user didn't choose 0, loop back to start
   return 0;
@@ -55,7 +52,7 @@ int main()
 //-------------- Functions -------------------
 double divide(double dividend, double divisor)
 {
-  if (divisor == 0)
+  if (dividend == 0)
     return 0;			// avoids divide by zero errors
   else
     return (dividend / divisor);

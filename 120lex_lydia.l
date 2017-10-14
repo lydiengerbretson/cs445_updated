@@ -346,7 +346,7 @@ void insert_typename_tree(struct tree *t, SymbolTable table)
             t->leaf->text, t->leaf->category );
    } else {
 
-     printf("INSERTED %s: %d\n ",t->leaf->text, t->leaf->category);
+     //printf("INSERTED %s: %d\n ",t->leaf->text, t->leaf->category);
      insert_sym( t->leaf->text , table );
 
    }
@@ -370,7 +370,7 @@ void handle_include(char *s)
   char *fname = malloc(strlen(yytext)+1-strlen("#include \"\""));
   fname = strchr(yytext, '\"')+1;
   fname[strlen(fname)-1] = '\0';
-  printf("%s\n",fname);
+  //printf("%s\n",fname);
   yyin = fopen(fname,"r");
   if(yyin == NULL)
   {
