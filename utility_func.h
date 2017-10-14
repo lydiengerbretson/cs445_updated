@@ -12,4 +12,8 @@ char * get_func_name(struct tree *, int *is_class);
 char * get_class_name(struct tree *);
 int get_declarator_type(struct tree *);
 
+void check_class_members_post(struct tree *);
+void check_class_members_state(struct tree *);
+void check_class_members_jump(struct tree *t);
+
 #endif

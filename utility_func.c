@@ -171,3 +171,66 @@ char * get_class_name(struct tree *t)
          }
      }
 }
+
+// helper function to check class members for postfix statements
+void check_class_members_post(struct tree *t)
+{
+	// need to check if this function has been declared in the correct scoping
+	int i; 
+	// there should only be three children in a postfix expr
+	//printf("Found postfix expr: %s \n", t->kid[0]->kid[0]->leaf->text);
+	//printf("Found postfix expr: %s \n", t->kid[0]->kid[1]->leaf->text);
+	//printf("Found postfix expr: %s \n", t->kid[0]->kid[2]->leaf->text);
+	for(i=0; i < TABLE_SIZE; i++)
+	{
+		if(class_tables[i])
+		{
+			if(!find_sym_in_list(t->kid[0]->kid[2]->leaf->text, class_tables[i]->name))
+				semanticerror("Undeclared variable.", t->kid[0]->kid[2]);
+		}
+
+	}
+	
+}
+
+// helper function to check class members in selection and iteration statements 
+void check_class_members_state(struct tree *t)
+{
+	// need to check if this function has been declared in the correct scoping
+	int i; 
+	// there should only be three children in a postfix expr
+	//printf("Found postfix expr: %s \n", t->kid[2]->kid[0]->leaf->text);
+	//printf("Found postfix expr: %s \n", t->kid[2]->kid[1]->leaf->text);
+	//printf("Found postfix expr: %s \n", t->kid[2]->kid[2]->leaf->text);
+	for(i=0; i < TABLE_SIZE; i++)
+	{
+		if(class_tables[i])
+		{
+			if(!find_sym_in_list(t->kid[2]->kid[2]->leaf->text, class_tables[i]->name))
+				semanticerror("Undeclared variable.", t->kid[2]->kid[2]);
+		}
+
+	}
+	
+}
+
+// helper function to check class members in selection and iteration statements 
+void check_class_members_jump(struct tree *t)
+{
+	// need to check if this function has been declared in the correct scoping
+	int i; 
+	// there should only be three children in a postfix expr
+	//printf("Found postfix expr: %s \n", t->kid[2]->kid[0]->leaf->text);
+	//printf("Found postfix expr: %s \n", t->kid[2]->kid[1]->leaf->text);
+	//printf("Found postfix expr: %s \n", t->kid[2]->kid[2]->leaf->text);
+	for(i=0; i < TABLE_SIZE; i++)
+	{
+		if(class_tables[i])
+		{
+			if(!find_sym_in_list(t->kid[1]->kid[2]->leaf->text, class_tables[i]->name))
+				semanticerror("Undeclared variable.", t->kid[1]->kid[2]);
+		}
+
+	}
+	
+}

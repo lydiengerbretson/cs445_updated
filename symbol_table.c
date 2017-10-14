@@ -318,30 +318,27 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
 	  break; 
 	case ASSIGNMENT_EXPRESSION_1:
-	    // checking the left hand side of assignment expression
+	    // checking the right hand side of assignment expression
+		if(t->kid[2]->prodrule == POSTFIX_EXPRESSION_1)
+		{
+			checkundeclared(t->kid[2]->kid[0], GLOBAL_TABLE); 
+		}
 		if(t->kid[2]->prodrule == ADDITIVE_EXPRESSION_1)
 		{
-			printf("found additive expression!\n"); 
 			// only finds the first thing in the additive expression
 			checkundeclared(t->kid[2]->kid[0], scope); 
 		}
-		else
-		{
-	     checkundeclared(t->kid[0], scope); 
-		}
+        // checking left hand side of assignment expression
+	    checkundeclared(t->kid[0], scope); 
 		break;		
     case POSTFIX_EXPRESSION_1:
-	     // checking if a function has been declared in the global scope
+	     // checking if a class function has been declared in the class scope
 		 if(t->kid[0]->prodrule == POSTFIX_EXPRESSION_4)
 		 {
-			 // need to check if this function has been declared in the correct scoping
-			 int i; 
-			 for(i=0; i<t->kid[0]->nkids; i++)
-			 {
-			 printf("Found postfix expr: %s \n", t->kid[0]->kid[i]->leaf->text);
-			 }
+			 check_class_members_post(t);
 			 break;
 		 }
+		 	     // checking if a function has been declared in the global scope
 		 if(t->kid[0] != NULL || t->kid[0]->leaf->text != NULL)
 		 {
 		 if(strcmp(t->kid[0]->leaf->text, "printf") != 0 && (strcmp(t->kid[0]->leaf->text, "scanf") != 0 )) // slightly cheating here
@@ -351,13 +348,35 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
     case JUMP_STATEMENT_1:
 	    // checking the return value 
-		checkundeclared(t->kid[1], scope); // this doesn't work with returning class.member
-		break;		
+		checkundeclared(t->kid[1], scope);
+		
+		break;
 	case SELECTION_STATEMENT_1:
 	    // checking inside if and switch statements
-	    checkundeclared(t->kid[2], scope); // this doesn't work with returning class.member
-		break;
-	  
+		if(t->kid[2]->prodrule == POSTFIX_EXPRESSION_4)
+		{
+			// helper function to check if variable is declared in class scope
+			// defined in utility_func.c
+			check_class_members_state(t);
+		}
+		else
+		{
+			checkundeclared(t->kid[2], scope); 
+		}
+	case ITERATION_STATEMENT_1:
+	    // checking inside if and switch statements
+		if(t->kid[2]->prodrule == POSTFIX_EXPRESSION_4)
+		{
+			// helper function to check if variable is declared in class scope
+			// defined in utility_func.c
+			check_class_members_state(t);
+		}
+		else
+		{
+			checkundeclared(t->kid[2], scope); 
+		}
+		// do not need a break statement so that 
+		// the rest of the variables can be processed within the iteration statement scope
     case DIRECT_DECLARATOR_1:
 	case DIRECT_DECLARATOR_5:
     case DIRECT_DECLARATOR_6:

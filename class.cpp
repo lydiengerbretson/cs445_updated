@@ -8,6 +8,14 @@ class LYD {
 }; 
 
 
+int foo()
+{
+	int x; 
+	//int int_l; 
+	printf("hello.\n"); 
+	scanf(x); 
+}
+
 int main()
 {
 	//string sstr;  
@@ -17,19 +25,16 @@ int main()
 	int int_y;
 
 	int x; 
-    x = 1; 
+    x = foo(); 
+	
+	if(af)
+	{
+	}
+	
  
 
 	return 0; 
 }
 
-
-int foo()
-{
-	int x; 
-	//int int_l; 
-	printf("hello.\n"); 
-	scanf(x); 
-}
 
 

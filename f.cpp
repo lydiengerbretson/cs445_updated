@@ -14,6 +14,9 @@ double x, y;
 	cout << "zed was " << z << endl;
 	cout << "yay\n";
 	
+	z = 0;
+
+	
 	return 0;
 }
 
