@@ -33,7 +33,8 @@ typedef struct type {
 
 } * typeptr;
 
-int get_type(struct tree *);
+int get_base_type(struct tree *);
+
 
 
 

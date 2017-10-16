@@ -94,8 +94,8 @@ int main(int argc, char **argv)
 			 populate_symbol_table( YYPROGRAM , GLOBAL_TABLE );
 			 
 			 // print the names of the symbol tables for testing purposes
-             print_tables(1);
-			 print_tables(2);
+             //print_tables(1);
+			 //print_tables(2);
 			 
 			 // return with no errors
 			 return 0;

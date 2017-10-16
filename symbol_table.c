@@ -20,11 +20,12 @@ Entry new_entry(char* n) {
   Entry e = calloc(1, sizeof(Entry));
   typeptr t = calloc(1, sizeof(typeptr));
 
- e->name = strdup(n); 
+  e->name = malloc(strlen(n)+1); // sometimes there is problems with this... so weird!!
+  e->name = strdup(n);
 
 
   // initialize type
-  e->entrytype = t;
+ // e->entrytype = t;
   
   //e->entrytype->basetype = type; 
   
@@ -73,6 +74,15 @@ void insert(Entry e, SymbolTable t) {
    fprintf( stdout , "%s was INSERTED into scope: %s at location %d \n" , e->name , t->name, key);
 
 	
+}
+
+// inserts entry by name 
+void insert_sym(char* n, SymbolTable t) {
+ 
+  Entry e = new_entry(n);
+  
+  insert(e, t);
+  
 }
 
 void insert_sym_list(char *s, char *t)
@@ -144,15 +154,6 @@ void print_syms_in_list( char *t)
 		
 }
 
-
-// inserts entry by name 
-void insert_sym(char* n, SymbolTable t) {
- 
-  Entry e = new_entry(n);
-  
-  insert(e, t);
-  
-}
 
 // function creates and inserts a scope table into table t 
 void insert_scope(char* n, SymbolTable t) {
@@ -273,18 +274,16 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
     switch(t->prodrule) {
 		
 	// this is where i check if a variable is redeclared
-	case INIT_DECLARATOR_1:
-	//case SIMPLE_DECLARATION_1:
-        // will exit with error if redeclared
+	//case INIT_DECLARATOR_1:
+	case SIMPLE_DECLARATION_1:
 		// this way I can check for types here and insert them into symbol table!
 		//printf("Type: %s  \n", t->kid[0]->leaf->text);
-		checkredeclared(t->kid[0], scope); 
-		// if SIMPLE_DECLARATION_1 is in case, maybe change this to populate init decls
-		populate_symbol_table(t->kid[0], scope); 
+		type = get_base_type(t->kid[0]);
+		populate_init_decls(t->kid[1], scope, type);
 		break; 
 
 	case CLASS_SPECIFIER_1:
-      //printf("\n------CLASS------\n"); 
+      printf("\n------CLASS------\n"); 
       class_name = get_class_name(t);
 	  if(lookup(class_name, GLOBAL_TABLE))
 	  {
@@ -306,7 +305,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
     case FUNCTION_DEFINITION_1:   
 
-	  //printf("\n------FUNCTION------\n"); 
+	  printf("\n------FUNCTION------\n"); 
       func_name = get_func_name(t, &class_func);
 	  if (func_name == NULL)
 	  {
@@ -383,8 +382,8 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		{
 			if(t->kid[1]->kid[0]->prodrule == POSTFIX_EXPRESSION_4)
 			{
-			// somehow need to check if this has been declared in class scope
-			check_class_members_jump(t);
+				// somehow need to check if this has been declared in class scope
+				check_class_members_jump(t);
 			}
 			else
 			{
@@ -451,8 +450,8 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
       }		
       break; 
 	  
-	 case SIMPLE_DECLARATION_1:
-	    printf("Type: %s  \n", t->kid[0]->leaf->text);
+	 //case SIMPLE_DECLARATION_1:
+	   // printf("Type: %s  \n", t->kid[0]->leaf->text);
 		//break;
 
     default:
@@ -555,6 +554,23 @@ void checkundeclared(struct tree * t, SymbolTable ST)
 	  }
 
   }
+}
+
+void populate_init_decls(struct tree *t, SymbolTable scope, int type)
+{
+	switch(t->prodrule)
+	{
+		case INIT_DECLARATOR_1:
+		    checkredeclared(t->kid[0], scope);
+			populate_init_decls(t->kid[0], scope, type);
+			break;
+		case DIRECT_DECLARATOR_4:
+			populate_init_decls(t->kid[0], scope, type);
+			break;
+		case IDENTIFIER:
+			insert_sym(t->leaf->text, scope);
+			break;
+	}
 }
 
 

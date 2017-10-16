@@ -11,6 +11,7 @@ class LYDIA
 };
 
 int foo();
+void world();
 
 int main()
 {
@@ -20,6 +21,7 @@ int main()
 	int x; 
     int z; // shows up as double if #include string is commented!!
     double y;
+	//double y;
 
 
 	//int x;
@@ -30,7 +32,7 @@ int main()
 	
 	x = foo();
 	
-	// TODO:
+	// TODO: undeclared with post fix 4 assignments
 	lydia.cool = funcy();
 
 
@@ -56,9 +58,9 @@ int help(int a)
 {
 	//int z; 
 	int x; 
-	int y; 
+	char y;
 	
-	y = foo(); 
+	x = foo(); 
 	//u = foo(); 
 }
 
@@ -72,4 +74,9 @@ int use_foo(int c)
     
     return woah + c;
 
+}
+
+void world()
+{
+	printf("bark!\n");
 }
