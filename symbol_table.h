@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include "hash.h"
 #include "tree_lydia.h"
+#include "type.h"
 
 // adapted from https://github.com/park2331/compiler
 
@@ -37,36 +38,9 @@ struct table {
   Entry entry[10000];
     
 };
+
 typedef struct table  * SymbolTable;
 
-// structure that holds type information 
-typedef struct type {
-
-  int basetype;
-  
-  union {
-    
-    struct arraytype {
-      
-      int size;
-      struct entry *type;
-      
-    } a;
-
-    struct functiontype {
-
-      struct entry *type;
-
-    } f;
-
-    struct classtype {
-      struct entry *type;
-
-    } c;
-
-  };
-
-} * TypeTable;
 
 // symbol table and entry table function declarations
 SymbolTable new_table( char* );
@@ -80,6 +54,7 @@ bool lookup( char *, SymbolTable );
 void semanticerror(char *s, struct tree *n); 
 void insert_sym_list(char *s, char *t); 
 bool find_sym_in_list(char *s, char *t); 
+void print_syms_in_list(char *t);
 
 void checkredeclared(struct tree *, SymbolTable); 
 void checkundeclared(struct tree *, SymbolTable); 

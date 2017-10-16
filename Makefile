@@ -1,14 +1,17 @@
 CC=gcc
 CFLAGS=-c -g
 
-120++: main.o token.o tree_lydia.o 120gram_lydia.tab.o lex.yy.o hash.o utility_func.o symbol_table.o 
-	$(CC) -o 120++ main.o lex.yy.o token.o 120gram_lydia.tab.o tree_lydia.o hash.o utility_func.o symbol_table.o 
+120++: main.o token.o tree_lydia.o 120gram_lydia.tab.o lex.yy.o hash.o utility_func.o symbol_table.o type.o
+	$(CC) -o 120++ main.o lex.yy.o token.o 120gram_lydia.tab.o tree_lydia.o hash.o utility_func.o symbol_table.o type.o 
 
 token.o: token.c
 	$(CC) $(CFLAGS) token.c
     
 utility_func.o: utility_func.c
 	$(CC) $(CFLAGS) utility_func.c
+
+type.o: type.c
+	$(CC) $(CFLAGS) type.c
     
 symbol_table.o: symbol_table.c
 	$(CC) $(CFLAGS) symbol_table.c

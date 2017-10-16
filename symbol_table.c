@@ -18,7 +18,7 @@ extern SymbolTable GLOBAL_TABLE;
 Entry new_entry(char* n) {
 
   Entry e = calloc(1, sizeof(Entry));
-  TypeTable t = calloc(1, sizeof(TypeTable));
+  typeptr t = calloc(1, sizeof(typeptr));
 
  e->name = strdup(n); 
 
@@ -70,7 +70,7 @@ void insert(Entry e, SymbolTable t) {
    
    t->entry[key] = e;
 		
-   //fprintf( stdout , "%s was INSERTED into scope: %s at location %d \n" , e->name , t->name, key);
+   fprintf( stdout , "%s was INSERTED into scope: %s at location %d \n" , e->name , t->name, key);
 
 	
 }
@@ -122,6 +122,25 @@ bool find_sym_in_list(char *s, char *t)
 		
 	}
 	return false;
+		
+}
+
+void print_syms_in_list( char *t)
+{
+	struct entry *temp;
+	temp = start; 
+	
+	while(temp != NULL)
+	{
+		if(strcmp(temp->sym_table_name, t) == 0)
+		{
+		printf("    %s\n", temp->name); 
+		//return true; 
+		}
+		temp = temp->next;
+		
+	}
+	//return false;
 		
 }
 
@@ -204,6 +223,7 @@ bool lookup(char *n, SymbolTable t) {
 struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
   int i,j, key;
+  int type;
   struct tree * temp;
   Entry local;
   char *lex;
@@ -240,7 +260,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
         }
          
     }
-  else
+   else
     {
         direct_declare = false; 
     }
@@ -251,11 +271,15 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
     if (direct_declare){direct_declare=false;};
     switch(t->prodrule) {
-	
+		
 	// this is where i check if a variable is redeclared
 	case INIT_DECLARATOR_1:
+	//case SIMPLE_DECLARATION_1:
         // will exit with error if redeclared
+		// this way I can check for types here and insert them into symbol table!
+		//printf("Type: %s  \n", t->kid[0]->leaf->text);
 		checkredeclared(t->kid[0], scope); 
+		// if SIMPLE_DECLARATION_1 is in case, maybe change this to populate init decls
 		populate_symbol_table(t->kid[0], scope); 
 		break; 
 
@@ -264,7 +288,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
       class_name = get_class_name(t);
 	  if(lookup(class_name, GLOBAL_TABLE))
 	  {
-		//  semanticerror("Redeclared variable.", t); 
+		  semanticerror("Redeclared variable.", t); 
 	  }
 	  // get type and check type before inserting
       insert_sym(class_name, GLOBAL_TABLE); // Insert into global table
@@ -312,31 +336,44 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
 	  break; 
 	case ASSIGNMENT_EXPRESSION_1:
+	    if(t->kid[0]->prodrule == POSTFIX_EXPRESSION_4)
+		{
+			//printf("I'm a postfix exp 4!\n");
+			check_class_members_post(t);
+			// check type
+		}
 	    // checking the right hand side of assignment expression
-		if(t->kid[2]->prodrule == POSTFIX_EXPRESSION_1)
+		else if(t->kid[2]->prodrule == POSTFIX_EXPRESSION_1)
 		{
 			checkundeclared(t->kid[2]->kid[0], GLOBAL_TABLE); 
+			// check type
 		}
-		if(t->kid[2]->prodrule == ADDITIVE_EXPRESSION_1)
+		else if(t->kid[2]->prodrule == ADDITIVE_EXPRESSION_1)
 		{
 			// only finds the first thing in the additive expression
 			checkundeclared(t->kid[2]->kid[0], scope); 
+			// check types 
 		}
         // checking left hand side of assignment expression
-	    checkundeclared(t->kid[0], scope); 
-		break;		
+		else 
+		{
+			checkundeclared(t->kid[0], scope); 
+			// check type
+		}
+		break;	
+		
     case POSTFIX_EXPRESSION_1:
 	     // checking if a class function has been declared in the class scope
 		 if(t->kid[0]->prodrule == POSTFIX_EXPRESSION_4)
 		 {
 			 check_class_members_post(t);
-			 break;
+			 break; // does this need to be here?
 		 }
-		 	     // checking if a function has been declared in the global scope
+		 // checking if a function has been declared in the global scope
 		 if(t->kid[0] != NULL || t->kid[0]->leaf->text != NULL)
 		 {
-		 if(strcmp(t->kid[0]->leaf->text, "printf") != 0 && (strcmp(t->kid[0]->leaf->text, "scanf") != 0 )) // slightly cheating here
-	     checkundeclared(t->kid[0], GLOBAL_TABLE); 
+			if(strcmp(t->kid[0]->leaf->text, "printf") != 0 && (strcmp(t->kid[0]->leaf->text, "scanf") != 0 )) // slightly cheating here
+				checkundeclared(t->kid[0], GLOBAL_TABLE); 
 		 }
 		 break; 	
 
@@ -412,7 +449,11 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		populate_symbol_table( t->kid[j] , scope);     
 		 
       }		
-       break; 
+      break; 
+	  
+	 case SIMPLE_DECLARATION_1:
+	    printf("Type: %s  \n", t->kid[0]->leaf->text);
+		//break;
 
     default:
      

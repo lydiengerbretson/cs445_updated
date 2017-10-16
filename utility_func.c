@@ -7,6 +7,7 @@
 void print_tables(int type)
 {
     int i = 0;
+	int j = 0;
     char * temp_name = "";
    if (type == 1) // FUNCTIONS
     {
@@ -21,6 +22,7 @@ void print_tables(int type)
              else
              {
                printf("Local Table %d: %s\n", i + 1, local_tables[i]->name);
+			   print_syms_in_list(local_tables[i]->name);
              }
          }
          else
@@ -44,6 +46,7 @@ void print_tables(int type)
              else
              {
                printf("Class Table %d: %s\n", i + 1, class_tables[i]->name);
+			   print_syms_in_list(class_tables[i]->name);
              }
          }
          else

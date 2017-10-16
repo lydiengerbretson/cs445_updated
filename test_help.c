@@ -3,21 +3,37 @@
 
 using namespace std; 
 
+class LYDIA
+{
+	
+	int cool; 
+	double yool;
+};
+
+int foo();
 
 int main()
 {
 	ofstream cout; 
 	ofstream cin; 
-    int z; // shows up as double if #include string is commented!!
-	int yay;
-
+	LYDIA lyd;	
 	int x; 
+    int z; // shows up as double if #include string is commented!!
+    double y;
+
+
 	//int x;
 	x =  yay;
+	lyd.cool = x;
+	lyd.yool = y;
 	string sstr; // fails if it is string s 
-	//string sstr;
-    
-	//xo = 1; 
+	
+	x = foo();
+	
+	// TODO:
+	lydia.cool = funcy();
+
+
 	
     return 0;
 }
@@ -29,6 +45,7 @@ int foo()
     int y; 
     int x; 
 	
+	int i_type = 0;
 	//zo = 1;
 
     

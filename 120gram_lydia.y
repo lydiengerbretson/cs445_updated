@@ -535,14 +535,14 @@ simple_declaration:
 
 decl_specifier:
 	storage_class_specifier { $$ = $1; }
-        | type_specifier { $$ = $1; }
+        | type_specifier { $$ = $1; } // ADDED123
 	| function_specifier {$$ = $1;}
 	| FRIEND {$$ = $1;}
 	| TYPEDEF {$$ = $1;}
 	;
 
 decl_specifier_seq:
-	decl_specifier {$$ = $1;}
+	decl_specifier {$$ = $1;} // ADDED123
 	| decl_specifier_seq decl_specifier {$$ = create_tree("decl_specifier_seq_1", DECL_SPECIFIER_SEQ_1, 2, $1, $2);}
 	;
 
