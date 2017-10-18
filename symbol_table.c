@@ -245,30 +245,23 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 			checkundeclared(t->kid[2]->kid[0], GLOBAL_TABLE); 
 			// check type
 		}
-		else if(t->kid[2]->prodrule == ADDITIVE_EXPRESSION_1)
+		else if(t->kid[2]->prodrule == ADDITIVE_EXPRESSION_1 
+		     || t->kid[2]->prodrule == MULTIPLICATIVE_EXPRESSION_1)
 		{
 			// only finds the first thing in the additive expression
 			checkundeclared(t->kid[2]->kid[0], scope); 
 			// check types 
 			printf("Find and check types!\n");
-			// right hand side of expression
-			for(k=0; k<t->kid[2]->nkids; k++)
-			{
-				// only works for two operands on right side
-				if(t->kid[2]->kid[k]->prodrule == 258)
-				{
-					printf("Printing variables in add expr: %s\n", t->kid[2]->kid[k]->leaf->text);
-					// check and compare these types to assigner
-					type = find_type_in_list(t->kid[2]->kid[k]->leaf->text, scope->name);
-					printf("%d\n", type);
-				}
-			}
-			find_type_in_list(t->kid[0]->leaf->text, scope->name);
+			type_add_check(t, scope->name);
+
 		}
-        // checking left hand side of assignment expression
+       
 		else 
 		{
+			 // checking left hand side of assignment expression
 			checkundeclared(t->kid[0], scope); 
+			 // checking right hand side of assignment expression
+			checkundeclared(t->kid[2], scope);
 			// check type
 		}
 		break;	

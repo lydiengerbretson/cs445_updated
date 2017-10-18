@@ -89,7 +89,7 @@ int main(int argc, char **argv)
 			//print_tree(YYPROGRAM, 0); 
 			//populate the symbol table, inserting variables into symbol tables
 			// TODO: add user option to print out symbol table
-			 populate_symbol_table( YYPROGRAM , GLOBAL_TABLE );
+			populate_symbol_table( YYPROGRAM , GLOBAL_TABLE );
 			 
 			 // print the names of the symbol tables for testing purposes
             // print_tables(1);

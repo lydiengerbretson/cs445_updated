@@ -20,21 +20,22 @@ int main()
 	ofstream cout; 
 	ofstream cin; 
 	LYDIA lyd;	
-	int x; 
+	//int yay;
+	int x; // 1
     int z; // shows up as double if #include string is commented!!
-    double y;
-	double goo;
+    double y; //5
 	//double y;
-    x = z + y;
+    x = z / y;
     
 	//int x;
-	x =  yay;
+	// TODO:
+	//x =  yay;
 	lyd.cool = x;
 	lyd.yool = y;
-	string sstr; // fails if it is string s 
+	string s; 
 	
-	x = foo();
-	//x = funcy(); 
+	//x = funcy();
+	//x = funcy(); // this works
 	
 	// TODO: undeclared with post fix 4 assignments
 	lydia.cool = funcy();
@@ -49,10 +50,10 @@ int foo()
     int yas;
 	   
     int y; 
-    //x = baz; // this works
+    //x = 0; // this works
 	int xoo;
 	int i_type = 0;
-	zo = func;
+	
 	
 
     
@@ -72,12 +73,13 @@ int help(int a)
 	{
 		//x = funcy();
 	}
-	u = foo(); 
+	//u = foo(); 
 	
 	
 	//return zooer;
 }
 
+/*
 double use_foo(int c)
 {
     int woah;
@@ -94,5 +96,5 @@ void world()
 	printf("bark!\n");
 	double apple;
 	//x =f;
-}
+}*/
 

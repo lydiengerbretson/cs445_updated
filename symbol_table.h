@@ -36,6 +36,7 @@ struct table {
   char *name;
 
   Entry entry[10000];
+
     
 };
 

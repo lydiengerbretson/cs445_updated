@@ -3,6 +3,7 @@
 
 #include "symbol_table.h"
 #include "tree_lydia.h"
+#include "list.h"
 
 // structure that holds type information 
 typedef struct type {
@@ -45,7 +46,7 @@ enum base_types
 
 int get_base_type(struct tree *);
 
-
+void type_add_check(struct tree *, char *);
 
 
 #endif
