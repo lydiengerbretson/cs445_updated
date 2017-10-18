@@ -5,28 +5,28 @@
 // function adapted from https://github.com/westrope/wookie-chomp/blob/hw3/Hw2/prodrule.c
 int get_base_type( struct tree *t)
 {
-	
+
+	if(strcmp(t->leaf->text, "string") == 0)
+		return STRING_TYPE;
+	if(strcmp(t->leaf->text, "ofstream") == 0)
+		return OFSTREAM_TYPE;
+	if(strcmp(t->leaf->text, "LYDIA") == 0)
+		return 1234; // testing purposes
+
 	switch(t->prodrule)
 	{
 		
 	case INT:
-		printf("INT TYPE!\n");
-		return 1;
+		return INT_TYPE;
 	case DOUBLE:
-		printf("DOUBLE TYPE!\n");
-		return 2;
+		return DOUBLE_TYPE;
 	case CHAR:
-		printf("CHAR TYPE!\n");
-		return 3;
+		return CHAR_TYPE;
 	case VOID:
-		printf("VOID TYPE!\n");
-		return 4;
+		return VOID_TYPE;
 	default:
 		return 0;
 	}
-	
-	
-	return 0;
 
   
 }

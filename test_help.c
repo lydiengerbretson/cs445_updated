@@ -10,6 +10,8 @@ class LYDIA
 	double yool;
 };
 
+
+
 int foo();
 void world();
 
@@ -31,6 +33,7 @@ int main()
 	string sstr; // fails if it is string s 
 	
 	x = foo();
+	//x = funcy(); 
 	
 	// TODO: undeclared with post fix 4 assignments
 	lydia.cool = funcy();
@@ -45,7 +48,7 @@ int foo()
     int yas;
 	   
     int y; 
-    int x; 
+    int xoo; 
 	
 	int i_type = 0;
 	//zo = 1;
@@ -58,19 +61,26 @@ int help(int a)
 {
 	//int z; 
 	int x; 
-	char y;
-	
+	int yay;
+	a = x;
+	//apple = x;
+	//int a;
+	while(x)
+	{
+		//x = funcy();
+	}
 	x = foo(); 
 	//u = foo(); 
+	
+	//return zooer;
 }
 
-int use_foo(int c)
+double use_foo(int c)
 {
     int woah;
 	//double woah; 
-    woah = foo();
-	 
-	//yes = foo(); 
+    //woah = f();
+	 //yes = foo(); 
     
     return woah + c;
 
@@ -79,4 +89,6 @@ int use_foo(int c)
 void world()
 {
 	printf("bark!\n");
+	double apple;
 }
+

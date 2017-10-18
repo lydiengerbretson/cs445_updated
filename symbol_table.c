@@ -12,22 +12,21 @@ extern SymbolTable CLASSTABLE;
 extern SymbolTable FUNCTION_TABLE; 
 extern SymbolTable GLOBAL_TABLE; 
 
+
 // adapted from https://github.com/park2331/compiler
 
 // creates 'type' entry; init memory and store name 
-Entry new_entry(char* n) {
+Entry new_entry(char *n, int typ) {
 
   Entry e = calloc(1, sizeof(Entry));
-  typeptr t = calloc(1, sizeof(typeptr));
 
-  e->name = malloc(strlen(n)+1); // sometimes there is problems with this... so weird!!
+  e->name = (char*)malloc(strlen(n)+1); // sometimes there is problems with this... so weird!!
+ 
   e->name = strdup(n);
-
-
-  // initialize type
- // e->entrytype = t;
   
-  //e->entrytype->basetype = type; 
+  // add type to entry
+  e->typ = typ;
+  
   
   return e;
 }
@@ -38,62 +37,50 @@ SymbolTable new_table(char* n) {
 
  // possibly change to calloc instead of malloc: Done
  
-  SymbolTable t = calloc(1, sizeof(SymbolTable));
-  t->entry[0] = calloc(10000, sizeof(Entry));
-  //t->entry[10000] = calloc(10000 , sizeof(Entry));
+  SymbolTable t = (SymbolTable)calloc(1, sizeof(SymbolTable));
+  t->entry[0] = (Entry)calloc(10000, sizeof(Entry));
 
+  //t->entry[10000] = calloc(10000 , sizeof(Entry));
+  //t->typ = typ;
+  t->name = (char*)malloc(strlen(n)+1); // this helps sometimes
   t->name = strdup(n);
   
   return t;
 }
 
 
-// init mem for entry, stores name, inits table field of entry struct. 
-// returns entry pointer.
-Entry new_scope(char *n) {
-
-  Entry e = new_entry(n);
-  
-  e->name = strdup(n);
-  e->entrytable = new_table(n);
-
-  return e;
- 
-}
-
-
 // insert entry; takes entry struct as param 
-void insert(Entry e, SymbolTable t) {
+void insert(Entry e, SymbolTable t, int typ) {
 
    int key = get_key(e->name);
   
-   insert_sym_list(e->name, t->name);
+   insert_sym_list(e->name, t->name, typ);
    
    t->entry[key] = e;
 		
-   fprintf( stdout , "%s was INSERTED into scope: %s at location %d \n" , e->name , t->name, key);
+   fprintf( stdout , "%s was INSERTED into scope: %s with type %d \n" , e->name , t->name, typ);
 
 	
 }
 
 // inserts entry by name 
-void insert_sym(char* n, SymbolTable t) {
+void insert_sym(char* n, SymbolTable t, int typ) {
  
-  Entry e = new_entry(n);
+  Entry e = new_entry(n, typ);
   
-  insert(e, t);
+  insert(e, t, typ);
   
 }
 
-void insert_sym_list(char *s, char *t)
+void insert_sym_list(char *s, char *t, int typ)
 {
-    struct entry *new_node = (struct entry *)malloc(sizeof(struct entry));
-    struct entry *curr, *temp;
+    struct entry *new_node = calloc(1, sizeof(Entry));
 	
-	new_node->sym_table_name = strdup(t); 
-	
+	struct entry *curr, *temp;
+
+	new_node->sym_table_name = strdup(t); 	
 	new_node->name = strdup(s); 
-	
+	new_node->typ = typ;	
 	new_node->next = NULL; 
 	
 	if(start == NULL)
@@ -125,7 +112,7 @@ bool find_sym_in_list(char *s, char *t)
 	{
 		if(strcmp(s, temp->name) == 0 && strcmp(temp->sym_table_name, t) ==0)
 		{
-		//printf("**Printing the wanted symbol: %s\n", temp->name); 
+		printf("**Printing the wanted symbol: %s type: %d\n", temp->name, temp->typ); 
 		return true; 
 		}
 		temp = temp->next;
@@ -144,7 +131,7 @@ void print_syms_in_list( char *t)
 	{
 		if(strcmp(temp->sym_table_name, t) == 0)
 		{
-		printf("    %s\n", temp->name); 
+		printf("    %s %d\n", temp->name, temp->typ); 
 		//return true; 
 		}
 		temp = temp->next;
@@ -155,18 +142,6 @@ void print_syms_in_list( char *t)
 }
 
 
-// function creates and inserts a scope table into table t 
-void insert_scope(char* n, SymbolTable t) {
-
-  Entry e = new_scope(n);
-
-  int key = get_key(e->name);
-
-  insert(e, t);
-
-  //fprintf( stdout , "%s was INSERTED into scope: %s.\n" , e->name , t->name );
-  
-}
 
 // return entry at specific key n
 Entry get_entry( char *n , SymbolTable t ) {
@@ -175,14 +150,6 @@ Entry get_entry( char *n , SymbolTable t ) {
 }
 
 
-/* Return entry */
-SymbolTable get_scope(char *n, SymbolTable t) {
-  
-  int key = get_key(n);
-  
-  return t->entry[key]->entrytable;
-  
-}
 
 bool lookup(char *n, SymbolTable t) {
 
@@ -250,7 +217,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
         if (t->prodrule == IDENTIFIER) 
         {
 		  // get type and check type before inserting
-          insert_sym(t->leaf->text, scope);
+          insert_sym(t->leaf->text, scope, 0);
           
           return t;
 		
@@ -273,11 +240,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
     if (direct_declare){direct_declare=false;};
     switch(t->prodrule) {
 		
-	// this is where i check if a variable is redeclared
-	//case INIT_DECLARATOR_1:
 	case SIMPLE_DECLARATION_1:
-		// this way I can check for types here and insert them into symbol table!
-		//printf("Type: %s  \n", t->kid[0]->leaf->text);
 		type = get_base_type(t->kid[0]);
 		populate_init_decls(t->kid[1], scope, type);
 		break; 
@@ -290,7 +253,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		  semanticerror("Redeclared variable.", t); 
 	  }
 	  // get type and check type before inserting
-      insert_sym(class_name, GLOBAL_TABLE); // Insert into global table
+      insert_sym(class_name, GLOBAL_TABLE, 0); // Insert into global table
       
       class_table = new_table(class_name);
       class_tables[nclasstables++] = class_table;
@@ -311,18 +274,22 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 	  {
 		  printf("Error, function has no name\n");
 	  }
+
 	  func_table = new_table(func_name);
 	  scope = func_table;
 	  // get type and check type before inserting
 	  if (class_func == 0)
 	  {		        
 		// not a class method
-        insert_sym(func_name, GLOBAL_TABLE); // Insert into global table 
+		// get base type of function (which is return type)
+	    type = get_base_type(t->kid[0]);
+		printf("This function: %s, type: %d\n", func_name, type);
+        insert_sym(func_name, GLOBAL_TABLE, type); // Insert into global table 
 		local_tables[nlocaltables++] = func_table;
 	  }
 	  else
 	  {
-		 insert_sym(func_name, scope); // Insert into global table 
+		 insert_sym(func_name, scope, 0); // Insert into global table 
 		 class_tables[nclasstables++] = func_table;		
 	  }
       
@@ -410,6 +377,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		{
 			checkundeclared(t->kid[2], scope); 
 		}
+		//break;
 	case ITERATION_STATEMENT_1:
 	    // checking inside if and switch statements
 		if(t->kid[2]->prodrule == POSTFIX_EXPRESSION_4)
@@ -422,6 +390,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		{
 			checkundeclared(t->kid[2], scope); 
 		}
+		//break;
 		// do not need a break statement so that 
 		// the rest of the variables can be processed within the iteration statement scope
     case DIRECT_DECLARATOR_1:
@@ -537,7 +506,7 @@ void checkundeclared(struct tree * t, SymbolTable ST)
 		  if(t->leaf->category == IDENTIFIER)
 		  {
 			  
-			 if(!lookup(t->leaf->text, ST) && !find_sym_in_list(t->leaf->text, ST->name) && !find_sym_in_list(t->leaf->text, "global_table"))
+			 if(!lookup(t->leaf->text, ST)&& !find_sym_in_list(t->leaf->text, ST->name) && !find_sym_in_list(t->leaf->text, "global_table"))
 			  {
 				 semanticerror("Undeclared variable:", t); 
 			  }
@@ -561,6 +530,7 @@ void populate_init_decls(struct tree *t, SymbolTable scope, int type)
 	switch(t->prodrule)
 	{
 		case INIT_DECLARATOR_1:
+		case INIT_DECLARATOR_LIST_1:
 		    checkredeclared(t->kid[0], scope);
 			populate_init_decls(t->kid[0], scope, type);
 			break;
@@ -568,7 +538,7 @@ void populate_init_decls(struct tree *t, SymbolTable scope, int type)
 			populate_init_decls(t->kid[0], scope, type);
 			break;
 		case IDENTIFIER:
-			insert_sym(t->leaf->text, scope);
+			insert_sym(t->leaf->text, scope, type);
 			break;
 	}
 }

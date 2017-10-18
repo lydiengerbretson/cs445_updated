@@ -43,8 +43,6 @@ int main(int argc, char **argv)
    YYPROGRAM = NULL; 
   //struct typenametable_entry *tmp_head; 
   CLASSTABLE = new_table( "classtable" );
-  CLASS_FUNCTION_TABLE = new_table("class_function_table"); 
-  FUNCTION_TABLE = new_table("local_table"); 
   GLOBAL_TABLE = new_table("global_table"); 
    
    ++argv, --argc;  /* skip over program name */

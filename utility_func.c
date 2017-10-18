@@ -21,7 +21,7 @@ void print_tables(int type)
              }
              else
              {
-               printf("Local Table %d: %s\n", i + 1, local_tables[i]->name);
+               printf("Local Table %d: %s \n", i + 1, local_tables[i]->name);
 			   print_syms_in_list(local_tables[i]->name);
              }
          }

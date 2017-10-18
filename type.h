@@ -33,6 +33,16 @@ typedef struct type {
 
 } * typeptr;
 
+enum base_types
+{
+	INT_TYPE = 1,
+	CHAR_TYPE = 2, 
+	VOID_TYPE = 3, 
+	STRING_TYPE = 4,
+	DOUBLE_TYPE = 5, 
+	OFSTREAM_TYPE = 6
+};
+
 int get_base_type(struct tree *);
 
 

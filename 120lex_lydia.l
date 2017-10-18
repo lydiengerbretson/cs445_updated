@@ -129,10 +129,10 @@ stringtext				([^"])|(\\.)
   /* only allowed namespace directive */
 "using namespace std;"  { using_n_std = 1;
                           if (saw_fstream)
-                                  insert_sym("ifstream", CLASSTABLE);
-								  insert_sym("ofstream", CLASSTABLE); 
+                                  insert_sym("ifstream", CLASSTABLE, 0);
+								  insert_sym("ofstream", CLASSTABLE, 0); 
                           if (saw_string)
-                                  insert_sym("string", CLASSTABLE);}
+                                  insert_sym("string", CLASSTABLE, 0);}
 
 "bool"					{ return add_token(BOOL); }
 "break"					{ return add_token(BREAK); }
@@ -347,7 +347,7 @@ void insert_typename_tree(struct tree *t, SymbolTable table)
    } else {
 
      //printf("INSERTED %s: %d\n ",t->leaf->text, t->leaf->category);
-     insert_sym( t->leaf->text , table );
+     insert_sym( t->leaf->text , table, 0);
 
    }
     
@@ -357,7 +357,7 @@ void insert_typename_tree(struct tree *t, SymbolTable table)
 int typenametable_insert(char *s, SymbolTable t)
 {
 
-   insert_sym(s, t); 
+   insert_sym(s, t, 0); 
 }
 
 // handle user include files

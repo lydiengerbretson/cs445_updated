@@ -35,6 +35,7 @@ Entry start;
 // hash table structure that holds name and scope info.
 struct table {
 
+ // int typ;
   char *name;
 
   Entry entry[10000];
@@ -46,15 +47,14 @@ typedef struct table  * SymbolTable;
 
 // symbol table and entry table function declarations
 SymbolTable new_table( char* );
-Entry new_entry( char* );
-Entry new_scope( char* );
+Entry new_entry( char* , int);
 Entry get_entry( char* , SymbolTable );
-void insert( Entry, SymbolTable );
-void insert_sym( char* , SymbolTable );
+void insert( Entry, SymbolTable, int);
+void insert_sym( char* , SymbolTable, int);
 SymbolTable get_scope(char* , SymbolTable );
 bool lookup( char *, SymbolTable );
 void semanticerror(char *s, struct tree *n); 
-void insert_sym_list(char *s, char *t); 
+void insert_sym_list(char *s, char *t, int typ); 
 bool find_sym_in_list(char *s, char *t); 
 void print_syms_in_list(char *t);
 
