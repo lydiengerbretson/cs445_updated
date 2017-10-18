@@ -50,7 +50,7 @@ bool find_sym_in_list(char *s, char *t)
 		
 }
 
-void find_type_in_list(char *s, char *t)
+int find_type_in_list(char *s, char *t)
 {
 	
 	struct entry *temp;
@@ -61,6 +61,7 @@ void find_type_in_list(char *s, char *t)
 		if(strcmp(s, temp->name) == 0 && strcmp(temp->sym_table_name, t) == 0 )
 		{
 		printf("**Printing the wanted symbol: %s type: %d\n", temp->name, temp->typ); 
+		return temp->typ;
 
 		}
 		temp = temp->next;

@@ -258,7 +258,9 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 				if(t->kid[2]->kid[k]->prodrule == 258)
 				{
 					printf("Printing variables in add expr: %s\n", t->kid[2]->kid[k]->leaf->text);
-					find_type_in_list(t->kid[2]->kid[k]->leaf->text, scope->name);
+					// check and compare these types to assigner
+					type = find_type_in_list(t->kid[2]->kid[k]->leaf->text, scope->name);
+					printf("%d\n", type);
 				}
 			}
 			find_type_in_list(t->kid[0]->leaf->text, scope->name);
