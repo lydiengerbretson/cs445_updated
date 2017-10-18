@@ -17,6 +17,7 @@ int main()
 	double answer;
   int choice;
   int valid_choice;
+  //int valid_choice;
   do {
     print_menu();
     cin >> choice;

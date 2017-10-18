@@ -26,7 +26,7 @@ int main()
 	double goo;
 	//double y;
     x = z + y;
-
+    
 	//int x;
 	x =  yay;
 	lyd.cool = x;
@@ -49,10 +49,11 @@ int foo()
     int yas;
 	   
     int y; 
-    int xoo; 
-	
+    //x = baz; // this works
+	int xoo;
 	int i_type = 0;
-	//zo = 1;
+	zo = func;
+	
 
     
     return 0;
@@ -66,12 +67,13 @@ int help(int a)
 	a = x;
 	//apple = x;
 	//int a;
+
 	while(x)
 	{
 		//x = funcy();
 	}
-	x = foo(); 
-	//u = foo(); 
+	u = foo(); 
+	
 	
 	//return zooer;
 }
@@ -91,5 +93,6 @@ void world()
 {
 	printf("bark!\n");
 	double apple;
+	//x =f;
 }
 

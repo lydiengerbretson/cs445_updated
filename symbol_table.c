@@ -22,7 +22,6 @@ Entry new_entry(char *n, int typ) {
   Entry e = calloc(1, sizeof(Entry));
 
   e->name = (char*)malloc(strlen(n)+1); // sometimes there is problems with this... so weird!!
- 
   e->name = strdup(n);
   
   // add type to entry
@@ -40,9 +39,11 @@ SymbolTable new_table(char* n) {
  
   SymbolTable t = (SymbolTable)calloc(1, sizeof(SymbolTable));
   t->entry[0] = (Entry)calloc(10000, sizeof(Entry));
+  //t->entry[0]->name = (char*)malloc(strlen(n)+1);
 
   t->name = (char*)malloc(strlen(n)+1); // this helps sometimes
   t->name = strdup(n);
+  //strncpy(t->name, n, strlen(n)+1);
   
   return t;
 }
@@ -250,7 +251,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 			checkundeclared(t->kid[2]->kid[0], scope); 
 			// check types 
 			printf("Find and check types!\n");
-			// left hand side of expression
+			// right hand side of expression
 			for(k=0; k<t->kid[2]->nkids; k++)
 			{
 				// only works for two operands on right side

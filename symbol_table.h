@@ -51,6 +51,7 @@ void insert_sym( char* , SymbolTable, int);
 SymbolTable get_scope(char* , SymbolTable );
 bool lookup( char *, SymbolTable );
 void semanticerror(char *s, struct tree *n); 
+char * alloc(int n);
 
 void checkredeclared(struct tree *, SymbolTable); 
 void checkundeclared(struct tree *, SymbolTable); 

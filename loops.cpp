@@ -1,7 +1,6 @@
 #include <iostream>
 using namespace std;
 
-
 int f( float val );
 
 
@@ -13,6 +12,7 @@ int main()
      if ( f(g) )
        cout << "f is " << f(g) << endl;
 }
+
 
 
 int f( float val )
