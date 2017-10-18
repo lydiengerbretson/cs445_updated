@@ -7,6 +7,7 @@
 #include "nonterms.h"
 #include "120gram_lydia.tab.h"
 #include "utility_func.h"
+#include "list.h"
 
 extern SymbolTable CLASSTABLE; 
 extern SymbolTable FUNCTION_TABLE; 
@@ -40,8 +41,6 @@ SymbolTable new_table(char* n) {
   SymbolTable t = (SymbolTable)calloc(1, sizeof(SymbolTable));
   t->entry[0] = (Entry)calloc(10000, sizeof(Entry));
 
-  //t->entry[10000] = calloc(10000 , sizeof(Entry));
-  //t->typ = typ;
   t->name = (char*)malloc(strlen(n)+1); // this helps sometimes
   t->name = strdup(n);
   
@@ -72,83 +71,12 @@ void insert_sym(char* n, SymbolTable t, int typ) {
   
 }
 
-void insert_sym_list(char *s, char *t, int typ)
-{
-    struct entry *new_node = calloc(1, sizeof(Entry));
-	
-	struct entry *curr, *temp;
-
-	new_node->sym_table_name = strdup(t); 	
-	new_node->name = strdup(s); 
-	new_node->typ = typ;	
-	new_node->next = NULL; 
-	
-	if(start == NULL)
-	{
-		// insert first node
-		//printf("**Inserting first node: %s\n", new_node->name); 
-		start = new_node; 
-		curr = new_node;
-	}
-	else
-	{
-		temp = start; 
-		while(temp->next != NULL)
-		{
-			temp = temp->next; 
-		}
-		//printf("**Inserting the rest: %s\n", new_node->name); 
-		temp->next = new_node; 
-	}
-	
-}
-
-bool find_sym_in_list(char *s, char *t)
-{
-	struct entry *temp;
-	temp = start; 
-	
-	while(temp != NULL)
-	{
-		if(strcmp(s, temp->name) == 0 && strcmp(temp->sym_table_name, t) ==0)
-		{
-		printf("**Printing the wanted symbol: %s type: %d\n", temp->name, temp->typ); 
-		return true; 
-		}
-		temp = temp->next;
-		
-	}
-	return false;
-		
-}
-
-void print_syms_in_list( char *t)
-{
-	struct entry *temp;
-	temp = start; 
-	
-	while(temp != NULL)
-	{
-		if(strcmp(temp->sym_table_name, t) == 0)
-		{
-		printf("    %s %d\n", temp->name, temp->typ); 
-		//return true; 
-		}
-		temp = temp->next;
-		
-	}
-	//return false;
-		
-}
-
-
 
 // return entry at specific key n
 Entry get_entry( char *n , SymbolTable t ) {
 
   return t->entry[get_key(n)];
 }
-
 
 
 bool lookup(char *n, SymbolTable t) {
@@ -190,7 +118,7 @@ bool lookup(char *n, SymbolTable t) {
 // this function populates symbol tables for classes, functions, and globals
 struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
-  int i,j, key;
+  int i,j,k, key;
   int type;
   struct tree * temp;
   Entry local;
@@ -283,6 +211,9 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		// not a class method
 		// get base type of function (which is return type)
 	    type = get_base_type(t->kid[0]);
+		// inserting type into tree node
+		t->kid[1]->kid[0]->typ = type;
+		//printf("Printing function leaf node: %s, type: %d \n", t->kid[1]->kid[0]->leaf->text, t->kid[1]->kid[0]->typ);
 		printf("This function: %s, type: %d\n", func_name, type);
         insert_sym(func_name, GLOBAL_TABLE, type); // Insert into global table 
 		local_tables[nlocaltables++] = func_table;
@@ -304,7 +235,6 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 	case ASSIGNMENT_EXPRESSION_1:
 	    if(t->kid[0]->prodrule == POSTFIX_EXPRESSION_4)
 		{
-			//printf("I'm a postfix exp 4!\n");
 			check_class_members_post(t);
 			// check type
 		}
@@ -319,6 +249,18 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 			// only finds the first thing in the additive expression
 			checkundeclared(t->kid[2]->kid[0], scope); 
 			// check types 
+			printf("Find and check types!\n");
+			// left hand side of expression
+			for(k=0; k<t->kid[2]->nkids; k++)
+			{
+				// only works for two operands on right side
+				if(t->kid[2]->kid[k]->prodrule == 258)
+				{
+					printf("Printing variables in add expr: %s\n", t->kid[2]->kid[k]->leaf->text);
+					find_type_in_list(t->kid[2]->kid[k]->leaf->text, scope->name);
+				}
+			}
+			find_type_in_list(t->kid[0]->leaf->text, scope->name);
 		}
         // checking left hand side of assignment expression
 		else 
@@ -419,9 +361,6 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
       }		
       break; 
 	  
-	 //case SIMPLE_DECLARATION_1:
-	   // printf("Type: %s  \n", t->kid[0]->leaf->text);
-		//break;
 
     default:
      
@@ -525,6 +464,7 @@ void checkundeclared(struct tree * t, SymbolTable ST)
   }
 }
 
+
 void populate_init_decls(struct tree *t, SymbolTable scope, int type)
 {
 	switch(t->prodrule)
@@ -538,6 +478,8 @@ void populate_init_decls(struct tree *t, SymbolTable scope, int type)
 			populate_init_decls(t->kid[0], scope, type);
 			break;
 		case IDENTIFIER:
+		    t->typ = type;
+			//printf("Inserting %s as type %d\n", t->leaf->text, t->typ);
 			insert_sym(t->leaf->text, scope, type);
 			break;
 	}

@@ -52,30 +52,46 @@ LYDIA was INSERTED into scope: classtable with type 0
                                    KID: statement_seq_1: 2
                                      KID: statement_seq_1: 2
                                        KID: statement_seq_1: 2
+                                         KID: statement_seq_1: 2
+                                           KID: statement_seq_1: 2
+                                             KID: simple_declaration_1: 2
+                                               LEAF: "ofstream": 264
+                                               KID: init_declarator_1: 2
+                                                 LEAF: "cout": 258
+                                             KID: simple_declaration_1: 2
+                                               LEAF: "ofstream": 264
+                                               KID: init_declarator_1: 2
+                                                 LEAF: "cin": 258
+                                           KID: simple_declaration_1: 2
+                                             LEAF: "LYDIA": 264
+                                             KID: init_declarator_1: 2
+                                               LEAF: "lyd": 258
                                          KID: simple_declaration_1: 2
-                                           LEAF: "ofstream": 264
+                                           LEAF: "int": 319
                                            KID: init_declarator_1: 2
-                                             LEAF: "cout": 258
-                                         KID: simple_declaration_1: 2
-                                           LEAF: "ofstream": 264
-                                           KID: init_declarator_1: 2
-                                             LEAF: "cin": 258
+                                             LEAF: "x": 258
                                        KID: simple_declaration_1: 2
-                                         LEAF: "LYDIA": 264
+                                         LEAF: "int": 319
                                          KID: init_declarator_1: 2
-                                           LEAF: "lyd": 258
+                                           LEAF: "z": 258
                                      KID: simple_declaration_1: 2
-                                       LEAF: "int": 319
+                                       LEAF: "double": 305
                                        KID: init_declarator_1: 2
-                                         LEAF: "x": 258
+                                         LEAF: "y": 258
                                    KID: simple_declaration_1: 2
-                                     LEAF: "int": 319
+                                     LEAF: "double": 305
                                      KID: init_declarator_1: 2
+                                       LEAF: "goo": 258
+                                 KID: assignment_expression_1: 3
+                                   LEAF: "x": 258
+                                   LEAF: "=": 61
+                                   KID: additive_expression_1: 3
+                                     KID: additive_expression_1: 3
                                        LEAF: "z": 258
-                                 KID: simple_declaration_1: 2
-                                   LEAF: "double": 305
-                                   KID: init_declarator_1: 2
-                                     LEAF: "y": 258
+                                       LEAF: "+": 43
+                                       LEAF: "y": 258
+                                     LEAF: "+": 43
+                                     LEAF: "goo": 258
                                KID: assignment_expression_1: 3
                                  LEAF: "x": 258
                                  LEAF: "=": 61

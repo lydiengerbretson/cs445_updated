@@ -23,8 +23,9 @@ int main()
 	int x; 
     int z; // shows up as double if #include string is commented!!
     double y;
+	double goo;
 	//double y;
-
+    x = z + y;
 
 	//int x;
 	x =  yay;

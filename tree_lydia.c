@@ -27,6 +27,7 @@ Treeptr create_tree(char* prod_name, int category, int num_kids, ...)
 	T->prodrule = category; 
 	// number of kids
 	T->nkids = num_kids; 
+	T->typ = 10; // default for now
 
 	// add any children to tree
 	if(num_kids > 0)
