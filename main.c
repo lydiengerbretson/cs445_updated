@@ -42,8 +42,11 @@ int main(int argc, char **argv)
    int result = 0; 
    YYPROGRAM = NULL; 
   //struct typenametable_entry *tmp_head; 
-  CLASSTABLE = new_table( "classtable" );
-  GLOBAL_TABLE = new_table("global_table"); 
+  
+  CLASSTABLE = new_table( "ct" );
+
+  GLOBAL_TABLE = new_table("gt"); 
+
    
    ++argv, --argc;  /* skip over program name */
    

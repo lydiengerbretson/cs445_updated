@@ -12,7 +12,8 @@ double divide(double, double);
 //-------------- Main -------------------
 int main()
 {
-  double operand1, operand2;
+  double operand1;
+  double operand2;
 
 	double answer;
   int choice;

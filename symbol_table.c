@@ -21,7 +21,7 @@ Entry new_entry(char *n, int typ) {
 
   Entry e = calloc(1, sizeof(Entry));
 
-  e->name = (char*)malloc(strlen(n)+1); // sometimes there is problems with this... so weird!!
+  e->name = (char*)calloc(1, strlen(n)+1); // sometimes there is problems with this... so weird!!
   e->name = strdup(n);
   
   // add type to entry
@@ -41,9 +41,9 @@ SymbolTable new_table(char* n) {
   t->entry[0] = (Entry)calloc(10000, sizeof(Entry));
   //t->entry[0]->name = (char*)malloc(strlen(n)+1);
 
-  t->name = (char*)malloc(strlen(n)+1); // this helps sometimes
+  t->name = (char*)calloc(1, 256); // this helps sometimes
   t->name = strdup(n);
-  //strncpy(t->name, n, strlen(n)+1);
+  //strcpy(t->name, n);
   
   return t;
 }
@@ -121,6 +121,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
   int i,j,k, key;
   int type;
+  int type_func;  
   struct tree * temp;
   Entry local;
   char *lex;
@@ -216,7 +217,14 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		t->kid[1]->kid[0]->typ = type;
 		//printf("Printing function leaf node: %s, type: %d \n", t->kid[1]->kid[0]->leaf->text, t->kid[1]->kid[0]->typ);
 		printf("This function: %s, type: %d\n", func_name, type);
+
         insert_sym(func_name, GLOBAL_TABLE, type); // Insert into global table 
+		type_func = find_type_in_list(func_name, "gt");
+		//printf("type func: %d\n", type_func);
+		if(type_func > 0 && type_func != type)
+		{
+			semanticerror("Function signatures do not match.", t);
+		}
 		local_tables[nlocaltables++] = func_table;
 	  }
 	  else
@@ -234,6 +242,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
 	  break; 
 	case ASSIGNMENT_EXPRESSION_1:
+
 	    if(t->kid[0]->prodrule == POSTFIX_EXPRESSION_4)
 		{
 			check_class_members_post(t);
@@ -244,6 +253,14 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		{
 			checkundeclared(t->kid[2]->kid[0], GLOBAL_TABLE); 
 			// check type
+		     type = find_type_in_list(t->kid[0]->leaf->text, scope->name);
+			 type_func = find_type_in_list(t->kid[2]->kid[0]->leaf->text, "gt");
+             if(type != type_func)
+			 {
+				 semanticerror("Function type does not match assignment type.", t);
+			 }
+			
+			
 		}
 		else if(t->kid[2]->prodrule == ADDITIVE_EXPRESSION_1 
 		     || t->kid[2]->prodrule == MULTIPLICATIVE_EXPRESSION_1)
@@ -251,11 +268,12 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 			// only finds the first thing in the additive expression
 			checkundeclared(t->kid[2]->kid[0], scope); 
 			// check types 
-			printf("Find and check types!\n");
+			//printf("Find and check types!\n");
+			// this works for two operands so far
+			// check if the next kid is additive_exp_1 or mult_exp_1
 			type_add_check(t, scope->name);
 
-		}
-       
+		}      
 		else 
 		{
 			 // checking left hand side of assignment expression
@@ -441,7 +459,7 @@ void checkundeclared(struct tree * t, SymbolTable ST)
 		  if(t->leaf->category == IDENTIFIER)
 		  {
 			  
-			 if(!lookup(t->leaf->text, ST)&& !find_sym_in_list(t->leaf->text, ST->name) && !find_sym_in_list(t->leaf->text, "global_table"))
+			 if(!lookup(t->leaf->text, ST)&& !find_sym_in_list(t->leaf->text, ST->name) && !find_sym_in_list(t->leaf->text, "gt"))
 			  {
 				 semanticerror("Undeclared variable:", t); 
 			  }
@@ -474,6 +492,7 @@ void populate_init_decls(struct tree *t, SymbolTable scope, int type)
 			populate_init_decls(t->kid[0], scope, type);
 			break;
 		case IDENTIFIER:
+		    // inserting into tree for use later 
 		    t->typ = type;
 			//printf("Inserting %s as type %d\n", t->leaf->text, t->typ);
 			insert_sym(t->leaf->text, scope, type);

@@ -14,6 +14,7 @@ class LYDIA
 
 int foo();
 void world();
+double use_foo(int c);
 
 int main()
 {
@@ -23,9 +24,11 @@ int main()
 	//int yay;
 	int x; // 1
     int z; // shows up as double if #include string is commented!!
-    double y; //5
+    int y; //5
 	//double y;
-    x = z / y;
+    x = z * y;
+	
+	x = foo();
     
 	//int x;
 	// TODO:
@@ -49,7 +52,7 @@ int foo()
 {
     int yas;
 	   
-    int y; 
+    int yoo; 
     //x = 0; // this works
 	int xoo;
 	int i_type = 0;
@@ -63,16 +66,13 @@ int foo()
 int help(int a)
 {
 	//int z; 
-	int x; 
+	//int poop; 
 	int yay;
-	a = x;
+	//a = poop;
 	//apple = x;
 	//int a;
 
-	while(x)
-	{
-		//x = funcy();
-	}
+
 	//u = foo(); 
 	
 	
@@ -89,8 +89,8 @@ double use_foo(int c)
     
     return woah + c;
 
-}
-
+}*/
+/*
 void world()
 {
 	printf("bark!\n");

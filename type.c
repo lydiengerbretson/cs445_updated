@@ -51,10 +51,11 @@ void type_add_check(struct tree *t, char *table_name)
 		{
 			// check and compare these types to assigner
 			type2 = find_type_in_list(t->kid[2]->kid[k]->leaf->text, table_name);
+			// possibly be recursive 
 			printf("Variables in add/mult expr: %s %d\n", t->kid[2]->kid[k]->leaf->text, type2);
 			if(type2 != type1)
 			{
-				fprintf(stdout, "Warning... different types in addition/mult expression.\n");
+				semanticerror("Types do not match.", t);
 			}
 		}
 	}

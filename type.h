@@ -41,7 +41,8 @@ enum base_types
 	VOID_TYPE = 3, 
 	STRING_TYPE = 4,
 	DOUBLE_TYPE = 5, 
-	OFSTREAM_TYPE = 6
+	OFSTREAM_TYPE = 6,
+	PTR_TYPE = 7
 };
 
 int get_base_type(struct tree *);
