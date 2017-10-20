@@ -21,7 +21,7 @@ Entry new_entry(char *n, int typ) {
 
   Entry e = calloc(1, sizeof(Entry));
 
-  e->name = (char*)calloc(1, strlen(n)+1); // sometimes there is problems with this... so weird!!
+  e->name = (char*)calloc(1, 2048); // sometimes there is problems with this... so weird!!
   e->name = strdup(n);
   
   // add type to entry

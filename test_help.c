@@ -66,9 +66,9 @@ int foo()
 int help(int a)
 {
 	//int z; 
-	//int poop; 
+	int poo; 
 	int yay;
-	//a = poop;
+	a = poo;
 	//apple = x;
 	//int a;
 
