@@ -42,12 +42,14 @@ enum base_types
 	STRING_TYPE = 4,
 	DOUBLE_TYPE = 5, 
 	OFSTREAM_TYPE = 6,
-	PTR_TYPE = 7
+	PTR_TYPE = 7,
+	BOOL_TYPE = 8
 };
 
 int get_base_type(struct tree *);
 
 void type_add_check(struct tree *, char *);
+void type_relation_check(struct tree *, char *);
 
 
 #endif

@@ -100,20 +100,17 @@ bool lookup(char *n, SymbolTable t) {
   
 }
 
-// TODO: Add function parameter scoping: Done. 
-// TODO: Add function name scoping/definitions: Done.
-// TODO: Add global scoping: Done 
-// TODO: Add semantic error for redeclarations: Done.
-// TODO: Add semantic error for undeclarations: Kinda done. Add more cases.
-// TODO: Multiple variable declarations on the same line: Done
-// TODO: Implement array declarations: Done.
-// TODO: Implement class function scoping: Kinda done. Need to create class function tables?
-// TODO: Fix ant.cpp/ant.h problem: Done.
-// TODO: Fix #include string or hash problem: Done.
-// TODO: Implement cout, cin, endl: Kinda done.
-// TODO: Fix function prototypes, insert it into global table: Done
-// TODO: Work on class.member handling: Done
-// TODO: Work on class constructor members (not undeclared)!
+// TODO: Function return type: Done
+// TODO: Mult/Add type: Done
+// TODO: Parameter type: Done
+// TODO: Class type:
+// TODO: Multiple variable declarations on the same line: 
+// TODO: Implement array type:
+// TODO: Implement cout, cin, endl, >> types: 
+// TODO: char* type:
+// TODO:  >, <, ==, != types: Done
+// TODO: && || ! types: 
+// TODO: Work on class constructor members (not undeclared):
 
 // overall populate_symbol_table layout adapted from https://github.com/park2331/compiler/blob/master/tomorrow/symtab.c
 // this function populates symbol tables for classes, functions, and globals
@@ -332,6 +329,14 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		else
 		{
 			checkundeclared(t->kid[2], scope); 
+			if(t->kid[2]->prodrule == RELATIONAL_EXPRESSION_1
+			|| t->kid[2]->prodrule == EQUALITY_EXPRESSION_1
+			/*|| t->kid[2]->prodrule == LOGICAL_OR_EXPRESSION_1*/)
+			{
+				printf("Check types here for relational expressions.\n");
+				type_relation_check(t, scope->name);
+			}
+			
 		}
 		//break;
 	case ITERATION_STATEMENT_1:
@@ -345,6 +350,13 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		else
 		{
 			checkundeclared(t->kid[2], scope); 
+			if(t->kid[2]->prodrule == RELATIONAL_EXPRESSION_1
+			|| t->kid[2]->prodrule == EQUALITY_EXPRESSION_1
+			/*|| t->kid[2]->prodrule == LOGICAL_OR_EXPRESSION_1*/)
+			{
+				printf("Check types here for relational expressions.\n");
+				type_relation_check(t, scope->name);
+			}
 		}
 		//break;
 		// do not need a break statement so that 
@@ -366,14 +378,9 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 	  
       break;
 	case PARAMETER_DECLARATION_1:
-
-	  for (j=0; j < t->nkids; j++) 
-	  {
-		// insert into local parameter symbol table 
-		populate_symbol_table( t->kid[j] , scope);     
-		 
-      }		
-      break; 
+      	type = get_base_type(t->kid[0]);
+		populate_params(t->kid[1], scope, type);
+		break; 
 	  
 
     default:
@@ -485,11 +492,38 @@ void populate_init_decls(struct tree *t, SymbolTable scope, int type)
 	{
 		case INIT_DECLARATOR_1:
 		case INIT_DECLARATOR_LIST_1:
+		    if(t->kid[0]->prodrule == DECLARATOR_1)
+			{
+				//printf("Found a pointer! %s\n", t->kid[0]->kid[0]->leaf->text);
+			    //type = PTR_TYPE;
+				//populate_init_decls(t->kid[0]->kid[0], scope, type);
+			}
 		    checkredeclared(t->kid[0], scope);
 			populate_init_decls(t->kid[0], scope, type);
 			break;
 		case DIRECT_DECLARATOR_4:
 			populate_init_decls(t->kid[0], scope, type);
+			break;
+		case DECLARATOR_1:
+			printf("Found a pointer! %s\n", t->kid[0]->leaf->text);
+		    type = PTR_TYPE;
+			insert_sym(t->kid[1]->leaf->text, scope, type);
+			break;
+		case IDENTIFIER:
+		    // inserting into tree for use later 
+		    t->typ = type;
+			//printf("Inserting %s as type %d\n", t->leaf->text, t->typ);
+			insert_sym(t->leaf->text, scope, type);
+			break;
+	}
+}
+
+void populate_params(struct tree *t, SymbolTable scope, int type)
+{
+	switch(t->prodrule)
+	{
+		case DIRECT_DECLARATOR_4:
+			populate_params(t->kid[0], scope, type);
 			break;
 		case IDENTIFIER:
 		    // inserting into tree for use later 

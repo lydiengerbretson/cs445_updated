@@ -24,6 +24,8 @@ int get_base_type( struct tree *t)
 		return CHAR_TYPE;
 	case VOID:
 		return VOID_TYPE;
+	case BOOL:
+		return BOOL_TYPE;
 	default:
 		return 0;
 	}
@@ -59,6 +61,61 @@ void type_add_check(struct tree *t, char *table_name)
 			}
 		}
 	}
+
+
+}
+
+void type_relation_check(struct tree *t, char *table_name)
+{
+	int k;
+	int type1; 
+	int type2;
+
+	// find type of left side of expression 
+    type1 = find_type_in_list(t->kid[2]->kid[0]->leaf->text, table_name);
+	printf("Checking bool/int: %s, %d\n", t->kid[2]->kid[0]->leaf->text, type1);
+	type2 = find_type_in_list(t->kid[2]->kid[2]->leaf->text, table_name);
+	printf("Checking bool/int: %s, %d\n", t->kid[2]->kid[2]->leaf->text, type2);
+    if(type1 != INT_TYPE 
+	&& type1 != BOOL_TYPE
+	&& type1 != DOUBLE_TYPE
+	&& type2 != INT_TYPE
+	&& type2 != BOOL_TYPE
+	&& type2 != DOUBLE_TYPE)
+	{
+		semanticerror("ERROR, you need a bool/int type!!\n", t);
+	}
+	if(type1 == INT_TYPE && t->kid[2]->kid[2]->leaf->category != INTEGER)
+	{
+		// error
+		semanticerror("Ints: Types do not match.", t);
+	}	
+    else if(type1 == BOOL_TYPE 
+	     && type2 != BOOL_TYPE 
+		 && t->kid[2]->kid[2]->leaf->category != TRUE
+         && t->kid[2]->kid[2]->leaf->category != FALSE)
+    {
+	   // error
+	   semanticerror("Bools: Types do not match.", t);
+    }
+    else if(type1 == DOUBLE_TYPE 
+	     && type2 != DOUBLE_TYPE 
+		 && t->kid[2]->kid[2]->leaf->category != FLOATING
+         && t->kid[2]->kid[2]->leaf->category != DOUBLE)
+    {
+	   // error
+	   semanticerror("Doubles: Types do not match.", t);
+    }		
+	else if(type1 != type2 
+	     && t->kid[2]->kid[2]->leaf->category != INTEGER 
+	     && t->kid[2]->kid[2]->leaf->category != TRUE
+         && t->kid[2]->kid[2]->leaf->category != FALSE
+		 && t->kid[2]->kid[2]->leaf->category != FLOATING
+         && t->kid[2]->kid[2]->leaf->category != DOUBLE)
+	{
+		semanticerror("Types do not match.", t);
+	}
+	
 
 
 }
