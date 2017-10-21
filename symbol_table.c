@@ -106,8 +106,8 @@ bool lookup(char *n, SymbolTable t) {
 // TODO: Class type:
 // TODO: Multiple variable declarations on the same line: 
 // TODO: Implement array type:
-// TODO: Implement cout, cin, endl, >> types: 
-// TODO: char* type:
+// TODO: Implement cout, cin, endl, >> types: Kinda done
+// TODO: char* type: Kinda done
 // TODO:  >, <, ==, != types: Done
 // TODO: && || ! types: 
 // TODO: Work on class constructor members (not undeclared):
@@ -264,8 +264,6 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		{
 			// only finds the first thing in the additive expression
 			checkundeclared(t->kid[2]->kid[0], scope); 
-			// check types 
-			//printf("Find and check types!\n");
 			// this works for two operands so far
 			// check if the next kid is additive_exp_1 or mult_exp_1
 			type_add_check(t, scope->name);
@@ -276,8 +274,10 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 			 // checking left hand side of assignment expression
 			checkundeclared(t->kid[0], scope); 
 			 // checking right hand side of assignment expression
-			checkundeclared(t->kid[2], scope);
-			// check type
+			checkundeclared(t->kid[2], scope);			
+
+            type_assign_check(t, scope->name);			
+			
 		}
 		break;	
 		
@@ -295,7 +295,18 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 				checkundeclared(t->kid[0], GLOBAL_TABLE); 
 		 }
 		 break; 	
+	
+	case SHIFT_EXPRESSION_1:
+		//printf("Found shift expression.\n");
+		//printf("Number of kids for shift expr: %d\n", t->nkids);
 
+	    if(t->kid[0]->prodrule == SHIFT_EXPRESSION_1)
+		{
+			type_shift_check(t);
+		}
+
+		break;
+	
     case JUMP_STATEMENT_1:
 	    // checking the return value 
 		if(t->kid[1]->prodrule == POSTFIX_EXPRESSION_1)
@@ -492,12 +503,6 @@ void populate_init_decls(struct tree *t, SymbolTable scope, int type)
 	{
 		case INIT_DECLARATOR_1:
 		case INIT_DECLARATOR_LIST_1:
-		    if(t->kid[0]->prodrule == DECLARATOR_1)
-			{
-				//printf("Found a pointer! %s\n", t->kid[0]->kid[0]->leaf->text);
-			    //type = PTR_TYPE;
-				//populate_init_decls(t->kid[0]->kid[0], scope, type);
-			}
 		    checkredeclared(t->kid[0], scope);
 			populate_init_decls(t->kid[0], scope, type);
 			break;
@@ -506,7 +511,13 @@ void populate_init_decls(struct tree *t, SymbolTable scope, int type)
 			break;
 		case DECLARATOR_1:
 			printf("Found a pointer! %s\n", t->kid[0]->leaf->text);
-		    type = PTR_TYPE;
+            // type of pointer 
+			ptr_type[0] = type;
+			printf("Type: %d\n", ptr_type[0]);
+			// ptr type
+			ptr_type[1] = PTR_TYPE;
+			printf("Ptr Type: %d\n", ptr_type[1]);
+		    //type = PTR_TYPE;
 			insert_sym(t->kid[1]->leaf->text, scope, type);
 			break;
 		case IDENTIFIER:

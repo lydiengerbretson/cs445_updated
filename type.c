@@ -116,7 +116,60 @@ void type_relation_check(struct tree *t, char *table_name)
 		semanticerror("Types do not match.", t);
 	}
 	
+}
 
+void type_shift_check(struct tree *t)
+{
+	int k;
 
+		//printf("LEAF: %s\n", t->kid[0]->kid[0]->leaf->text);
+		// only works for cout << "hey there" << endl
+		if(t->nkids > 2)
+		{
+			for(k=0; k<t->nkids; k++)
+			{
+				//printf("shift prodrule: %d\n", t->kid[k]->prodrule);
+				if(t->kid[k]->prodrule == SHIFT_EXPRESSION_1)
+				{ 
+					if(strcmp(t->kid[k]->kid[0]->leaf->text, "cout")==0)
+					{
+						if(t->kid[k]->kid[1]->leaf->category != SL)
+						{
+							semanticerror("Incorrect operand:", t);
+						}
+			           if(t->kid[k]->kid[2]->leaf->category != STRING
+			           && t->kid[k]->kid[2]->leaf->category != IDENTIFIER)
+			           {
+							semanticerror("Need a string or identifier:", t);
+			           }
+
+		            }
+					
+					
+				}
+			}
+		}
+
+		//printf("LEAF: %s\n", t->kid[0]->kid[1]->leaf->text);
+		//printf("LEAF: %s\n", t->kid[0]->kid[2]->leaf->text);
+		//printf("LEAF: %s\n", t->kid[1]->leaf->text);
+		//printf("LEAF: %s\n", t->kid[2]->leaf->text);
+}
+
+void type_assign_check(struct tree *t, char *s)
+{
+	int t1, t2;
+				// check types for both left and right hand sides
+	t1 = find_type_in_list(t->kid[0]->leaf->text, s);
+	t2 = find_type_in_list(t->kid[2]->leaf->text, s);
+	
+	
+    // TODO: Add more cases
+	if (t1 != t2
+	&& t->kid[2]->leaf->category != INTEGER
+	&& t->kid[2]->leaf->category != DOUBLE)
+	{
+		semanticerror("Incorrect types in assignment expression.", t);
+	}
 }
 

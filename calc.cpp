@@ -48,7 +48,7 @@ int main()
     }
     if (valid_choice) {
       // if choice is valid, print the answer
-      cout << endl << "Answer = " << answer << endl;
+      //cout << endl << "Answer = " << answer << endl;
     }
   } while (choice != 0);
   // if the user didn't choose 0, loop back to start

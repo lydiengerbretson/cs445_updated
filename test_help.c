@@ -24,7 +24,7 @@ int main()
 	int b;
 	bool leaf;
 	int j;
-	void *ch;
+	char *ch;
 	//int yay;
 	int x; // 1
     int z; // shows up as double if #include string is commented!!
@@ -33,6 +33,9 @@ int main()
     x = z * y;
 	
 	x = foo();
+	x = z;
+	
+	cout << "hey there" << endl;
     
 	//int x;
 	// TODO:
