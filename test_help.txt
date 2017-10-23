@@ -83,9 +83,7 @@ LYDIA was INSERTED into scope: ct with type 0
                                          KID: simple_declaration_1: 2
                                            LEAF: "char": 297
                                            KID: init_declarator_1: 2
-                                             KID: declarator_1: 2
-                                               LEAF: "*": 42
-                                               LEAF: "ch": 258
+                                             LEAF: "ch": 258
                                        KID: simple_declaration_1: 2
                                          LEAF: "int": 319
                                          KID: init_declarator_1: 2
@@ -99,25 +97,28 @@ LYDIA was INSERTED into scope: ct with type 0
                                      KID: init_declarator_1: 2
                                        LEAF: "y": 258
                                  KID: simple_declaration_1: 2
-                                   LEAF: "string": 264
+                                   LEAF: "char": 297
                                    KID: init_declarator_1: 2
-                                     LEAF: "s": 258
-                               KID: simple_declaration_1: 2
-                                 LEAF: "int": 319
-                                 KID: init_declarator_1: 2
-                                   KID: direct_declarator_8: 4
-                                     LEAF: "a": 258
-                                     LEAF: "[": 91
-                                     LEAF: "12": 259
-                                     LEAF: "]": 93
+                                     KID: direct_declarator_8: 4
+                                       LEAF: "a": 258
+                                       LEAF: "[": 91
+                                       LEAF: "12": 259
+                                       LEAF: "]": 93
+                               KID: assignment_expression_1: 3
+                                 KID: postfix_expression_1: 4
+                                   LEAF: "a": 258
+                                   LEAF: "[": 91
+                                   LEAF: "6": 259
+                                   LEAF: "]": 93
+                                 LEAF: "=": 61
+                                 LEAF: "ch": 258
                              KID: assignment_expression_1: 3
-                               KID: postfix_expression_1: 4
-                                 LEAF: "a": 258
-                                 LEAF: "[": 91
-                                 LEAF: "5": 259
-                                 LEAF: "]": 93
+                               LEAF: "x": 258
                                LEAF: "=": 61
-                               LEAF: "5": 259
+                               KID: multiplicative_expression_1: 3
+                                 LEAF: "z": 258
+                                 LEAF: "*": 42
+                                 LEAF: "y": 258
                            KID: assignment_expression_1: 3
                              LEAF: "x": 258
                              LEAF: "=": 61

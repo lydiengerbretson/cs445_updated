@@ -265,6 +265,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		{
 			// only finds the first thing in the additive expression
 			checkundeclared(t->kid[2]->kid[0], scope); 
+			type_add_check_temp(t, scope->name);
 			// this works for two operands so far
 			// check if the next kid is additive_exp_1 or mult_exp_1
 			type_add_check(t, scope->name);

@@ -29,12 +29,14 @@ int main()
 	int x; // 1
     int z; // shows up as double if #include string is commented!!
     int y; //5
-	string s;
+	//string s;
 	char a[12];
     a[6] = ch;
+	
    // cout << a[5] << endl;
 	//double y;
-    //x = z * y;
+    x = z * y;
+	//x = z * y;
 	//x = x * x;
 	x = foo();
 	x = z;
@@ -87,7 +89,7 @@ int help(int a, int b)
 	//int z; 
 	int poo; 
 	int yay;
-	a = poo;
+	//a = poo;
 	//apple = x;
 	//int a;
 
@@ -98,7 +100,7 @@ int help(int a, int b)
 	//return zooer;
 }
 
-/*
+
 double use_foo(int c)
 {
     int woah;
@@ -108,7 +110,7 @@ double use_foo(int c)
     
     return woah + c;
 
-}*/
+}
 /*
 void world()
 {

@@ -33,6 +33,43 @@ int get_base_type( struct tree *t)
   
 }
 
+// trying to traverse tree for expressions like x = a * b * c
+void type_add_check_temp(struct tree *t, char *table_name)
+{
+	int type1; 
+	int type2;
+    int k, j;
+	int kids1;
+	int kids2;
+	// find type of left side of expression 
+	//printf("calling temp func!!\n");
+	
+	t = t->kid[2];
+
+  if(!t)
+  {
+      // do nothing
+  }
+  else 
+  { 
+	  if (t->nkids == 0)
+	  {
+		  printf(" LEAF: \"%s\": %d\n",
+				 t->leaf->text, t->leaf->category); 
+	  }
+	  else
+	  {
+		printf(" KID: %s: %d\n", t->prodrule_name, t->nkids);
+ 
+		for(j=0; j<t->nkids; j++)
+		{
+			type_add_check_temp(t->kid[j], table_name);
+		}
+	  }
+}
+
+
+}
 void type_add_check(struct tree *t, char *table_name)
 {
 	int k;
