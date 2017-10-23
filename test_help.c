@@ -23,26 +23,34 @@ int main()
 	LYDIA lyd;	
 	int b;
 	bool leaf;
-	int j;
-	char *ch;
+	bool j;
+	char ch;
 	//int yay;
 	int x; // 1
     int z; // shows up as double if #include string is commented!!
     int y; //5
+	string s;
+	char a[12];
+    a[6] = ch;
+   // cout << a[5] << endl;
 	//double y;
-    x = z * y;
-	
+    //x = z * y;
+	//x = x * x;
 	x = foo();
 	x = z;
+	j = leaf;
 	
 	cout << "hey there" << endl;
+	
+	cin >> x ;
+
     
 	//int x;
 	// TODO:
 	//x =  yay;
 	//lyd.cool = x;
 	//lyd.yool = y;
-	string s; 
+	 
 	
 	while(b  == 1)
 	{

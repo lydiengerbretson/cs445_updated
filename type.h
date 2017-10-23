@@ -46,12 +46,11 @@ enum base_types
 	BOOL_TYPE = 8
 };
 
-// variable that holds pointer types (i.e. double, void, char)
-int ptr_type[2];
 int get_base_type(struct tree *);
 void type_add_check(struct tree *, char *);
 void type_relation_check(struct tree *, char *);
-void type_shift_check(struct tree *);
+void type_shift_check_1(struct tree *);
+void type_shift_check_2(struct tree *);
 void type_assign_check(struct tree *, char *);
 
 

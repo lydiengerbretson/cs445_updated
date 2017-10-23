@@ -103,11 +103,12 @@ bool lookup(char *n, SymbolTable t) {
 // TODO: Function return type: Done
 // TODO: Mult/Add type: Done
 // TODO: Parameter type: Done
-// TODO: Class type:
+// TODO: Class type!!
 // TODO: Multiple variable declarations on the same line: 
-// TODO: Implement array type:
-// TODO: Implement cout, cin, endl, >> types: Kinda done
-// TODO: char* type: Kinda done
+// TODO: Implement array type: Done, for char and int
+// TODO: Implement cout, >> types: Kinda done
+// TODO: Implement cin, << types: Kinda done
+// TODO: char* type: Done
 // TODO:  >, <, ==, != types: Done
 // TODO: && || ! types: 
 // TODO: Work on class constructor members (not undeclared):
@@ -299,11 +300,21 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 	case SHIFT_EXPRESSION_1:
 		//printf("Found shift expression.\n");
 		//printf("Number of kids for shift expr: %d\n", t->nkids);
-
+        
 	    if(t->kid[0]->prodrule == SHIFT_EXPRESSION_1)
 		{
-			type_shift_check(t);
+			checkundeclared(t->kid[0]->kid[2], scope);
+			type_shift_check_2(t);
 		}
+		else
+		{
+			if(strcmp(t->kid[2]->leaf->text, "endl") != 0)
+			{
+				checkundeclared(t->kid[2], scope);
+			}
+			 type_shift_check_1(t);
+		}
+		
 
 		break;
 	
@@ -509,15 +520,12 @@ void populate_init_decls(struct tree *t, SymbolTable scope, int type)
 		case DIRECT_DECLARATOR_4:
 			populate_init_decls(t->kid[0], scope, type);
 			break;
+		case DIRECT_DECLARATOR_8:
+			populate_init_decls(t->kid[0], scope, type);
+			break;
 		case DECLARATOR_1:
 			printf("Found a pointer! %s\n", t->kid[0]->leaf->text);
-            // type of pointer 
-			ptr_type[0] = type;
-			printf("Type: %d\n", ptr_type[0]);
-			// ptr type
-			ptr_type[1] = PTR_TYPE;
-			printf("Ptr Type: %d\n", ptr_type[1]);
-		    //type = PTR_TYPE;
+		    type = PTR_TYPE;
 			insert_sym(t->kid[1]->leaf->text, scope, type);
 			break;
 		case IDENTIFIER:

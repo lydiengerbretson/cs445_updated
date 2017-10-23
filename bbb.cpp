@@ -9,5 +9,5 @@ int main()
    int y;
    y = 6;
    f(x);
-   cout << "x should be 7; it is " << x << endl;
+   //cout << "x should be 7; it is " << x << endl;
 }
