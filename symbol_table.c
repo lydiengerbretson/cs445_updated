@@ -103,7 +103,8 @@ bool lookup(char *n, SymbolTable t) {
 // TODO: Function return type: Done
 // TODO: Mult/Add type: Done
 // TODO: Parameter type: Done
-// TODO: Class type!!
+// TODO: Class types:
+// TODO: Checking operands: add/mult/sub/div, bool ops, >><<: Done
 // TODO: Multiple variable declarations on the same line: 
 // TODO: Implement array type: Done, for char and int
 // TODO: Implement cout, >> types: Done
@@ -112,7 +113,7 @@ bool lookup(char *n, SymbolTable t) {
 // TODO:  >, <, ==, != types: Done
 // TODO: && || ! types: Done
 // TODO: switch statements: Kinda done
-// TODO: cout << a[5] !!
+// TODO: cout << a[5] Done
 // TODO: Work on class constructor members (not undeclared):
 
 // overall populate_symbol_table layout adapted from https://github.com/park2331/compiler/blob/master/tomorrow/symtab.c
@@ -281,7 +282,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 			 // checking right hand side of assignment expression
 			checkundeclared(t->kid[2], scope);			
 
-			printf("found assignment statement!\n");
+			//printf("found assignment statement!\n");
             type_assign_check(t, scope->name);			
 			
 		}
@@ -310,7 +311,9 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		{
 			if(t->kid[0]->kid[2]->prodrule == POSTFIX_EXPRESSION_1)
 			{
-				//printf("Found array!\n");
+				//printf("Found array or function!\n");
+				checkundeclared(t->kid[0]->kid[2]->kid[0], scope);
+				type_shift_check(t, scope->name);
 				break;
 				
 			}
@@ -545,10 +548,12 @@ void populate_init_decls(struct tree *t, SymbolTable scope, int type)
 			populate_init_decls(t->kid[0], scope, type);
 			break;
 		case DIRECT_DECLARATOR_8:
+			//printf("Found an array!\n");
+			//type = ARRAY_TYPE;
 			populate_init_decls(t->kid[0], scope, type);
 			break;
 		case DECLARATOR_1:
-			printf("Found a pointer! %s\n", t->kid[0]->leaf->text);
+			//printf("Found a pointer! %s\n", t->kid[0]->leaf->text);
 		    type = PTR_TYPE;
 			insert_sym(t->kid[1]->leaf->text, scope, type);
 			break;

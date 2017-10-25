@@ -31,10 +31,11 @@ int main()
     int y; //5
 	int g;
 	string s;
-	char a[12];
-    a[6] = ch;
+	int a[12];
+    a[6] = 1;
 	//x = ch;
-    //cout << a << endl;
+    cout << a[5] << endl;
+	//cout << fargo() << endl;
 	//double y;
      x = z * y * g;
 	//x = z * y;
@@ -43,9 +44,9 @@ int main()
 	//x = z;
 	j = leaf;
 	
-	//cout << "hey there" << x << endl;
+	cout << "hey there" << x << endl;
 	
-	//cin >> x ;
+	cin >> x ;
     
 	//int x;
 	// TODO:

@@ -53,6 +53,7 @@ void type_shift_check(struct tree *t, char *table_name)
 	int type1; 
 	int type2;
     int k, j;
+	static int is_post = 0;
 
   if(!t)
   {
@@ -65,7 +66,17 @@ void type_shift_check(struct tree *t, char *table_name)
 
 		  //printf(" LEAF: \"%s\": %d %d\n",
 				 // t->leaf->text, t->leaf->category, type1); 
-		  
+		  type1 = find_type_in_list(t->leaf->text, table_name);
+		  if(is_post)
+		  {
+			  // need to allow arrays and functions as well 
+			  if(type1 > 0)
+			  {
+				  // do nothing 
+			  }
+		  }
+		  else
+		  {
 		  
 		  if(t->leaf->category != STRING
 		  && t->leaf->category != IDENTIFIER
@@ -73,10 +84,16 @@ void type_shift_check(struct tree *t, char *table_name)
 		  {
 			  semanticerror("Incompatible types.", t);
 		  }
+		  }
 	  }
 	  else
 	  {
 		//printf(" KID %s: %d\n", t->prodrule_name, t->nkids);
+		if(t->prodrule == POSTFIX_EXPRESSION_1)
+		{
+			//printf("it's a postfix!!\n");
+			is_post = 1;
+		}
  
 		for(j=0; j<t->nkids; j++)
 		{

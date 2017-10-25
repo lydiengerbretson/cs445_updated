@@ -44,7 +44,8 @@ enum base_types
 	OFSTREAM_TYPE = 6,
 	PTR_TYPE = 7,
 	BOOL_TYPE = 8, 
-	CLASS_TYPE = 9
+	CLASS_TYPE = 9,
+	ARRAY_TYPE = 10
 };
 
 int get_base_type(struct tree *);

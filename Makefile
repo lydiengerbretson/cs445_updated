@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-c -g
+CFLAGS=-c -g 
 
 120++: main.o token.o tree_lydia.o 120gram_lydia.tab.o lex.yy.o hash.o utility_func.o symbol_table.o type.o list.o
 	$(CC) -o 120++ main.o lex.yy.o token.o 120gram_lydia.tab.o tree_lydia.o hash.o utility_func.o symbol_table.o type.o list.o
