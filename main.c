@@ -35,9 +35,6 @@ filenodeptr file_stack = NULL;
 int main(int argc, char **argv)
 {
    int i;
-   int k; 
-   int eof;
-   struct tokenlist* head;
    char *file_list[argc]; 
    int result = 0; 
    YYPROGRAM = NULL; 

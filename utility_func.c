@@ -7,8 +7,8 @@
 void print_tables(int type)
 {
     int i = 0;
-	int j = 0;
-    char * temp_name = "";
+	//int j = 0;
+    //char * temp_name = "";
    if (type == 1) // FUNCTIONS
     {
        for (i = 0; i < TABLE_SIZE ; i++)
@@ -134,6 +134,7 @@ char * get_func_name(struct tree * t, int *is_class)
         return error;
 	 }
       }
+	  return error;
 }
 
 char * get_class_name(struct tree *t)

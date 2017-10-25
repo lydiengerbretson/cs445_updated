@@ -120,12 +120,9 @@ bool lookup(char *n, SymbolTable t) {
 // this function populates symbol tables for classes, functions, and globals
 struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
-  int i,j,k, key;
+  int i,j, key;
   int type;
   int type_func;  
-  struct tree * temp;
-  Entry local;
-  char *lex;
   int class_func = 0; // 1 for class method, 0 otherwise
   static int nlocaltables = 0;
   static int nclasstables = 0;
@@ -134,7 +131,6 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
   char * func_name = NULL;
   char * class_name = NULL;
   static bool direct_declare = false;
-  int declarator = 0;
   
   if ( !t ) {
     return NULL;

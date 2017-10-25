@@ -65,6 +65,7 @@ extern char *yytext;
 char *filetext; 
 filenodeptr file_stack;
 extern SymbolTable CLASSTABLE;
+extern void insert_typename_tree(struct tree *t, SymbolTable table); 
 
 /* extern in 120++.c 
  * Head pointer to start of program (translation unit).

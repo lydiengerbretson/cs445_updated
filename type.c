@@ -51,8 +51,7 @@ int get_base_type( struct tree *t)
 void type_shift_check(struct tree *t, char *table_name)
 {
 	int type1; 
-	int type2;
-    int k, j;
+    int j;
 	static int is_post = 0;
 
   if(!t)
@@ -106,8 +105,7 @@ void type_shift_check(struct tree *t, char *table_name)
 void type_relation_check(struct tree *t, char *table_name)
 {
 	int type1; 
-	int type2;
-    int k, j;
+    int j;
 	static int rel_exp = 0;
 	// TODO: Pass in type!
 	
@@ -209,10 +207,8 @@ void type_relation_check(struct tree *t, char *table_name)
 void type_add_check(struct tree *t, char *table_name, int base_type)
 {
 	int type1; 
-	int type2;
-    int k, j;
-	int kids1;
-	int kids2;
+    int j;
+
 	static int parent_type; 
 	// find type of left side of expression 
 	//printf("calling temp func!!\n");
@@ -257,8 +253,8 @@ void type_add_check(struct tree *t, char *table_name, int base_type)
 void type_switch_check(struct tree *t, char *table_name)
 {
 	int type1; 
-	int type2;
-    int k, j;
+
+    int j;
 
 
   if(!t)
@@ -277,7 +273,7 @@ void type_switch_check(struct tree *t, char *table_name)
 		  // if not an operator 
 		  if(type1 > 0 
 		  && type1 != INT_TYPE
-		  && type1 != CHAR_TYPE)
+		  && type1 != CHAR_TYPE) // DOUBLE_TYPE for calc.cpp:29??
 		  {
 			  semanticerror("Incompatible types.", t);
 		  }

@@ -69,7 +69,7 @@ static void skip_until_eol(void);
 static void skip_comment(void);
 static int check_identifier(char *, SymbolTable);
 void insert_typename_tree(struct tree *t, SymbolTable table); 
-int typenametable_insert(char *s, SymbolTable table); 
+void typenametable_insert(char *s, SymbolTable table); 
 
 // extern variables
 extern filenodeptr file_stack;
@@ -354,7 +354,7 @@ void insert_typename_tree(struct tree *t, SymbolTable table)
 }
 
 // typenametable functions adapted from http://www2.cs.uidaho.edu/~jeffery/courses/445/120pp/120lex.l
-int typenametable_insert(char *s, SymbolTable t)
+void typenametable_insert(char *s, SymbolTable t)
 {
 
    insert_sym(s, t, 0); 
@@ -364,8 +364,8 @@ int typenametable_insert(char *s, SymbolTable t)
 void handle_include(char *s)
 {
   // help from Clinton Jeffery
-  FILE *include_buffer;
-  YY_BUFFER_STATE incl_state;
+  //FILE *include_buffer;
+  //YY_BUFFER_STATE incl_state;
 
   char *fname = malloc(strlen(yytext)+1-strlen("#include \"\""));
   fname = strchr(yytext, '\"')+1;
