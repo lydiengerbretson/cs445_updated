@@ -106,11 +106,12 @@ bool lookup(char *n, SymbolTable t) {
 // TODO: Class type!!
 // TODO: Multiple variable declarations on the same line: 
 // TODO: Implement array type: Done, for char and int
-// TODO: Implement cout, >> types: Kinda done
-// TODO: Implement cin, << types: Kinda done
+// TODO: Implement cout, >> types: Done
+// TODO: Implement cin, << types: Done
 // TODO: char* type: Done
-// TODO:  >, <, ==, != types: Done
+// TODO:  >, <, ==, != types: Kinda done
 // TODO: && || ! types: 
+// TODO: cout << a[5] !!
 // TODO: Work on class constructor members (not undeclared):
 
 // overall populate_symbol_table layout adapted from https://github.com/park2331/compiler/blob/master/tomorrow/symtab.c
@@ -212,7 +213,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		// get base type of function (which is return type)
 	    type = get_base_type(t->kid[0]);
 		// inserting type into tree node
-		t->kid[1]->kid[0]->typ = type;
+		//t->kid[1]->kid[0]->typ = type;
 		//printf("Printing function leaf node: %s, type: %d \n", t->kid[1]->kid[0]->leaf->text, t->kid[1]->kid[0]->typ);
 		printf("This function: %s, type: %d\n", func_name, type);
 
@@ -264,11 +265,15 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		     || t->kid[2]->prodrule == MULTIPLICATIVE_EXPRESSION_1)
 		{
 			// only finds the first thing in the additive expression
+
 			checkundeclared(t->kid[2]->kid[0], scope); 
-			type_add_check_temp(t, scope->name);
+			
+			// trying to process expressions with more than two operands
+			type = find_type_in_list(t->kid[0]->leaf->text, scope->name);
+			type_add_check_temp(t->kid[2], scope->name, type);
 			// this works for two operands so far
 			// check if the next kid is additive_exp_1 or mult_exp_1
-			type_add_check(t, scope->name);
+			//type_add_check(t, scope->name);
 
 		}      
 		else 
@@ -304,8 +309,19 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
         
 	    if(t->kid[0]->prodrule == SHIFT_EXPRESSION_1)
 		{
+			if(t->kid[0]->kid[2]->prodrule == POSTFIX_EXPRESSION_1)
+			{
+				//printf("Found array!\n");
+				break;
+				
+			}
+			else
+			{
+			// this works
 			checkundeclared(t->kid[0]->kid[2], scope);
-			type_shift_check_2(t);
+			//type_shift_check_2(t);
+			type_shift_check_temp(t, scope->name);
+			}
 		}
 		else
 		{
@@ -313,7 +329,8 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 			{
 				checkundeclared(t->kid[2], scope);
 			}
-			 type_shift_check_1(t);
+			// simple type checking of cin << x; or cout << x;
+			type_shift_check_1(t);
 		}
 		
 
@@ -354,10 +371,11 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 			checkundeclared(t->kid[2], scope); 
 			if(t->kid[2]->prodrule == RELATIONAL_EXPRESSION_1
 			|| t->kid[2]->prodrule == EQUALITY_EXPRESSION_1
-			/*|| t->kid[2]->prodrule == LOGICAL_OR_EXPRESSION_1*/)
+			|| t->kid[2]->prodrule == LOGICAL_OR_EXPRESSION_1)
 			{
 				printf("Check types here for relational expressions.\n");
-				type_relation_check(t, scope->name);
+				//type_relation_check(t, scope->name);
+				type_relation_check_temp(t->kid[2], scope->name);
 			}
 			
 		}
@@ -372,13 +390,15 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		}
 		else
 		{
+			printf("Check types here for relational expressions.\n");
 			checkundeclared(t->kid[2], scope); 
 			if(t->kid[2]->prodrule == RELATIONAL_EXPRESSION_1
 			|| t->kid[2]->prodrule == EQUALITY_EXPRESSION_1
-			/*|| t->kid[2]->prodrule == LOGICAL_OR_EXPRESSION_1*/)
+			|| t->kid[2]->prodrule == LOGICAL_AND_EXPRESSION_1)
 			{
 				printf("Check types here for relational expressions.\n");
-				type_relation_check(t, scope->name);
+				//type_relation_check(t, scope->name);
+				type_relation_check_temp(t->kid[2], scope->name);
 			}
 		}
 		//break;

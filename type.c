@@ -32,19 +32,11 @@ int get_base_type( struct tree *t)
 
   
 }
-
-// trying to traverse tree for expressions like x = a * b * c
-void type_add_check_temp(struct tree *t, char *table_name)
+void type_shift_check_temp(struct tree *t, char *table_name)
 {
 	int type1; 
 	int type2;
     int k, j;
-	int kids1;
-	int kids2;
-	// find type of left side of expression 
-	//printf("calling temp func!!\n");
-	
-	t = t->kid[2];
 
   if(!t)
   {
@@ -54,8 +46,107 @@ void type_add_check_temp(struct tree *t, char *table_name)
   { 
 	  if (t->nkids == 0)
 	  {
-		  printf(" LEAF: \"%s\": %d\n",
-				 t->leaf->text, t->leaf->category); 
+
+		  //printf(" LEAF: \"%s\": %d %d\n",
+				 // t->leaf->text, t->leaf->category, type1); 
+		  
+		  
+		  if(t->leaf->category != STRING
+		  && t->leaf->category != IDENTIFIER
+		  && t->leaf->category != SL)
+		  {
+			  semanticerror("Incompatible types.", t);
+		  }
+	  }
+	  else
+	  {
+		//printf(" KID %s: %d\n", t->prodrule_name, t->nkids);
+ 
+		for(j=0; j<t->nkids; j++)
+		{
+			type_shift_check_temp(t->kid[j], table_name);
+		}
+	  }
+}
+}
+
+void type_relation_check_temp(struct tree *t, char *table_name)
+{
+	int type1; 
+	int type2;
+    int k, j;
+	// TODO: Pass in type!
+
+  if(!t)
+  {
+      // do nothing
+  }
+  else 
+  { 
+	  if (t->nkids == 0)
+	  {
+
+		  printf(" LEAF: \"%s\": %d \n",
+				  t->leaf->text, t->leaf->category); 
+		  
+		  
+		  if(t->leaf->category != BOOL
+		  && t->leaf->category != INTEGER
+		  && t->leaf->category != IDENTIFIER
+		  && t->leaf->category != ANDAND
+		  && t->leaf->category != OROR
+		  && t->leaf->category != EQ
+		  && t->leaf->category != 62)
+		  {
+			  semanticerror("Incompatible types.", t);
+		  }
+	  }
+	  else
+	  {
+		//printf(" KID %s: %d\n", t->prodrule_name, t->nkids);
+ 
+		for(j=0; j<t->nkids; j++)
+		{
+			type_relation_check_temp(t->kid[j], table_name);
+		}
+	  }
+}
+
+
+}
+// trying to traverse tree for expressions like x = a * b * c
+void type_add_check_temp(struct tree *t, char *table_name, int base_type)
+{
+	int type1; 
+	int type2;
+    int k, j;
+	int kids1;
+	int kids2;
+	static int parent_type; 
+	// find type of left side of expression 
+	//printf("calling temp func!!\n");
+	
+	//t = t->kid[2];
+  parent_type = base_type; 
+  //printf("parent type: %d\n", parent_type);
+  if(!t)
+  {
+      // do nothing
+  }
+  else 
+  { 
+	  if (t->nkids == 0)
+	  {
+		  // TODO: make sure type1 > 0: checkundeclared here
+		  type1 = find_type_in_list(t->leaf->text, table_name);
+		  //printf(" LEAF: \"%s\": %d %d\n",
+				// t->leaf->text, t->leaf->category, type1); 
+		  
+		  // if not an operator 
+		  if(type1 > 0 && type1 != parent_type)
+		  {
+			  semanticerror("Incompatible types.", t);
+		  }
 	  }
 	  else
 	  {
@@ -63,7 +154,7 @@ void type_add_check_temp(struct tree *t, char *table_name)
  
 		for(j=0; j<t->nkids; j++)
 		{
-			type_add_check_temp(t->kid[j], table_name);
+			type_add_check_temp(t->kid[j], table_name, base_type);
 		}
 	  }
 }
@@ -82,7 +173,7 @@ void type_add_check(struct tree *t, char *table_name)
 	{
 		printf("ERROR!!\n");
 	}
-    printf("Type of assigner %s : %d\n", t->kid[0]->leaf->text, type1);
+    //printf("Type of assigner %s : %d\n", t->kid[0]->leaf->text, type1);
 	for(k=0; k<t->kid[2]->nkids; k++)
 	{
 		// only works for two operands on right side
@@ -91,7 +182,7 @@ void type_add_check(struct tree *t, char *table_name)
 			// check and compare these types to assigner
 			type2 = find_type_in_list(t->kid[2]->kid[k]->leaf->text, table_name);
 			// possibly be recursive 
-			printf("Variables in add/mult expr: %s %d\n", t->kid[2]->kid[k]->leaf->text, type2);
+			//printf("Variables in add/mult expr: %s %d\n", t->kid[2]->kid[k]->leaf->text, type2);
 			if(type2 != type1)
 			{
 				semanticerror("Types do not match.", t);
@@ -110,9 +201,9 @@ void type_relation_check(struct tree *t, char *table_name)
 
 	// find type of left side of expression 
     type1 = find_type_in_list(t->kid[2]->kid[0]->leaf->text, table_name);
-	printf("Checking bool/int: %s, %d\n", t->kid[2]->kid[0]->leaf->text, type1);
+	//printf("Checking bool/int: %s, %d\n", t->kid[2]->kid[0]->leaf->text, type1);
 	type2 = find_type_in_list(t->kid[2]->kid[2]->leaf->text, table_name);
-	printf("Checking bool/int: %s, %d\n", t->kid[2]->kid[2]->leaf->text, type2);
+	//printf("Checking bool/int: %s, %d\n", t->kid[2]->kid[2]->leaf->text, type2);
     if(type1 != INT_TYPE 
 	&& type1 != BOOL_TYPE
 	&& type1 != DOUBLE_TYPE
@@ -158,7 +249,7 @@ void type_relation_check(struct tree *t, char *table_name)
 // this function checks for cout and cin >> "hey there";
 void type_shift_check_1(struct tree *t)
 {
-	//printf("%s\n", t->kid[0]->leaf->text);
+	printf("Entering type shift check 1\n");
     if(strcmp(t->kid[0]->leaf->text, "cin")==0)
     {
 		if(t->kid[1]->leaf->category != SR)
@@ -186,45 +277,6 @@ void type_shift_check_1(struct tree *t)
 	//printf("%s\n", t->kid[2]->leaf->text);
 }
 
-// this function checks for cout >> "hey there" >> endl;
-void type_shift_check_2(struct tree *t)
-{
-	int k;
-
-		//printf("LEAF: %s\n", t->kid[0]->kid[0]->leaf->text);
-		// only works for cout << "hey there" << endl
-		// need to process shorter and longer shift expressions!!
-		if(t->nkids > 2)
-		{
-			for(k=0; k<t->nkids; k++)
-			{
-				//printf("shift prodrule: %d\n", t->kid[k]->prodrule);
-				if(t->kid[k]->prodrule == SHIFT_EXPRESSION_1)
-				{ 
-
-					if(strcmp(t->kid[k]->kid[0]->leaf->text, "cout") == 0)
-					{
-						if(t->kid[k]->kid[1]->leaf->category != SL)
-						{
-							semanticerror("Incorrect operand:", t);
-						}
-			           if(t->kid[k]->kid[2]->leaf->category != STRING
-			           && t->kid[k]->kid[2]->leaf->category != IDENTIFIER)
-			           {
-							semanticerror("Need a string or identifier:", t);
-			           }
-
-		            }		
-					
-				}
-			}
-		}
-
-		//printf("LEAF: %s\n", t->kid[0]->kid[1]->leaf->text);
-		//printf("LEAF: %s\n", t->kid[0]->kid[2]->leaf->text);
-		//printf("LEAF: %s\n", t->kid[1]->leaf->text);
-		//printf("LEAF: %s\n", t->kid[2]->leaf->text);
-}
 
 
 void type_assign_check(struct tree *t, char *s)

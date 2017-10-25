@@ -9,45 +9,45 @@ LYDIA was INSERTED into scope: ct with type 0
          KID: declaration_seq_1: 2
            KID: declaration_seq_1: 2
              KID: declaration_seq_1: 2
-               KID: class_specifier_1: 4
-                 KID: class_head_1: 2
-                   LEAF: "class": 298
-                   LEAF: "LYDIA": 258
-                 LEAF: "{": 123
-                 KID: member_specification_1: 2
-                   KID: member_declaration_1: 2
-                     LEAF: "int": 319
-                     LEAF: "cool": 258
+               KID: declaration_seq_1: 2
+                 KID: class_specifier_1: 4
+                   KID: class_head_1: 2
+                     LEAF: "class": 298
+                     LEAF: "LYDIA": 258
+                   LEAF: "{": 123
                    KID: member_specification_1: 2
                      KID: member_declaration_1: 2
-                       LEAF: "double": 305
-                       LEAF: "yool": 258
-                 LEAF: "}": 125
+                       LEAF: "int": 319
+                       LEAF: "cool": 258
+                     KID: member_specification_1: 2
+                       KID: member_declaration_1: 2
+                         LEAF: "double": 305
+                         LEAF: "yool": 258
+                   LEAF: "}": 125
+                 KID: simple_declaration_1: 2
+                   LEAF: "int": 319
+                   KID: init_declarator_1: 2
+                     KID: direct_declarator_4: 2
+                       LEAF: "foo": 258
                KID: simple_declaration_1: 2
-                 LEAF: "int": 319
+                 LEAF: "void": 350
                  KID: init_declarator_1: 2
                    KID: direct_declarator_4: 2
-                     LEAF: "foo": 258
+                     LEAF: "world": 258
              KID: simple_declaration_1: 2
-               LEAF: "void": 350
+               LEAF: "double": 305
                KID: init_declarator_1: 2
                  KID: direct_declarator_4: 2
-                   LEAF: "world": 258
-           KID: simple_declaration_1: 2
-             LEAF: "double": 305
-             KID: init_declarator_1: 2
-               KID: direct_declarator_4: 2
-                 LEAF: "use_foo": 258
-                 KID: parameter_declaration_1: 2
-                   LEAF: "int": 319
-                   LEAF: "c": 258
-         KID: function_definition_2: 4
-           LEAF: "int": 319
-           KID: direct_declarator_4: 2
-             LEAF: "main": 258
-           KID: compound_statement_1: 3
-             LEAF: "{": 123
-             KID: statement_seq_1: 2
+                   LEAF: "use_foo": 258
+                   KID: parameter_declaration_1: 2
+                     LEAF: "int": 319
+                     LEAF: "c": 258
+           KID: function_definition_2: 4
+             LEAF: "int": 319
+             KID: direct_declarator_4: 2
+               LEAF: "main": 258
+             KID: compound_statement_1: 3
+               LEAF: "{": 123
                KID: statement_seq_1: 2
                  KID: statement_seq_1: 2
                    KID: statement_seq_1: 2
@@ -64,38 +64,43 @@ LYDIA was INSERTED into scope: ct with type 0
                                          KID: statement_seq_1: 2
                                            KID: statement_seq_1: 2
                                              KID: statement_seq_1: 2
+                                               KID: statement_seq_1: 2
+                                                 KID: simple_declaration_1: 2
+                                                   LEAF: "LYDIA": 264
+                                                   KID: init_declarator_1: 2
+                                                     LEAF: "lyd": 258
+                                                 KID: simple_declaration_1: 2
+                                                   LEAF: "int": 319
+                                                   KID: init_declarator_1: 2
+                                                     LEAF: "b": 258
                                                KID: simple_declaration_1: 2
-                                                 LEAF: "LYDIA": 264
+                                                 LEAF: "bool": 293
                                                  KID: init_declarator_1: 2
-                                                   LEAF: "lyd": 258
-                                               KID: simple_declaration_1: 2
-                                                 LEAF: "int": 319
-                                                 KID: init_declarator_1: 2
-                                                   LEAF: "b": 258
+                                                   LEAF: "leaf": 258
                                              KID: simple_declaration_1: 2
                                                LEAF: "bool": 293
                                                KID: init_declarator_1: 2
-                                                 LEAF: "leaf": 258
+                                                 LEAF: "j": 258
                                            KID: simple_declaration_1: 2
-                                             LEAF: "bool": 293
+                                             LEAF: "char": 297
                                              KID: init_declarator_1: 2
-                                               LEAF: "j": 258
+                                               LEAF: "ch": 258
                                          KID: simple_declaration_1: 2
-                                           LEAF: "char": 297
+                                           LEAF: "int": 319
                                            KID: init_declarator_1: 2
-                                             LEAF: "ch": 258
+                                             LEAF: "x": 258
                                        KID: simple_declaration_1: 2
                                          LEAF: "int": 319
                                          KID: init_declarator_1: 2
-                                           LEAF: "x": 258
+                                           LEAF: "z": 258
                                      KID: simple_declaration_1: 2
                                        LEAF: "int": 319
                                        KID: init_declarator_1: 2
-                                         LEAF: "z": 258
+                                         LEAF: "y": 258
                                    KID: simple_declaration_1: 2
                                      LEAF: "int": 319
                                      KID: init_declarator_1: 2
-                                       LEAF: "y": 258
+                                       LEAF: "g": 258
                                  KID: simple_declaration_1: 2
                                    LEAF: "char": 297
                                    KID: init_declarator_1: 2
@@ -116,9 +121,12 @@ LYDIA was INSERTED into scope: ct with type 0
                                LEAF: "x": 258
                                LEAF: "=": 61
                                KID: multiplicative_expression_1: 3
-                                 LEAF: "z": 258
+                                 KID: multiplicative_expression_1: 3
+                                   LEAF: "z": 258
+                                   LEAF: "*": 42
+                                   LEAF: "y": 258
                                  LEAF: "*": 42
-                                 LEAF: "y": 258
+                                 LEAF: "g": 258
                            KID: assignment_expression_1: 3
                              LEAF: "x": 258
                              LEAF: "=": 61
@@ -127,35 +135,73 @@ LYDIA was INSERTED into scope: ct with type 0
                                LEAF: "(": 40
                                LEAF: ")": 41
                          KID: assignment_expression_1: 3
-                           LEAF: "x": 258
+                           LEAF: "j": 258
                            LEAF: "=": 61
-                           LEAF: "z": 258
-                       KID: assignment_expression_1: 3
-                         LEAF: "j": 258
-                         LEAF: "=": 61
-                         LEAF: "leaf": 258
-                     KID: shift_expression_1: 3
+                           LEAF: "leaf": 258
                        KID: shift_expression_1: 3
-                         LEAF: "cout": 258
+                         KID: shift_expression_1: 3
+                           KID: shift_expression_1: 3
+                             LEAF: "cout": 258
+                             LEAF: "<<": 277
+                             LEAF: ""hey there"": 262
+                           LEAF: "<<": 277
+                           LEAF: "x": 258
                          LEAF: "<<": 277
-                         LEAF: ""hey there"": 262
-                       LEAF: "<<": 277
-                       LEAF: "endl": 258
-                   KID: shift_expression_2: 3
-                     LEAF: "cin": 258
-                     LEAF: ">>": 278
-                     LEAF: "x": 258
-                 KID: iteration_statement_1: 5
-                   LEAF: "while": 353
-                   LEAF: "(": 40
-                   KID: equality_expression_1: 3
-                     LEAF: "b": 258
-                     LEAF: "==": 281
-                     LEAF: "1": 259
-                   LEAF: ")": 41
-                   KID: compound_statement_1: 3
-                     LEAF: "{": 123
-                     LEAF: "}": 125
+                         LEAF: "endl": 258
+                     KID: shift_expression_2: 3
+                       LEAF: "cin": 258
+                       LEAF: ">>": 278
+                       LEAF: "x": 258
+                   KID: iteration_statement_1: 5
+                     LEAF: "while": 353
+                     LEAF: "(": 40
+                     KID: logical_and_expression_1: 3
+                       KID: equality_expression_1: 3
+                         LEAF: "b": 258
+                         LEAF: "==": 281
+                         LEAF: "1": 259
+                       LEAF: "&&": 285
+                       KID: relational_expression_2: 3
+                         LEAF: "x": 258
+                         LEAF: ">": 62
+                         LEAF: "z": 258
+                     LEAF: ")": 41
+                     KID: compound_statement_1: 3
+                       LEAF: "{": 123
+                       LEAF: "}": 125
+                 KID: jump_statement_1: 2
+                   LEAF: "return": 330
+                   LEAF: "0": 259
+               LEAF: "}": 125
+         KID: function_definition_2: 4
+           LEAF: "int": 319
+           KID: direct_declarator_4: 2
+             LEAF: "foo": 258
+           KID: compound_statement_1: 3
+             LEAF: "{": 123
+             KID: statement_seq_1: 2
+               KID: statement_seq_1: 2
+                 KID: statement_seq_1: 2
+                   KID: statement_seq_1: 2
+                     KID: simple_declaration_1: 2
+                       LEAF: "int": 319
+                       KID: init_declarator_1: 2
+                         LEAF: "yas": 258
+                     KID: simple_declaration_1: 2
+                       LEAF: "int": 319
+                       KID: init_declarator_1: 2
+                         LEAF: "yoo": 258
+                   KID: simple_declaration_1: 2
+                     LEAF: "int": 319
+                     KID: init_declarator_1: 2
+                       LEAF: "xoo": 258
+                 KID: simple_declaration_1: 2
+                   LEAF: "int": 319
+                   KID: init_declarator_1: 2
+                     LEAF: "i_type": 258
+                     KID: initializer_1: 2
+                       LEAF: "=": 61
+                       LEAF: "0": 259
                KID: jump_statement_1: 2
                  LEAF: "return": 330
                  LEAF: "0": 259
@@ -163,50 +209,16 @@ LYDIA was INSERTED into scope: ct with type 0
        KID: function_definition_2: 4
          LEAF: "int": 319
          KID: direct_declarator_4: 2
-           LEAF: "foo": 258
+           LEAF: "help": 258
+           KID: parameter_declaration_list_1: 2
+             KID: parameter_declaration_1: 2
+               LEAF: "int": 319
+               LEAF: "a": 258
+             KID: parameter_declaration_1: 2
+               LEAF: "int": 319
+               LEAF: "b": 258
          KID: compound_statement_1: 3
            LEAF: "{": 123
-           KID: statement_seq_1: 2
-             KID: statement_seq_1: 2
-               KID: statement_seq_1: 2
-                 KID: statement_seq_1: 2
-                   KID: simple_declaration_1: 2
-                     LEAF: "int": 319
-                     KID: init_declarator_1: 2
-                       LEAF: "yas": 258
-                   KID: simple_declaration_1: 2
-                     LEAF: "int": 319
-                     KID: init_declarator_1: 2
-                       LEAF: "yoo": 258
-                 KID: simple_declaration_1: 2
-                   LEAF: "int": 319
-                   KID: init_declarator_1: 2
-                     LEAF: "xoo": 258
-               KID: simple_declaration_1: 2
-                 LEAF: "int": 319
-                 KID: init_declarator_1: 2
-                   LEAF: "i_type": 258
-                   KID: initializer_1: 2
-                     LEAF: "=": 61
-                     LEAF: "0": 259
-             KID: jump_statement_1: 2
-               LEAF: "return": 330
-               LEAF: "0": 259
-           LEAF: "}": 125
-     KID: function_definition_2: 4
-       LEAF: "int": 319
-       KID: direct_declarator_4: 2
-         LEAF: "help": 258
-         KID: parameter_declaration_list_1: 2
-           KID: parameter_declaration_1: 2
-             LEAF: "int": 319
-             LEAF: "a": 258
-           KID: parameter_declaration_1: 2
-             LEAF: "int": 319
-             LEAF: "b": 258
-       KID: compound_statement_1: 3
-         LEAF: "{": 123
-         KID: statement_seq_1: 2
            KID: statement_seq_1: 2
              KID: simple_declaration_1: 2
                LEAF: "int": 319
@@ -216,8 +228,25 @@ LYDIA was INSERTED into scope: ct with type 0
                LEAF: "int": 319
                KID: init_declarator_1: 2
                  LEAF: "yay": 258
-           KID: assignment_expression_1: 3
-             LEAF: "a": 258
-             LEAF: "=": 61
-             LEAF: "poo": 258
+           LEAF: "}": 125
+     KID: function_definition_2: 4
+       LEAF: "double": 305
+       KID: direct_declarator_4: 2
+         LEAF: "use_foo": 258
+         KID: parameter_declaration_1: 2
+           LEAF: "int": 319
+           LEAF: "c": 258
+       KID: compound_statement_1: 3
+         LEAF: "{": 123
+         KID: statement_seq_1: 2
+           KID: simple_declaration_1: 2
+             LEAF: "int": 319
+             KID: init_declarator_1: 2
+               LEAF: "woah": 258
+           KID: jump_statement_1: 2
+             LEAF: "return": 330
+             KID: additive_expression_1: 3
+               LEAF: "woah": 258
+               LEAF: "+": 43
+               LEAF: "c": 258
          LEAF: "}": 125
