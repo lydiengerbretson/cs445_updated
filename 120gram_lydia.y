@@ -474,7 +474,7 @@ statement_seq:
 selection_statement:
 	IF '(' condition ')' statement {$$ = create_tree("selection_statement_1", SELECTION_STATEMENT_1, 5, $1, $2, $3, $4, $5);}
 	| IF '(' condition ')' statement ELSE statement {$$ = create_tree("selection_statement_2", SELECTION_STATEMENT_1, 7, $1, $2, $3, $4, $5, $6, $7);}
-	| SWITCH '(' condition ')' statement {$$ = create_tree("selection_statement_3", SELECTION_STATEMENT_1, 5, $1, $2, $3, $4, $5);}
+	| SWITCH '(' condition ')' statement {$$ = create_tree("selection_statement_3", SELECTION_STATEMENT_3, 5, $1, $2, $3, $4, $5);}
 	;
 
 condition:

@@ -43,15 +43,15 @@ enum base_types
 	DOUBLE_TYPE = 5, 
 	OFSTREAM_TYPE = 6,
 	PTR_TYPE = 7,
-	BOOL_TYPE = 8
+	BOOL_TYPE = 8, 
+	CLASS_TYPE = 9
 };
 
 int get_base_type(struct tree *);
-void type_add_check(struct tree *, char *);
-void type_add_check_temp(struct tree *, char *, int);
-void type_shift_check_temp(struct tree *, char *);
+void type_add_check(struct tree *, char *, int);
+void type_shift_check(struct tree *, char *);
 void type_relation_check(struct tree *, char *);
-void type_relation_check_temp(struct tree *, char *);
+void type_switch_check(struct tree *, char *);
 void type_shift_check_1(struct tree *);
 void type_assign_check(struct tree *, char *);
 

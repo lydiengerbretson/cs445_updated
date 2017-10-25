@@ -64,107 +64,112 @@ LYDIA was INSERTED into scope: ct with type 0
                                          KID: statement_seq_1: 2
                                            KID: statement_seq_1: 2
                                              KID: statement_seq_1: 2
-                                               KID: statement_seq_1: 2
-                                                 KID: simple_declaration_1: 2
-                                                   LEAF: "LYDIA": 264
-                                                   KID: init_declarator_1: 2
-                                                     LEAF: "lyd": 258
-                                                 KID: simple_declaration_1: 2
-                                                   LEAF: "int": 319
-                                                   KID: init_declarator_1: 2
-                                                     LEAF: "b": 258
                                                KID: simple_declaration_1: 2
-                                                 LEAF: "bool": 293
+                                                 LEAF: "LYDIA": 264
                                                  KID: init_declarator_1: 2
-                                                   LEAF: "leaf": 258
+                                                   LEAF: "lyd": 258
+                                               KID: simple_declaration_1: 2
+                                                 LEAF: "double": 305
+                                                 KID: init_declarator_1: 2
+                                                   LEAF: "b": 258
                                              KID: simple_declaration_1: 2
-                                               LEAF: "bool": 293
+                                               LEAF: "double": 305
                                                KID: init_declarator_1: 2
-                                                 LEAF: "j": 258
+                                                 LEAF: "leaf": 258
                                            KID: simple_declaration_1: 2
-                                             LEAF: "char": 297
+                                             LEAF: "double": 305
                                              KID: init_declarator_1: 2
-                                               LEAF: "ch": 258
+                                               LEAF: "j": 258
                                          KID: simple_declaration_1: 2
-                                           LEAF: "int": 319
+                                           LEAF: "char": 297
                                            KID: init_declarator_1: 2
-                                             LEAF: "x": 258
+                                             LEAF: "ch": 258
                                        KID: simple_declaration_1: 2
                                          LEAF: "int": 319
                                          KID: init_declarator_1: 2
-                                           LEAF: "z": 258
+                                           LEAF: "x": 258
                                      KID: simple_declaration_1: 2
                                        LEAF: "int": 319
                                        KID: init_declarator_1: 2
-                                         LEAF: "y": 258
+                                         LEAF: "z": 258
                                    KID: simple_declaration_1: 2
                                      LEAF: "int": 319
                                      KID: init_declarator_1: 2
-                                       LEAF: "g": 258
+                                       LEAF: "y": 258
                                  KID: simple_declaration_1: 2
-                                   LEAF: "char": 297
+                                   LEAF: "int": 319
                                    KID: init_declarator_1: 2
-                                     KID: direct_declarator_8: 4
-                                       LEAF: "a": 258
-                                       LEAF: "[": 91
-                                       LEAF: "12": 259
-                                       LEAF: "]": 93
-                               KID: assignment_expression_1: 3
-                                 KID: postfix_expression_1: 4
+                                     LEAF: "g": 258
+                               KID: simple_declaration_1: 2
+                                 LEAF: "string": 264
+                                 KID: init_declarator_1: 2
+                                   LEAF: "s": 258
+                             KID: simple_declaration_1: 2
+                               LEAF: "char": 297
+                               KID: init_declarator_1: 2
+                                 KID: direct_declarator_8: 4
                                    LEAF: "a": 258
                                    LEAF: "[": 91
-                                   LEAF: "6": 259
+                                   LEAF: "12": 259
                                    LEAF: "]": 93
-                                 LEAF: "=": 61
-                                 LEAF: "ch": 258
-                             KID: assignment_expression_1: 3
-                               LEAF: "x": 258
-                               LEAF: "=": 61
-                               KID: multiplicative_expression_1: 3
-                                 KID: multiplicative_expression_1: 3
-                                   LEAF: "z": 258
-                                   LEAF: "*": 42
-                                   LEAF: "y": 258
-                                 LEAF: "*": 42
-                                 LEAF: "g": 258
                            KID: assignment_expression_1: 3
-                             LEAF: "x": 258
+                             KID: postfix_expression_1: 4
+                               LEAF: "a": 258
+                               LEAF: "[": 91
+                               LEAF: "6": 259
+                               LEAF: "]": 93
                              LEAF: "=": 61
-                             KID: postfix_expression_2: 4
-                               LEAF: "foo": 258
-                               LEAF: "(": 40
-                               LEAF: ")": 41
+                             LEAF: "ch": 258
                          KID: assignment_expression_1: 3
-                           LEAF: "j": 258
-                           LEAF: "=": 61
-                           LEAF: "leaf": 258
-                       KID: shift_expression_1: 3
-                         KID: shift_expression_1: 3
-                           KID: shift_expression_1: 3
-                             LEAF: "cout": 258
-                             LEAF: "<<": 277
-                             LEAF: ""hey there"": 262
-                           LEAF: "<<": 277
                            LEAF: "x": 258
-                         LEAF: "<<": 277
-                         LEAF: "endl": 258
-                     KID: shift_expression_2: 3
-                       LEAF: "cin": 258
-                       LEAF: ">>": 278
+                           LEAF: "=": 61
+                           KID: multiplicative_expression_1: 3
+                             KID: multiplicative_expression_1: 3
+                               LEAF: "z": 258
+                               LEAF: "*": 42
+                               LEAF: "y": 258
+                             LEAF: "*": 42
+                             LEAF: "g": 258
+                       KID: assignment_expression_1: 3
+                         LEAF: "j": 258
+                         LEAF: "=": 61
+                         LEAF: "leaf": 258
+                     KID: selection_statement_3: 5
+                       LEAF: "switch": 337
+                       LEAF: "(": 40
                        LEAF: "x": 258
-                   KID: iteration_statement_1: 5
-                     LEAF: "while": 353
+                       LEAF: ")": 41
+                       KID: compound_statement_1: 3
+                         LEAF: "{": 123
+                         KID: statement_seq_1: 2
+                           KID: statement_seq_1: 2
+                             KID: labeled_statement_2: 4
+                               LEAF: "case": 295
+                               LEAF: "0": 259
+                               LEAF: ":": 58
+                               LEAF: "break": 294
+                             KID: labeled_statement_2: 4
+                               LEAF: "case": 295
+                               LEAF: "1": 259
+                               LEAF: ":": 58
+                               LEAF: "break": 294
+                           KID: labeled_statement_3: 3
+                             LEAF: "default": 302
+                             LEAF: ":": 58
+                             LEAF: "break": 294
+                         LEAF: "}": 125
+                   KID: selection_statement_1: 5
+                     LEAF: "if": 317
                      LEAF: "(": 40
-                     KID: logical_and_expression_1: 3
-                       KID: equality_expression_1: 3
-                         LEAF: "b": 258
-                         LEAF: "==": 281
-                         LEAF: "1": 259
-                       LEAF: "&&": 285
+                     KID: logical_or_expression_1: 3
+                       KID: unary_expression_5: 2
+                         LEAF: "!": 33
+                         LEAF: "y": 258
+                       LEAF: "||": 286
                        KID: relational_expression_2: 3
-                         LEAF: "x": 258
-                         LEAF: ">": 62
                          LEAF: "z": 258
+                         LEAF: ">": 62
+                         LEAF: "y": 258
                      LEAF: ")": 41
                      KID: compound_statement_1: 3
                        LEAF: "{": 123

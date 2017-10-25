@@ -21,40 +21,50 @@ int main()
 	//ofstream cout; 
 	//ofstream cin; 
 	LYDIA lyd;	
-	int b;
-	bool leaf;
-	bool j;
+	double b;
+	double leaf;
+	double j;
 	char ch;
 	//int yay;
 	int x; // 1
     int z; // shows up as double if #include string is commented!!
     int y; //5
 	int g;
-	//string s;
+	string s;
 	char a[12];
     a[6] = ch;
-	
+	//x = ch;
     //cout << a << endl;
 	//double y;
-    x = z * y * g;
+     x = z * y * g;
 	//x = z * y;
 	//x = x * x;
-	x = foo();
+	//x = foo();
 	//x = z;
 	j = leaf;
 	
-	cout << "hey there" << x << endl;
+	//cout << "hey there" << x << endl;
 	
-	cin >> x ;
+	//cin >> x ;
     
 	//int x;
 	// TODO:
 	//x =  yay;
 	//lyd.cool = x;
 	//lyd.yool = y;
+	
+	switch('a')
+	{
+		case 0:
+		break;
+		case 1:
+		break;
+		default:
+		break;
+	}
 	 
 	
-	while(b  == 1 && x > z)
+	if(!y || z > y)
 	{
 	}
 	

@@ -11,7 +11,7 @@ double x, y;
 	double z;
 	//double z;
 	 z = myfunc(x, y);
-	//cout << "zed was " << z << endl;
+	cout << "zed was " << z << endl;
 	return 0;
 }
 
@@ -25,6 +25,6 @@ double myfunc(double x, double y)
 double goof(double branflakes)
 {
     double bf2 = branflakes + 2.0;
-    //cout << "bf2 is " << bf2 << endl;
+    cout << "bf2 is " << bf2 << endl;
     return goof(bf2);
 }

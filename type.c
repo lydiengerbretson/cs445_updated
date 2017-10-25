@@ -6,12 +6,19 @@
 int get_base_type( struct tree *t)
 {
 
-	if(strcmp(t->leaf->text, "string") == 0)
-		return STRING_TYPE;
-	if(strcmp(t->leaf->text, "ofstream") == 0)
-		return OFSTREAM_TYPE;
-	if(strcmp(t->leaf->text, "LYDIA") == 0)
-		return 1234; // testing purposes
+    if(!t)
+	{
+		return 0; 
+	}
+	else
+	{
+	//if(strcmp(t->leaf->text, "string") == 0)
+		//return STRING_TYPE;
+	//if(strcmp(t->leaf->text, "ofstream") == 0)
+		//return OFSTREAM_TYPE;
+	//if(strcmp(t->leaf->text, "LYDIA") == 0)
+		//return 1234; // testing purposes
+	}
 
 	switch(t->prodrule)
 	{
@@ -26,13 +33,22 @@ int get_base_type( struct tree *t)
 		return VOID_TYPE;
 	case BOOL:
 		return BOOL_TYPE;
+	case CLASS_NAME:
+		if(strcmp(t->leaf->text, "string") == 0)
+		{
+			return STRING_TYPE;
+		}
+		else
+		{
+			return CLASS_TYPE;
+		}
 	default:
 		return 0;
 	}
 
   
 }
-void type_shift_check_temp(struct tree *t, char *table_name)
+void type_shift_check(struct tree *t, char *table_name)
 {
 	int type1; 
 	int type2;
@@ -64,18 +80,20 @@ void type_shift_check_temp(struct tree *t, char *table_name)
  
 		for(j=0; j<t->nkids; j++)
 		{
-			type_shift_check_temp(t->kid[j], table_name);
+			type_shift_check(t->kid[j], table_name);
 		}
 	  }
 }
 }
 
-void type_relation_check_temp(struct tree *t, char *table_name)
+void type_relation_check(struct tree *t, char *table_name)
 {
 	int type1; 
 	int type2;
     int k, j;
+	static int rel_exp = 0;
 	// TODO: Pass in type!
+	
 
   if(!t)
   {
@@ -85,29 +103,85 @@ void type_relation_check_temp(struct tree *t, char *table_name)
   { 
 	  if (t->nkids == 0)
 	  {
+		 // printf("2: %s\n", t->prodrule_name);
 
-		  printf(" LEAF: \"%s\": %d \n",
-				  t->leaf->text, t->leaf->category); 
-		  
-		  
-		  if(t->leaf->category != BOOL
-		  && t->leaf->category != INTEGER
-		  && t->leaf->category != IDENTIFIER
-		  && t->leaf->category != ANDAND
-		  && t->leaf->category != OROR
-		  && t->leaf->category != EQ
-		  && t->leaf->category != 62)
+          type1 = find_type_in_list(t->leaf->text, table_name);
+		  //printf(" LEAF: \"%s\": %d %d \n",
+				   //t->leaf->text, t->leaf->category, type1); 
+	      if(rel_exp)
 		  {
-			  semanticerror("Incompatible types.", t);
+			  //printf("yay!!\n");
+		       if(type1 != BOOL_TYPE 
+			   && type1 != INT_TYPE 
+			   && type1 != DOUBLE_TYPE
+			   && t->leaf->category != DOUBLE
+			   && t->leaf->category != FLOATING
+		       && t->leaf->category != BOOL
+		       && t->leaf->category != INTEGER
+		       && t->leaf->category != IDENTIFIER
+		       && t->leaf->category != ANDAND
+		       && t->leaf->category != OROR
+		       && t->leaf->category != EQ
+		       && t->leaf->category != 62
+		       && t->leaf->category != 60
+			   && t->leaf->category != NOTEQ
+			   && t->leaf->category != LTEQ
+			   && t->leaf->category != GTEQ)
+		       {
+
+			        semanticerror("Need a bool or int or double type.", t);
+		  
+		       }
+		  }
+		  // if not a relational expression and just a logical expression
+		  // you cannot have double types in a logical expression 
+		  else
+		  {
+
+		       if(type1 > 0 && type1 != BOOL_TYPE && type1 != INT_TYPE)
+		       {
+
+			       semanticerror("Need a bool or int type.", t);
+		  
+		       }
+
+		       // checking operands 
+		       if(t->leaf->category != BOOL
+		       && t->leaf->category != INTEGER
+		       && t->leaf->category != IDENTIFIER
+		       && t->leaf->category != ANDAND
+		       && t->leaf->category != OROR
+		       && t->leaf->category != EQ
+			   && t->leaf->category != 40 // parens
+		       && t->leaf->category != 41 // parens
+			   && t->leaf->category != 42 // *
+		       && t->leaf->category != 60 // <
+		       && t->leaf->category != 62 // >
+			   && t->leaf->category != 33 // !
+			   && t->leaf->category != NOTEQ
+			   && t->leaf->category != LTEQ
+			   && t->leaf->category != GTEQ)
+		       {
+			       semanticerror("Incompatible types.", t);
+		       }
 		  }
 	  }
 	  else
 	  {
 		//printf(" KID %s: %d\n", t->prodrule_name, t->nkids);
- 
+        //printf("3: %s\n", t->prodrule_name);
+      	  if(t->prodrule == RELATIONAL_EXPRESSION_1
+		  || t->prodrule == EQUALITY_EXPRESSION_1)
+		  {
+			  rel_exp = 1;
+		  }
+		  else
+		  {
+			  rel_exp = 0;
+		  }
 		for(j=0; j<t->nkids; j++)
 		{
-			type_relation_check_temp(t->kid[j], table_name);
+			type_relation_check(t->kid[j], table_name);
 		}
 	  }
 }
@@ -115,7 +189,7 @@ void type_relation_check_temp(struct tree *t, char *table_name)
 
 }
 // trying to traverse tree for expressions like x = a * b * c
-void type_add_check_temp(struct tree *t, char *table_name, int base_type)
+void type_add_check(struct tree *t, char *table_name, int base_type)
 {
 	int type1; 
 	int type2;
@@ -150,106 +224,67 @@ void type_add_check_temp(struct tree *t, char *table_name, int base_type)
 	  }
 	  else
 	  {
-		printf(" KID: %s: %d\n", t->prodrule_name, t->nkids);
+		//printf(" KID: %s: %d\n", t->prodrule_name, t->nkids);
  
 		for(j=0; j<t->nkids; j++)
 		{
-			type_add_check_temp(t->kid[j], table_name, base_type);
+			type_add_check(t->kid[j], table_name, base_type);
 		}
 	  }
 }
 
 
 }
-void type_add_check(struct tree *t, char *table_name)
+
+// checking out switch statement types
+void type_switch_check(struct tree *t, char *table_name)
 {
-	int k;
 	int type1; 
 	int type2;
+    int k, j;
 
-	// find type of left side of expression 
-	type1 = find_type_in_list(t->kid[0]->leaf->text, table_name);
-	if(type1 != INT_TYPE && type1 != DOUBLE_TYPE)
-	{
-		printf("ERROR!!\n");
-	}
-    //printf("Type of assigner %s : %d\n", t->kid[0]->leaf->text, type1);
-	for(k=0; k<t->kid[2]->nkids; k++)
-	{
-		// only works for two operands on right side
-		if(t->kid[2]->kid[k]->prodrule == 258)
+
+  if(!t)
+  {
+      // do nothing
+  }
+  else 
+  { 
+	  if (t->nkids == 0)
+	  {
+		  // TODO: make sure type1 > 0: checkundeclared here
+		  type1 = find_type_in_list(t->leaf->text, table_name);
+		 // printf(" LEAF: \"%s\": %d %d\n",
+				 //t->leaf->text, t->leaf->category, type1); 
+		  
+		  // if not an operator 
+		  if(type1 > 0 
+		  && type1 != INT_TYPE
+		  && type1 != CHAR_TYPE)
+		  {
+			  semanticerror("Incompatible types.", t);
+		  }
+
+	  }
+	  else
+	  {
+		//printf(" KID: %s: %d\n", t->prodrule_name, t->nkids);
+ 
+		for(j=0; j<t->nkids; j++)
 		{
-			// check and compare these types to assigner
-			type2 = find_type_in_list(t->kid[2]->kid[k]->leaf->text, table_name);
-			// possibly be recursive 
-			//printf("Variables in add/mult expr: %s %d\n", t->kid[2]->kid[k]->leaf->text, type2);
-			if(type2 != type1)
-			{
-				semanticerror("Types do not match.", t);
-			}
+			type_switch_check(t->kid[j], table_name);
 		}
-	}
+	  }
+}
 
 
 }
 
-void type_relation_check(struct tree *t, char *table_name)
-{
-	int k;
-	int type1; 
-	int type2;
-
-	// find type of left side of expression 
-    type1 = find_type_in_list(t->kid[2]->kid[0]->leaf->text, table_name);
-	//printf("Checking bool/int: %s, %d\n", t->kid[2]->kid[0]->leaf->text, type1);
-	type2 = find_type_in_list(t->kid[2]->kid[2]->leaf->text, table_name);
-	//printf("Checking bool/int: %s, %d\n", t->kid[2]->kid[2]->leaf->text, type2);
-    if(type1 != INT_TYPE 
-	&& type1 != BOOL_TYPE
-	&& type1 != DOUBLE_TYPE
-	&& type2 != INT_TYPE
-	&& type2 != BOOL_TYPE
-	&& type2 != DOUBLE_TYPE)
-	{
-		semanticerror("ERROR, you need a bool/int type!!\n", t);
-	}
-	if(type1 == INT_TYPE && t->kid[2]->kid[2]->leaf->category != INTEGER)
-	{
-		// error
-		semanticerror("Ints: Types do not match.", t);
-	}	
-    else if(type1 == BOOL_TYPE 
-	     && type2 != BOOL_TYPE 
-		 && t->kid[2]->kid[2]->leaf->category != TRUE
-         && t->kid[2]->kid[2]->leaf->category != FALSE)
-    {
-	   // error
-	   semanticerror("Bools: Types do not match.", t);
-    }
-    else if(type1 == DOUBLE_TYPE 
-	     && type2 != DOUBLE_TYPE 
-		 && t->kid[2]->kid[2]->leaf->category != FLOATING
-         && t->kid[2]->kid[2]->leaf->category != DOUBLE)
-    {
-	   // error
-	   semanticerror("Doubles: Types do not match.", t);
-    }		
-	else if(type1 != type2 
-	     && t->kid[2]->kid[2]->leaf->category != INTEGER 
-	     && t->kid[2]->kid[2]->leaf->category != TRUE
-         && t->kid[2]->kid[2]->leaf->category != FALSE
-		 && t->kid[2]->kid[2]->leaf->category != FLOATING
-         && t->kid[2]->kid[2]->leaf->category != DOUBLE)
-	{
-		semanticerror("Types do not match.", t);
-	}
-	
-}
 
 // this function checks for cout and cin >> "hey there";
 void type_shift_check_1(struct tree *t)
 {
-	printf("Entering type shift check 1\n");
+	//printf("Entering type shift check 1\n");
     if(strcmp(t->kid[0]->leaf->text, "cin")==0)
     {
 		if(t->kid[1]->leaf->category != SR)
@@ -287,9 +322,9 @@ void type_assign_check(struct tree *t, char *s)
 	{
 		    // check types for both left and right hand sides
 	t1 = find_type_in_list(t->kid[0]->kid[0]->leaf->text, s);
-	printf("%s, %d\n", t->kid[0]->kid[0]->leaf->text, t1);
+	//printf("%s, %d\n", t->kid[0]->kid[0]->leaf->text, t1);
 	t2 = find_type_in_list(t->kid[0]->kid[2]->leaf->text, s);
-	printf("%s, %d\n", t->kid[0]->kid[2]->leaf->text, t2);
+	//printf("%s, %d\n", t->kid[0]->kid[2]->leaf->text, t2);
 	if(t1 == INT_TYPE 
 	&& t2 != INT_TYPE 
 	&& t->kid[0]->kid[2]->leaf->category != INTEGER)
@@ -299,7 +334,7 @@ void type_assign_check(struct tree *t, char *s)
     
 	// check right hand side of the array 
 	t2 = find_type_in_list(t->kid[2]->leaf->text, s);
-	printf("right hand side type: %d\n", t2);
+	//printf("right hand side type: %d\n", t2);
 	if(t1 == INT_TYPE
 	&& t2 != INT_TYPE
 	&& t->kid[2]->leaf->category != INTEGER)
@@ -346,6 +381,12 @@ void type_assign_check(struct tree *t, char *s)
 	&& t2 != PTR_TYPE
 	&& t2 != STRING_TYPE
 	&& t->kid[2]->leaf->category != STRING)
+	{
+		semanticerror("Incorrect types in assignment expression.", t);
+	}
+	if(t1 == BOOL_TYPE
+	&& t2 != BOOL_TYPE
+	&& t->kid[2]->leaf->category != BOOL)
 	{
 		semanticerror("Incorrect types in assignment expression.", t);
 	}

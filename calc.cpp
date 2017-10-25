@@ -16,7 +16,7 @@ int main()
   double operand2;
 
 	double answer;
-  int choice;
+  double choice;
   int valid_choice;
   //int valid_choice;
   do {
@@ -61,7 +61,7 @@ double divide(double dividend, double divisor)
   if (divisor == 0.0)
     return 0;			// avoids divide by zero errors
   else
-    return (dividend / divisor);
+   return (dividend / divisor);
 }
 
 //----------------- get_value function ----------------
