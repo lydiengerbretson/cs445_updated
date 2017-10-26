@@ -16,15 +16,15 @@ int main()
   double operand2;
 
 	double answer;
-  double choice;
-  int valid_choice;
+  int choice;
+  double valid_choice;
   //int valid_choice;
   do {
     print_menu();
     cin >> choice;
 
     // assume choice is valid
-    valid_choice = 1;
+    valid_choice = 1.0;
 
     switch (choice) {
     case 0:

@@ -11,7 +11,8 @@
 // ideas and program outline: https://github.com/andschwa/partial-cpp-compiler
 
 // Forward declare this function for compiler
-int yylex(); 
+//int yylex(); 
+//int yylex_destroy() ;
 
 // extern variables in 120lex_lydia.l
 extern FILE *yyin; 
@@ -30,6 +31,7 @@ SymbolTable PARAM_TABLE;
 
 char *filetext; 
 filenodeptr file_stack = NULL; 
+
  
 
 int main(int argc, char **argv)

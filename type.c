@@ -81,7 +81,7 @@ void type_shift_check(struct tree *t, char *table_name)
 		  && t->leaf->category != IDENTIFIER
 		  && t->leaf->category != SL)
 		  {
-			  semanticerror("Incompatible types.", t);
+			  semanticerror("1: Incompatible types.", t);
 		  }
 		  }
 	  }
@@ -177,7 +177,7 @@ void type_relation_check(struct tree *t, char *table_name)
 			   && t->leaf->category != LTEQ
 			   && t->leaf->category != GTEQ)
 		       {
-			       semanticerror("Incompatible types.", t);
+			       semanticerror("2: Incompatible types.", t);
 		       }
 		  }
 	  }
@@ -232,7 +232,7 @@ void type_add_check(struct tree *t, char *table_name, int base_type)
 		  // if not an operator 
 		  if(type1 > 0 && type1 != parent_type)
 		  {
-			  semanticerror("Incompatible types.", t);
+			  semanticerror("3: Incompatible types.", t);
 		  }
 	  }
 	  else
@@ -267,16 +267,18 @@ void type_switch_check(struct tree *t, char *table_name)
 	  {
 		  // TODO: make sure type1 > 0: checkundeclared here
 		  type1 = find_type_in_list(t->leaf->text, table_name);
-		 // printf(" LEAF: \"%s\": %d %d\n",
-				 //t->leaf->text, t->leaf->category, type1); 
+		 printf(" LEAF: \"%s\": %d %d\n",
+				 t->leaf->text, t->leaf->category, type1); 
 		  
 		  // if not an operator 
+		  
 		  if(type1 > 0 
 		  && type1 != INT_TYPE
 		  && type1 != CHAR_TYPE) // DOUBLE_TYPE for calc.cpp:29??
 		  {
-			  semanticerror("Incompatible types.", t);
+			  semanticerror("4: Incompatible types.", t);
 		  }
+		  
 
 	  }
 	  else
@@ -285,6 +287,7 @@ void type_switch_check(struct tree *t, char *table_name)
  
 		for(j=0; j<t->nkids; j++)
 		{
+			if(t->prodrule == SELECTION_STATEMENT_3)
 			type_switch_check(t->kid[j], table_name);
 		}
 	  }
@@ -379,7 +382,8 @@ void type_assign_check(struct tree *t, char *s)
 	}
 	if(t1 == DOUBLE_TYPE
 	&& t2 != DOUBLE_TYPE
-	&& t->kid[2]->leaf->category != DOUBLE)
+	&& t->kid[2]->leaf->category != DOUBLE
+	&& t->kid[2]->leaf->category != FLOATING)
 	{
 		semanticerror("Incorrect types in assignment expression.", t);
 	}

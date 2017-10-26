@@ -357,6 +357,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		break;
 	case SELECTION_STATEMENT_3:
 		//printf("found switch statement!\n");
+		// TODO: Fix
 		type_switch_check(t, scope->name);
 		break;
 	case SELECTION_STATEMENT_1:
