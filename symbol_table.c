@@ -104,6 +104,7 @@ bool lookup(char *n, SymbolTable t) {
 // TODO: Mult/Add type: Done
 // TODO: Parameter type: Done
 // TODO: Class types:
+// TODO: Work on warnings: 
 // TODO: Checking operands: add/mult/sub/div, bool ops, >><<: Done
 // TODO: Multiple variable declarations on the same line: 
 // TODO: Implement array type: Done, for char and int
@@ -113,14 +114,17 @@ bool lookup(char *n, SymbolTable t) {
 // TODO:  >, <, ==, != types: Done
 // TODO: && || ! types: Done
 // TODO: switch statements: Kinda done
+// TODO: while and if statements: Done
+// TODO: for and do while? 
+// TODO: Work on case statements: 
 // TODO: cout << a[5] Done
 // TODO: Work on class constructor members (not undeclared):
 
 // overall populate_symbol_table layout adapted from https://github.com/park2331/compiler/blob/master/tomorrow/symtab.c
 // this function populates symbol tables for classes, functions, and globals
-struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
+void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
-  int i,j, key;
+  int i,j;
   int type;
   int type_func;  
   int class_func = 0; // 1 for class method, 0 otherwise
@@ -133,7 +137,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
   static bool direct_declare = false;
   
   if ( !t ) {
-    return NULL;
+    //return NULL;
 
   } else if (t->nkids == 0 ) 
   {
@@ -146,12 +150,12 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		  // get type and check type before inserting
           insert_sym(t->leaf->text, scope, 0);
           
-          return t;
+          //return t;
 		
         }
         else 
         {
-          return NULL;
+         // return NULL;
         }
          
     }
@@ -162,7 +166,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
   } else if( t->nkids > 0 ) 
   {
 
-    key = get_key( t->prodrule_name );
+    //key = get_key( t->prodrule_name );
 
     if (direct_declare){direct_declare=false;};
     switch(t->prodrule) {
@@ -171,7 +175,10 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		type = get_base_type(t->kid[0]);
 		populate_init_decls(t->kid[1], scope, type);
 		break; 
-
+    case MEMBER_DECLARATION_1:
+		type = get_base_type(t->kid[0]);
+		populate_init_decls(t->kid[1], scope, type); 
+		break;
 	case CLASS_SPECIFIER_1:
       printf("\n------CLASS------\n"); 
       class_name = get_class_name(t);
@@ -187,7 +194,6 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
       scope = class_table;
       for (j=0; j < t->nkids; j++) 
 	  {
-		// insert into local function symbol table 
 		populate_symbol_table( t->kid[j] , scope);   		
 		 
       }
@@ -357,7 +363,8 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		break;
 	case SELECTION_STATEMENT_3:
 		//printf("found switch statement!\n");
-		// TODO: Fix
+		// TODO: Fix: Done
+		// TODO: Work on case statements
 		type_switch_check(t, scope->name);
 		break;
 	case SELECTION_STATEMENT_1:
@@ -442,7 +449,7 @@ struct tree * populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
 	else
 	{
-		return NULL; 
+		//return NULL; 
 	}
 
   };

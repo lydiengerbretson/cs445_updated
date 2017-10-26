@@ -72,7 +72,7 @@ extern void insert_typename_tree(struct tree *t, SymbolTable table);
  */
  
 Treeptr YYPROGRAM; 
-//extern int yylex();
+extern int yylex();
  
 int yydebug=0;
 

@@ -11,7 +11,7 @@ int hash( char *s)
 	// try park2331's hash but calloc instead
    register int h = 0;
    register char c;
-   while (c = *s++) {
+   while ((c = *s++)) {
       h += c & 0377;
       h *= 37;
       }
@@ -24,7 +24,7 @@ int hash( char *s)
 unsigned long sdbm (char *str) {
   unsigned long hash = 0;
   int c;
-  while (c = *str++) {
+  while ((c = *str++)) {
     hash = c + (hash << 6) + (hash << 16) - hash;
   }
   return hash;                                                                 

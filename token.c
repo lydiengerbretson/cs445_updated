@@ -11,7 +11,7 @@ char * get_sval(char * in_str)
 	memset(temp, 0, strlen(in_str));
 	int i = 1;
 	int j = i - 1;
-	for (i; in_str[i] != '"'; i++, j++)
+	for (; in_str[i] != '"'; i++, j++)
 	{
 		temp[j] = in_str[i];
 	}
@@ -25,7 +25,7 @@ char * get_cval(char *cval)
 	memset(temp, 0, strlen(cval));
 	int i = 1;
 	int j = i - 1;
-	for (i; cval[i] != '\''; i++, j++)
+	for (; cval[i] != '\''; i++, j++)
 	{
 		temp[j] = cval[i];
 	}
@@ -83,7 +83,8 @@ struct token* create_token(int category, char *text, int lineno, char *filename)
 		
 		return new_token; 
 		
-	}	
+	}
+	return NULL; 
 }
 
 

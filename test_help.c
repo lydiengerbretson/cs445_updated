@@ -7,7 +7,7 @@ class LYDIA
 {
 	
 	int cool; 
-	double yool;
+	int yool;
 };
 
 
@@ -46,13 +46,13 @@ int main()
 	
 	cout << "hey there" << x << endl;
 	
-	cin >> x ;
+	cin >> x;
     
 	//int x;
 	// TODO:
 	//x =  yay;
-	//lyd.cool = x;
-	//lyd.yool = y;
+	lyd.cool = x;
+	lyd.yool = y;
 	
 	switch('a')
 	{

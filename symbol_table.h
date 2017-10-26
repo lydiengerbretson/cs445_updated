@@ -57,7 +57,7 @@ char * alloc(int n);
 void checkredeclared(struct tree *, SymbolTable); 
 void checkundeclared(struct tree *, SymbolTable); 
 
-struct tree * populate_symbol_table( struct tree *, SymbolTable );
+void populate_symbol_table( struct tree *, SymbolTable );
 struct tree * handle_funcdef( struct tree * , SymbolTable );
 void populate_init_decls(struct tree *, SymbolTable, int);
 void populate_params(struct tree *, SymbolTable, int );

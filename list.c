@@ -4,7 +4,7 @@ void insert_sym_list(char *s, char *t, int typ)
 {
     struct entry *new_node = calloc(1, sizeof(Entry));
 	
-	struct entry *curr, *temp;
+	struct entry  *temp;
 
 	new_node->sym_table_name = strdup(t); 	
 	new_node->name = strdup(s); 
@@ -16,7 +16,7 @@ void insert_sym_list(char *s, char *t, int typ)
 		// insert first node
 		//printf("**Inserting first node: %s\n", new_node->name); 
 		start = new_node; 
-		curr = new_node;
+		//curr = new_node;
 	}
 	else
 	{

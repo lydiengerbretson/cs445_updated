@@ -26,6 +26,7 @@ int get_base_type( struct tree *t)
 	case INT:
 		return INT_TYPE;
 	case DOUBLE:
+	case FLOATING:
 		return DOUBLE_TYPE;
 	case CHAR:
 		return CHAR_TYPE;
@@ -267,14 +268,14 @@ void type_switch_check(struct tree *t, char *table_name)
 	  {
 		  // TODO: make sure type1 > 0: checkundeclared here
 		  type1 = find_type_in_list(t->leaf->text, table_name);
-		 printf(" LEAF: \"%s\": %d %d\n",
-				 t->leaf->text, t->leaf->category, type1); 
+		 //printf(" LEAF: \"%s\": %d %d\n",
+				 //t->leaf->text, t->leaf->category, type1); 
 		  
 		  // if not an operator 
 		  
 		  if(type1 > 0 
 		  && type1 != INT_TYPE
-		  && type1 != CHAR_TYPE) // DOUBLE_TYPE for calc.cpp:29??
+		  && type1 != CHAR_TYPE) 
 		  {
 			  semanticerror("4: Incompatible types.", t);
 		  }
