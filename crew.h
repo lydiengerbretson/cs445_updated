@@ -14,6 +14,8 @@ private:
 public:
   Crew();
   bool stable;		// Crew's ability to continue co-existing
+  double test;
+  int test1; 
   // helper functions
   void print_menu();	// Print the game menu
   // implementation needed

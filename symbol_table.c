@@ -248,16 +248,16 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
 	    if(t->kid[0]->prodrule == POSTFIX_EXPRESSION_4)
 		{
-
+            // check undeclared variables
 			check_class_members_post(t);
-			// check type
+			// check types
 			type_class_member_check(t, scope->name); 
 		}
 	    // checking the right hand side of assignment expression
 		else if(t->kid[2]->prodrule == POSTFIX_EXPRESSION_1
 		     || t->kid[2]->prodrule == POSTFIX_EXPRESSION_2)
 		{
-			// array
+			// if right hand side is an array
 			if(t->kid[2]->prodrule == POSTFIX_EXPRESSION_1)
 			{
 				checkundeclared(t->kid[2]->kid[0], scope); 
@@ -268,7 +268,7 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 				 semanticerror("Array type does not match assignment type.", t);
 			    }
 			}
-			// function
+			// if right hand side is a function
 			if(t->kid[2]->prodrule == POSTFIX_EXPRESSION_2)
 			{
 			checkundeclared(t->kid[2]->kid[0], GLOBAL_TABLE); 
@@ -360,7 +360,8 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 	
     case JUMP_STATEMENT_1:
 	    // checking the return value 
-		if(t->kid[1]->prodrule == POSTFIX_EXPRESSION_1)
+		// checking return value of a function
+		if(t->kid[1]->prodrule == POSTFIX_EXPRESSION_2)
 		{
 			if(t->kid[1]->kid[0]->prodrule == POSTFIX_EXPRESSION_4)
 			{
@@ -369,13 +370,14 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 			}
 			else
 			{
-				// check undeclared for regular postfix
+				// check undeclared for regular postfix (function)			
 				checkundeclared(t->kid[1], scope);
 
 			}
 		}
 		else
-		{
+		{		
+	        // checking regular jump statement return variable
 			checkundeclared(t->kid[1], scope);
 		}
 		
@@ -394,6 +396,8 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 			// helper function to check if variable is declared in class scope
 			// defined in utility_func.c
 			check_class_members_state(t);
+			// check for bool or int type within selection statement
+			type_class_member_check_relation(t->kid[2]); 
 		}
 		else
 		{
@@ -416,6 +420,9 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 			// helper function to check if variable is declared in class scope
 			// defined in utility_func.c
 			check_class_members_state(t);
+			// TODO: while(PlanetExpress.test1 && 1)
+		    // check for bool or int type within iteration statement
+			type_class_member_check_relation(t->kid[2]); 
 		}
 		else
 		{

@@ -422,6 +422,7 @@ void type_class_member_check(struct tree *t,char *s)
     int i; 
     int type1; 
 	int type2; 
+	char *curr_class_name; 
 	
 	for(i=0; i < TABLE_SIZE; i++)
 	{
@@ -430,14 +431,26 @@ void type_class_member_check(struct tree *t,char *s)
 			if(find_sym_in_list(t->kid[0]->kid[2]->leaf->text, class_tables[i]->name))
 				{
 					type1 = find_type_in_list(t->kid[0]->kid[2]->leaf->text, class_tables[i]->name);
-					printf("Found type! %s, %d\n", t->kid[0]->kid[2]->leaf->text, type1); 
+					curr_class_name = strdup(class_tables[i]->name); 
+					//printf("Found type! %s, %d \n", t->kid[0]->kid[2]->leaf->text, type1); 
 				}
 		}
 
 	}
-	// this is a function
+	// this is a function - on the right hand side 
 	if(t->kid[2]->prodrule == POSTFIX_EXPRESSION_2)
 	{
+		if(t->kid[2]->kid[0]->prodrule == POSTFIX_EXPRESSION_4)
+		{	
+			type2 = find_type_in_list(t->kid[2]->kid[0]->kid[2]->leaf->text, curr_class_name); 
+			//printf("%s in %s with type: %d\n", t->kid[2]->kid[0]->kid[2]->leaf->text, curr_class_name, type2);
+			if(type1 != type2)
+			{
+				semanticerror("Incorrect type for class member:", t->kid[2]);
+			}
+		}
+		else
+		{
         // find type in right hand expression of assignment statement 
 		type2 = find_type_in_list(t->kid[2]->kid[0]->leaf->text, "gt"); 
 		
@@ -446,6 +459,7 @@ void type_class_member_check(struct tree *t,char *s)
 		if(type1 != type2)
 		{
 			semanticerror("Incorrect type:", t->kid[2]); 
+		}
 		}
 		
 	}
@@ -474,5 +488,56 @@ void type_class_member_check(struct tree *t,char *s)
 		}
 	}
 	
+}
+
+void type_class_member_check_relation(struct tree *t)
+{
+	int type1; 
+	int j, i; 
+	//char *curr_class_name; 
+	
+	if(!t)
+	{
+      // do nothing
+	}
+	else 
+	{ 
+	  if (t->nkids == 0)
+	  {
+
+		  //printf(" LEAF: \"%s\": %d \n",
+				  // t->leaf->text, t->leaf->category); 
+		  	for(i=0; i < TABLE_SIZE; i++)
+			{
+				if(class_tables[i])
+				{
+					if(find_sym_in_list(t->leaf->text, class_tables[i]->name))
+						{
+							type1 = find_type_in_list(t->leaf->text, class_tables[i]->name);
+							//curr_class_name = strdup(class_tables[i]->name); 
+							//printf("Found type! %s, %d \n", t->leaf->text, type1); 
+							if(type1 > 0 
+							&& type1 != BOOL_TYPE
+							&& type1 != INT_TYPE)
+							{
+								semanticerror("Incorrect class member type, need bool or int type:", t); 
+							}
+						}
+				}
+
+			}
+
+	  }
+	  else
+	  {
+
+ 
+		for(j=0; j<t->nkids; j++)
+		{
+			type_class_member_check_relation(t->kid[j]);
+		}
+		
+	  }
+}
 }
 
