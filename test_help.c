@@ -7,7 +7,7 @@ class LYDIA
 {
 	
 	int cool; 
-	int yool;
+    int yool;
 };
 
 
@@ -31,8 +31,8 @@ int main()
     int y; //5
 	int g;
 	string s;
-	int a[12];
-    a[6] = 1;
+	char a[12];
+    //x = a[6]; // this works
 	//x = ch;
     cout << a[5] << endl;
 	//cout << fargo() << endl;
@@ -52,7 +52,7 @@ int main()
 	// TODO:
 	//x =  yay;
 	lyd.cool = x;
-	lyd.yool = y;
+	lyd.yool = foo();
 	
 	switch('a')
 	{

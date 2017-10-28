@@ -248,13 +248,31 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
 	    if(t->kid[0]->prodrule == POSTFIX_EXPRESSION_4)
 		{
+
 			check_class_members_post(t);
 			// check type
+			type_class_member_check(t, scope->name); 
 		}
 	    // checking the right hand side of assignment expression
-		else if(t->kid[2]->prodrule == POSTFIX_EXPRESSION_1)
+		else if(t->kid[2]->prodrule == POSTFIX_EXPRESSION_1
+		     || t->kid[2]->prodrule == POSTFIX_EXPRESSION_2)
 		{
+			// array
+			if(t->kid[2]->prodrule == POSTFIX_EXPRESSION_1)
+			{
+				checkundeclared(t->kid[2]->kid[0], scope); 
+			    type = find_type_in_list(t->kid[0]->leaf->text, scope->name);
+			    type_func = find_type_in_list(t->kid[2]->kid[0]->leaf->text, scope->name);
+				if(type != type_func)
+			    {
+				 semanticerror("Array type does not match assignment type.", t);
+			    }
+			}
+			// function
+			if(t->kid[2]->prodrule == POSTFIX_EXPRESSION_2)
+			{
 			checkundeclared(t->kid[2]->kid[0], GLOBAL_TABLE); 
+			
 			// check type
 		     type = find_type_in_list(t->kid[0]->leaf->text, scope->name);
 			 type_func = find_type_in_list(t->kid[2]->kid[0]->leaf->text, "gt");
@@ -262,6 +280,7 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 			 {
 				 semanticerror("Function type does not match assignment type.", t);
 			 }
+			}
 			
 			
 		}

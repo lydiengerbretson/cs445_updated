@@ -1,5 +1,6 @@
 #include "type.h"
 #include "120gram_lydia.tab.h"
+#include "utility_func.h"
 #include "nonterms.h"
 
 // function adapted from https://github.com/westrope/wookie-chomp/blob/hw3/Hw2/prodrule.c
@@ -89,7 +90,8 @@ void type_shift_check(struct tree *t, char *table_name)
 	  else
 	  {
 		//printf(" KID %s: %d\n", t->prodrule_name, t->nkids);
-		if(t->prodrule == POSTFIX_EXPRESSION_1)
+		if(t->prodrule == POSTFIX_EXPRESSION_1
+		|| t->prodrule == POSTFIX_EXPRESSION_2)
 		{
 			//printf("it's a postfix!!\n");
 			is_post = 1;
@@ -334,8 +336,9 @@ void type_shift_check_1(struct tree *t)
 void type_assign_check(struct tree *t, char *s)
 {
 	int t1, t2;
-	// this means that this is an array!
-	if(t->kid[0]->prodrule == POSTFIX_EXPRESSION_1)
+	// this means that this is an array or function!
+	if(t->kid[0]->prodrule == POSTFIX_EXPRESSION_1
+	|| t->kid[0]->prodrule == POSTFIX_EXPRESSION_2)
 	{
 		    // check types for both left and right hand sides
 	t1 = find_type_in_list(t->kid[0]->kid[0]->leaf->text, s);
@@ -408,6 +411,67 @@ void type_assign_check(struct tree *t, char *s)
 	{
 		semanticerror("Incorrect types in assignment expression.", t);
 	}
+	}
+	
+}
+
+// simple function to check class member types for postfix statements
+// in assignment expressions
+void type_class_member_check(struct tree *t,char *s)
+{
+    int i; 
+    int type1; 
+	int type2; 
+	
+	for(i=0; i < TABLE_SIZE; i++)
+	{
+		if(class_tables[i])
+		{
+			if(find_sym_in_list(t->kid[0]->kid[2]->leaf->text, class_tables[i]->name))
+				{
+					type1 = find_type_in_list(t->kid[0]->kid[2]->leaf->text, class_tables[i]->name);
+					printf("Found type! %s, %d\n", t->kid[0]->kid[2]->leaf->text, type1); 
+				}
+		}
+
+	}
+	// this is a function
+	if(t->kid[2]->prodrule == POSTFIX_EXPRESSION_2)
+	{
+        // find type in right hand expression of assignment statement 
+		type2 = find_type_in_list(t->kid[2]->kid[0]->leaf->text, "gt"); 
+		
+	    printf("%s, type: %d\n", t->kid[0]->kid[2]->leaf->text, type1); 
+		printf("%s, type: %d\n", t->kid[2]->kid[0]->leaf->text, type2); 
+		if(type1 != type2)
+		{
+			semanticerror("Incorrect type:", t->kid[2]); 
+		}
+		
+	}
+	// this is an array 
+	else if(t->kid[2]->prodrule == POSTFIX_EXPRESSION_1)
+	{
+        // find type in right hand expression of assignment statement 
+		type2 = find_type_in_list(t->kid[2]->kid[0]->leaf->text, s); 
+		
+	    printf("%s, type: %d\n", t->kid[0]->kid[2]->leaf->text, type1); 
+		printf("%s, type: %d\n", t->kid[2]->kid[0]->leaf->text, type2); 
+		if(type1 != type2)
+		{
+			semanticerror("Incorrect type:", t->kid[2]); 
+		}
+		
+	}
+	else
+	{
+		// find type in right hand expresion of assignment statement
+		type2 = find_type_in_list(t->kid[2]->leaf->text, s); 
+		printf("type2: %s, %d\n", t->kid[2]->leaf->text, type2); 
+		if(type1 != type2)
+		{
+			semanticerror("Incorrect type:", t->kid[2]); 
+		}
 	}
 	
 }

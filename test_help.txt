@@ -177,7 +177,10 @@ LYDIA was INSERTED into scope: ct with type 0
                            LEAF: ".": 46
                            LEAF: "yool": 258
                          LEAF: "=": 61
-                         LEAF: "y": 258
+                         KID: postfix_expression_2: 4
+                           LEAF: "foo": 258
+                           LEAF: "(": 40
+                           LEAF: ")": 41
                      KID: selection_statement_3: 5
                        LEAF: "switch": 337
                        LEAF: "(": 40

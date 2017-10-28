@@ -262,7 +262,7 @@ nested_name_specifier:
 postfix_expression:
 	primary_expression {$$ = $1;}
 	| postfix_expression '[' expression ']' {$$ = create_tree("postfix_expression_1", POSTFIX_EXPRESSION_1, 4, $1, $2, $3, $4);}
-	| postfix_expression '(' expression_list_opt ')' {$$ = create_tree("postfix_expression_2", POSTFIX_EXPRESSION_1, 4, $1, $2, $3, $4);}
+	| postfix_expression '(' expression_list_opt ')' {$$ = create_tree("postfix_expression_2", POSTFIX_EXPRESSION_2, 4, $1, $2, $3, $4);}
 
 	| postfix_expression '.' COLONCOLON id_expression {$$ = create_tree("postfix_expression_3", POSTFIX_EXPRESSION_1, 4, $1, $2, $3, $4);}
 	| postfix_expression '.' id_expression {$$ = create_tree("postfix_expression_4", POSTFIX_EXPRESSION_4, 3, $1, $2, $3);}
