@@ -55,6 +55,7 @@ void type_relation_check(struct tree *, char *);
 void type_switch_check(struct tree *, char *);
 void type_shift_check_1(struct tree *);
 void type_assign_check(struct tree *, char *);
+void type_return_check(struct tree *, char *, int); 
 void type_class_member_check(struct tree *, char *); 
 void type_class_member_check_relation(struct tree *); 
 

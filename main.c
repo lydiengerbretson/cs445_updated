@@ -63,7 +63,7 @@ int main(int argc, char **argv)
 	   for(i = 0; i < argc; i++)
 	   { 
 
-		  fprintf(stdout, " %s\n", file_list[i]); 
+		  fprintf(stdout, "File: %s\n", file_list[i]); 
 		  yyin = fopen(file_list[i], "r"); 
 		  
 		  if(yyin == NULL)

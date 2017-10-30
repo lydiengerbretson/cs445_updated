@@ -485,7 +485,7 @@ condition:
 
 iteration_statement:
 	WHILE '(' condition ')' statement {$$ = create_tree("iteration_statement_1", ITERATION_STATEMENT_1, 5, $1, $2, $3, $4, $5);}
-	| DO statement WHILE '(' expression ')' ';' {$$ = create_tree("iteration_statement_2", ITERATION_STATEMENT_1, 7, $1, $2, $3, $4, $5, $6, $7);}
+	| DO statement WHILE '(' expression ')' ';' {$$ = create_tree("iteration_statement_2", ITERATION_STATEMENT_2, 7, $1, $2, $3, $4, $5, $6, $7);}
 	| FOR '(' for_init_statement condition_opt ';' expression_opt ')' statement {$$ = create_tree("iteration_statement_3", ITERATION_STATEMENT_1, 8, $1, $2, $3, $4, $5, $6, $7, $8);}
 	;
 

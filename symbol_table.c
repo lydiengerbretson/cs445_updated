@@ -101,10 +101,14 @@ bool lookup(char *n, SymbolTable t) {
 }
 
 // TODO: Function return type: Done
+// TODO: Jump statement return type: Done
 // TODO: Mult/Add type: Done
 // TODO: Parameter type: Done
-// TODO: Class types:
-// TODO: Work on warnings: 
+// TODO: Class assignment statement: Done
+// TODO: Class iteration statement (simple): Done
+// TODO: Class selection statement (simple): Done
+// TODO: Class jump statement: 
+// TODO: Work on warnings: Done!
 // TODO: Checking operands: add/mult/sub/div, bool ops, >><<: Done
 // TODO: Multiple variable declarations on the same line: 
 // TODO: Implement array type: Done, for char and int
@@ -119,6 +123,7 @@ bool lookup(char *n, SymbolTable t) {
 // TODO: Work on case statements: 
 // TODO: cout << a[5] Done
 // TODO: Work on class constructor members (not undeclared):
+// TODO: Fix hello.cpp seg fault
 
 // overall populate_symbol_table layout adapted from https://github.com/park2331/compiler/blob/master/tomorrow/symtab.c
 // this function populates symbol tables for classes, functions, and globals
@@ -127,6 +132,7 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
   int i,j;
   int type;
   int type_func;  
+  int type_func_return; 
   int class_func = 0; // 1 for class method, 0 otherwise
   static int nlocaltables = 0;
   static int nclasstables = 0;
@@ -378,6 +384,10 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		else
 		{		
 	        // checking regular jump statement return variable
+			type_func_return = find_type_in_list(scope->name, "gt"); 
+			//printf("func type!! %d\n", type_func_return); 
+			type_return_check(t->kid[1], scope->name, type_func_return); 
+			
 			checkundeclared(t->kid[1], scope);
 		}
 		
@@ -401,6 +411,16 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		}
 		else
 		{
+            // check for class postfix exp
+
+			/*if(t->kid[2]->kid[0]->prodrule == POSTFIX_EXPRESSION_4
+			|| t->kid[2]->kid[2]->prodrule == POSTFIX_EXPRESSION_4)
+			{
+				//printf("yay!\n"); 
+				type_class_member_check_relation(t->kid[2]); 
+			}
+			else*/
+			{
 			checkundeclared(t->kid[2], scope); 
 			if(t->kid[2]->prodrule == RELATIONAL_EXPRESSION_1
 			|| t->kid[2]->prodrule == EQUALITY_EXPRESSION_1
@@ -410,9 +430,15 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 				//printf("Check types here for relational expressions.\n");
 				type_relation_check(t->kid[2], scope->name);
 			}
+
+			}
 			
 		}
 		//break;
+	case ITERATION_STATEMENT_2:
+	    // TODO: do while statement
+		// TODO: Figure out seg fault with calc.cpp!!
+		//break; 
 	case ITERATION_STATEMENT_1:
 	    // checking inside if and switch statements
 		if(t->kid[2]->prodrule == POSTFIX_EXPRESSION_4)
@@ -426,15 +452,28 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		}
 		else
 		{
+            // check for class postfix exp
+			// this causes a seg fault
 			
+			/*if(t->kid[2]->kid[0]->prodrule == POSTFIX_EXPRESSION_4
+			|| t->kid[2]->kid[2]->prodrule == POSTFIX_EXPRESSION_4)
+			{
+				//printf("yay!\n"); 
+				type_class_member_check_relation(t->kid[2]); 
+			}
+			else*/
+			{
 			checkundeclared(t->kid[2], scope); 
 			if(t->kid[2]->prodrule == RELATIONAL_EXPRESSION_1
 			|| t->kid[2]->prodrule == EQUALITY_EXPRESSION_1
 			|| t->kid[2]->prodrule == LOGICAL_OR_EXPRESSION_1
 			|| t->kid[2]->prodrule == LOGICAL_AND_EXPRESSION_1)
 			{
+
 				//printf("Check types here for relational expressions.\n");
 				type_relation_check(t->kid[2], scope->name);
+				
+			}
 			}
 		}
 		//break;

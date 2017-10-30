@@ -59,7 +59,8 @@ int find_type_in_list(char *s, char *t)
 	while(temp != NULL)
 	{
 		//printf("**Printing the wanted symbol: %s type: %d, scope: %s \n",  temp->name, temp->typ, temp->sym_table_name); 
-		if(strcmp(s, temp->name) == 0 && strcmp(temp->sym_table_name, t) == 0 )
+
+		if(strcmp(s, temp->name) == 0 && strcmp(t, temp->sym_table_name) == 0 )
 		{
 		//printf("**Printing the wanted symbol: %s type: %d, scope: %s \n",  temp->name, temp->typ, temp->sym_table_name); 
 		return temp->typ;

@@ -64,10 +64,9 @@ void type_shift_check(struct tree *t, char *table_name)
   { 
 	  if (t->nkids == 0)
 	  {
-
+		  type1 = find_type_in_list(t->leaf->text, table_name);
 		  //printf(" LEAF: \"%s\": %d %d\n",
 				 // t->leaf->text, t->leaf->category, type1); 
-		  type1 = find_type_in_list(t->leaf->text, table_name);
 		  if(is_post)
 		  {
 			  // need to allow arrays and functions as well 
@@ -415,6 +414,121 @@ void type_assign_check(struct tree *t, char *s)
 	
 }
 
+// checking out return/jump statement types
+void type_return_check(struct tree *t, char *table_name, int func_type)
+{
+	int type1; 
+	int j;
+	int MULT = 42; 
+	int DIV = 47; 
+	int ADD = 43;
+	int SUB = 45; 
+	int MOD = 37; 
+	int LP = 40; 
+	int RP = 41; 
+	int NOT = 33;
+
+
+  if(!t)
+  {
+      // do nothing
+  }
+  else 
+  { 
+	  if (t->nkids == 0)
+	  {
+		  type1 = find_type_in_list(t->leaf->text, table_name);
+		  printf(" LEAF: \"%s\": %d %d\n",
+				 t->leaf->text, t->leaf->category, type1); 
+		 if(type1 > 0 
+		 && type1 != func_type)
+		 {
+			 semanticerror("Incorrect function return type:", t); 
+		 }
+		 else if(
+		 // operations of a double type
+		 func_type == DOUBLE_TYPE 
+		 && t->leaf->category != INTEGER // because of calc.cpp:62
+		 && t->leaf->category != FLOATING
+		 && t->leaf->category != IDENTIFIER
+		 && t->leaf->category != ADD
+		 && t->leaf->category != SUB
+		 && t->leaf->category != MULT
+		 && t->leaf->category != DIV
+		 && t->leaf->category != MOD
+		 && t->leaf->category != PLUSPLUS
+		 && t->leaf->category != MINUSMINUS
+		 && t->leaf->category != LP
+		 && t->leaf->category != RP)
+		 {
+			 semanticerror("Incorrect function return type:", t); 
+		 }
+		 else if(
+		 // operations of a int type
+		 func_type == INT_TYPE 
+		 && t->leaf->category != INTEGER
+		 && t->leaf->category != IDENTIFIER
+		 && t->leaf->category != ADD
+		 && t->leaf->category != SUB
+		 && t->leaf->category != MULT
+		 && t->leaf->category != DIV
+		 && t->leaf->category != MOD
+		 && t->leaf->category != PLUSPLUS
+		 && t->leaf->category != MINUSMINUS
+		 && t->leaf->category != LP
+		 && t->leaf->category != RP)
+		 {
+			 semanticerror("Incorrect function return type:", t); 
+		 }
+		 else if(
+		 // operations of a char type
+		 func_type == CHAR_TYPE 
+		 && t->leaf->category != CHARACTER
+		 && t->leaf->category != IDENTIFIER)
+		 {
+			 semanticerror("Incorrect function return type:", t); 
+		 }
+		 else if(
+		 // operations of a bool type
+		 func_type == BOOL_TYPE
+		 && t->leaf->category != BOOL
+		 && t->leaf->category != TRUE
+		 && t->leaf->category != FALSE
+		 && t->leaf->category != IDENTIFIER
+		 && t->leaf->category != ANDAND
+		 && t->leaf->category != OROR
+		 && t->leaf->category != EQ
+	     && t->leaf->category != LP // parens
+		 && t->leaf->category != RP // parens
+	     && t->leaf->category != NOT // !
+	     && t->leaf->category != NOTEQ
+	     && t->leaf->category != LTEQ
+		 && t->leaf->category != GTEQ)
+		 {
+			 semanticerror("Incorrect function return type:", t); 
+		 }
+		 else{
+			 // do nothing for now
+		 }
+
+		  
+		  
+
+	  }
+	  else
+	  {
+		//printf(" KID: %s: %d\n", t->prodrule_name, t->nkids);
+ 
+		for(j=0; j<t->nkids; j++)
+		{
+			type_return_check(t->kid[j], table_name, func_type);
+		}
+	  }
+}
+
+
+}
+
 // simple function to check class member types for postfix statements
 // in assignment expressions
 void type_class_member_check(struct tree *t,char *s)
@@ -454,8 +568,8 @@ void type_class_member_check(struct tree *t,char *s)
         // find type in right hand expression of assignment statement 
 		type2 = find_type_in_list(t->kid[2]->kid[0]->leaf->text, "gt"); 
 		
-	    printf("%s, type: %d\n", t->kid[0]->kid[2]->leaf->text, type1); 
-		printf("%s, type: %d\n", t->kid[2]->kid[0]->leaf->text, type2); 
+	    //printf("%s, type: %d\n", t->kid[0]->kid[2]->leaf->text, type1); 
+		//printf("%s, type: %d\n", t->kid[2]->kid[0]->leaf->text, type2); 
 		if(type1 != type2)
 		{
 			semanticerror("Incorrect type:", t->kid[2]); 
@@ -469,8 +583,8 @@ void type_class_member_check(struct tree *t,char *s)
         // find type in right hand expression of assignment statement 
 		type2 = find_type_in_list(t->kid[2]->kid[0]->leaf->text, s); 
 		
-	    printf("%s, type: %d\n", t->kid[0]->kid[2]->leaf->text, type1); 
-		printf("%s, type: %d\n", t->kid[2]->kid[0]->leaf->text, type2); 
+	    //printf("%s, type: %d\n", t->kid[0]->kid[2]->leaf->text, type1); 
+		//printf("%s, type: %d\n", t->kid[2]->kid[0]->leaf->text, type2); 
 		if(type1 != type2)
 		{
 			semanticerror("Incorrect type:", t->kid[2]); 
@@ -481,7 +595,7 @@ void type_class_member_check(struct tree *t,char *s)
 	{
 		// find type in right hand expresion of assignment statement
 		type2 = find_type_in_list(t->kid[2]->leaf->text, s); 
-		printf("type2: %s, %d\n", t->kid[2]->leaf->text, type2); 
+		//printf("type2: %s, %d\n", t->kid[2]->leaf->text, type2); 
 		if(type1 != type2)
 		{
 			semanticerror("Incorrect type:", t->kid[2]); 
@@ -494,6 +608,8 @@ void type_class_member_check_relation(struct tree *t)
 {
 	int type1; 
 	int j, i; 
+	int DOT = 46;  // . 
+	int NOT = 33;  // ! 
 	//char *curr_class_name; 
 	
 	if(!t)
@@ -505,8 +621,25 @@ void type_class_member_check_relation(struct tree *t)
 	  if (t->nkids == 0)
 	  {
 
-		  //printf(" LEAF: \"%s\": %d \n",
-				  // t->leaf->text, t->leaf->category); 
+		  printf(" LEAF: \"%s\": %d \n",
+				  t->leaf->text, t->leaf->category); 
+		  
+		  if(t->leaf->category != IDENTIFIER
+		  && t->leaf->category != DOT
+		  && t->leaf->category != INTEGER
+		  && t->leaf->category != TRUE
+		  && t->leaf->category != FALSE
+		  && t->leaf->category != ANDAND
+		  && t->leaf->category != OROR
+		  && t->leaf->category != NOTEQ
+		  && t->leaf->category != EQ
+		  && t->leaf->category != LTEQ
+		  && t->leaf->category != GTEQ
+		  && t->leaf->category != NOT)
+			{
+				semanticerror("Need a boolean type.", t); 
+			}
+			
 		  	for(i=0; i < TABLE_SIZE; i++)
 			{
 				if(class_tables[i])
@@ -515,7 +648,7 @@ void type_class_member_check_relation(struct tree *t)
 						{
 							type1 = find_type_in_list(t->leaf->text, class_tables[i]->name);
 							//curr_class_name = strdup(class_tables[i]->name); 
-							//printf("Found type! %s, %d \n", t->leaf->text, type1); 
+							printf("Found type! %s, %d \n", t->leaf->text, type1); 
 							if(type1 > 0 
 							&& type1 != BOOL_TYPE
 							&& type1 != INT_TYPE)
@@ -531,7 +664,6 @@ void type_class_member_check_relation(struct tree *t)
 	  else
 	  {
 
- 
 		for(j=0; j<t->nkids; j++)
 		{
 			type_class_member_check_relation(t->kid[j]);

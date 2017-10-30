@@ -6,13 +6,13 @@ using namespace std;
 class LYDIA
 {
 	
-	int cool; 
+	double cool; 
     int yool;
 };
 
 
 
-int foo();
+bool foo();
 void world();
 double use_foo(int c);
 
@@ -43,7 +43,7 @@ int main()
 	//x = foo();
 	//x = z;
 	j = leaf;
-	
+	cout << "hey" << endl;
 	cout << "hey there" << x << endl;
 	
 	cin >> x;
@@ -51,10 +51,14 @@ int main()
 	//int x;
 	// TODO:
 	//x =  yay;
-	lyd.cool = x;
-	lyd.yool = foo();
+	lyd.cool = leaf;
+	//lyd.yool = foo();
 	
-	switch('a')
+	do
+	{
+	}while(lyd.cool);
+	
+	switch('x')
 	{
 		case 0:
 		break;
@@ -65,8 +69,9 @@ int main()
 	}
 	 
 	
-	if(!y || z > y)
+	while(!x || z > y)
 	{
+		cout << "hey"; 
 	}
 	
 	//x = funcy();
@@ -77,10 +82,10 @@ int main()
 
 
 	
-    return 0;
+    return x;
 }
 
-int foo()
+bool foo()
 {
     int yas;
 	   
@@ -92,14 +97,15 @@ int foo()
 	
 
     
-    return 0;
+    return false;
 }
 
-int help(int a, int b)
+char help(int a, int b)
 {
 	//int z; 
 	int poo; 
 	int yay;
+	char x = 'x';
 	//a = poo;
 	//apple = x;
 	//int a;
@@ -108,18 +114,16 @@ int help(int a, int b)
 	//u = foo(); 
 	
 	
-	//return zooer;
+	return 'a';
 }
 
 
-double use_foo(int c)
+double use_foo(double c)
 {
-    int woah;
+    double woah;
 	//double woah; 
-    //woah = f();
-	 //yes = foo(); 
     
-    return woah + c;
+    return 1.0 % c;
 
 }
 

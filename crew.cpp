@@ -34,7 +34,7 @@ int main() {
 int play(Crew PlanetExpress) {
   // play game while stable
  
-  while (PlanetExpress.stable) {
+  while ( PlanetExpress.stable) {
     int choice;
     PlanetExpress.print_menu();
     cin >> choice;

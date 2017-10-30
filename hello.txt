@@ -1,0 +1,14 @@
+File: hello.cpp
+ofstream was INSERTED into scope: ct with type 0 
+  KID: program: 1
+   KID: function_definition_2: 4
+     LEAF: "int": 319
+     KID: direct_declarator_4: 2
+       LEAF: "main": 258
+     KID: compound_statement_1: 3
+       LEAF: "{": 123
+       KID: shift_expression_1: 3
+         LEAF: "cout": 258
+         LEAF: "<<": 277
+         LEAF: ""hey there"": 262
+       LEAF: "}": 125

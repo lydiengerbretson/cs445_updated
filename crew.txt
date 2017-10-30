@@ -1,4 +1,4 @@
- crew.cpp
+File: crew.cpp
 Crew was INSERTED into scope: ct with type 0 
 ofstream was INSERTED into scope: ct with type 0 
   KID: program: 1
@@ -50,49 +50,57 @@ ofstream was INSERTED into scope: ct with type 0
                                  LEAF: "stable": 258
                                KID: member_specification_1: 2
                                  KID: member_declaration_1: 2
-                                   LEAF: "void": 350
-                                   KID: direct_declarator_4: 2
-                                     LEAF: "print_menu": 258
+                                   LEAF: "double": 305
+                                   LEAF: "test": 258
                                  KID: member_specification_1: 2
                                    KID: member_declaration_1: 2
-                                     LEAF: "bool": 293
-                                     KID: direct_declarator_4: 2
-                                       LEAF: "check": 258
+                                     LEAF: "int": 319
+                                     LEAF: "test1": 258
                                    KID: member_specification_1: 2
                                      KID: member_declaration_1: 2
-                                       LEAF: "int": 319
+                                       LEAF: "void": 350
                                        KID: direct_declarator_4: 2
-                                         LEAF: "score": 258
+                                         LEAF: "print_menu": 258
                                      KID: member_specification_1: 2
                                        KID: member_declaration_1: 2
-                                         LEAF: "void": 350
+                                         LEAF: "bool": 293
                                          KID: direct_declarator_4: 2
-                                           LEAF: "drink": 258
+                                           LEAF: "check": 258
                                        KID: member_specification_1: 2
                                          KID: member_declaration_1: 2
-                                           LEAF: "void": 350
+                                           LEAF: "int": 319
                                            KID: direct_declarator_4: 2
-                                             LEAF: "deliver": 258
+                                             LEAF: "score": 258
                                          KID: member_specification_1: 2
                                            KID: member_declaration_1: 2
                                              LEAF: "void": 350
                                              KID: direct_declarator_4: 2
-                                               LEAF: "steal": 258
+                                               LEAF: "drink": 258
                                            KID: member_specification_1: 2
                                              KID: member_declaration_1: 2
                                                LEAF: "void": 350
                                                KID: direct_declarator_4: 2
-                                                 LEAF: "eat": 258
+                                                 LEAF: "deliver": 258
                                              KID: member_specification_1: 2
                                                KID: member_declaration_1: 2
                                                  LEAF: "void": 350
                                                  KID: direct_declarator_4: 2
-                                                   LEAF: "primp": 258
+                                                   LEAF: "steal": 258
                                                KID: member_specification_1: 2
                                                  KID: member_declaration_1: 2
                                                    LEAF: "void": 350
                                                    KID: direct_declarator_4: 2
-                                                     LEAF: "account": 258
+                                                     LEAF: "eat": 258
+                                                 KID: member_specification_1: 2
+                                                   KID: member_declaration_1: 2
+                                                     LEAF: "void": 350
+                                                     KID: direct_declarator_4: 2
+                                                       LEAF: "primp": 258
+                                                   KID: member_specification_1: 2
+                                                     KID: member_declaration_1: 2
+                                                       LEAF: "void": 350
+                                                       KID: direct_declarator_4: 2
+                                                         LEAF: "account": 258
            LEAF: "}": 125
          KID: simple_declaration_1: 2
            LEAF: "int": 319
@@ -187,10 +195,13 @@ ofstream was INSERTED into scope: ct with type 0
            KID: iteration_statement_1: 5
              LEAF: "while": 353
              LEAF: "(": 40
-             KID: postfix_expression_4: 3
-               LEAF: "PlanetExpress": 258
-               LEAF: ".": 46
-               LEAF: "stable": 258
+             KID: logical_and_expression_1: 3
+               LEAF: "true": 341
+               LEAF: "&&": 285
+               KID: postfix_expression_4: 3
+                 LEAF: "PlanetExpress": 258
+                 LEAF: ".": 46
+                 LEAF: "stable": 258
              LEAF: ")": 41
              KID: compound_statement_1: 3
                LEAF: "{": 123
@@ -215,10 +226,13 @@ ofstream was INSERTED into scope: ct with type 0
                  KID: selection_statement_1: 5
                    LEAF: "if": 317
                    LEAF: "(": 40
-                   KID: postfix_expression_4: 3
-                     LEAF: "PlanetExpress": 258
-                     LEAF: ".": 46
-                     LEAF: "stable": 258
+                   KID: logical_and_expression_1: 3
+                     KID: postfix_expression_4: 3
+                       LEAF: "PlanetExpress": 258
+                       LEAF: ".": 46
+                       LEAF: "stable": 258
+                     LEAF: "&&": 285
+                     LEAF: "true": 341
                    LEAF: ")": 41
                    KID: assignment_expression_1: 3
                      KID: postfix_expression_4: 3

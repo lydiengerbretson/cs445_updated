@@ -16,10 +16,10 @@ int main()
   double operand2;
 
 	double answer;
-  int choice;
+  char choice;
   double valid_choice;
   //int valid_choice;
-  do {
+  while(choice != 1) {
     print_menu();
     cin >> choice;
 
@@ -46,11 +46,11 @@ int main()
       // choice is invalid
       cout << "Invalid Choice." << endl;
     }
-    if (valid_choice) {
+    if (valid_choice ) {
       // if choice is valid, print the answer
       //cout << endl << "Answer = " << answer << endl;
     }
-  } while (choice != 0);
+  } 
   // if the user didn't choose 0, loop back to start
   return 0;
 }
