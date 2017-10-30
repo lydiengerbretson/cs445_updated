@@ -17,14 +17,14 @@ int main()
 
 	double answer;
   char choice;
-  double valid_choice;
-  //int valid_choice;
+  //double valid_choice;
+  int valid_choice;
   while(choice != 1) {
     print_menu();
     cin >> choice;
 
     // assume choice is valid
-    valid_choice = 1.0;
+    valid_choice = 1;
 
     switch (choice) {
     case 0:

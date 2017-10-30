@@ -6,7 +6,7 @@ using namespace std;
 class LYDIA
 {
 	
-	double cool; 
+	bool cool; 
     int yool;
 };
 
@@ -22,7 +22,7 @@ int main()
 	//ofstream cin; 
 	LYDIA lyd;	
 	double b;
-	double leaf;
+	bool leaf;
 	double j;
 	char ch;
 	//int yay;
@@ -37,12 +37,12 @@ int main()
     cout << a[5] << endl;
 	//cout << fargo() << endl;
 	//double y;
-     x = z * y * g;
+     x = z * y * g ;
 	//x = z * y;
 	//x = x * x;
 	//x = foo();
 	//x = z;
-	j = leaf;
+	//j = leaf;
 	cout << "hey" << endl;
 	cout << "hey there" << x << endl;
 	
@@ -51,12 +51,15 @@ int main()
 	//int x;
 	// TODO:
 	//x =  yay;
-	lyd.cool = leaf;
+	//lyd.cool = leaf;
+	if(ch)
+	{
+	}
 	//lyd.yool = foo();
 	
-	do
-	{
-	}while(lyd.cool);
+     while(lyd.cool && x)
+	 {
+	 }
 	
 	switch('x')
 	{
@@ -82,7 +85,7 @@ int main()
 
 
 	
-    return x;
+    return lydia.yool;
 }
 
 bool foo()

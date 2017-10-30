@@ -82,7 +82,7 @@ void type_shift_check(struct tree *t, char *table_name)
 		  && t->leaf->category != IDENTIFIER
 		  && t->leaf->category != SL)
 		  {
-			  semanticerror("1: Incompatible types.", t);
+			  semanticerror("Incorrect operand or incompatible type.", t);
 		  }
 		  }
 	  }
@@ -109,7 +109,6 @@ void type_relation_check(struct tree *t, char *table_name)
 	int type1; 
     int j;
 	static int rel_exp = 0;
-	// TODO: Pass in type!
 	
 
   if(!t)
@@ -126,8 +125,14 @@ void type_relation_check(struct tree *t, char *table_name)
 		  //printf(" LEAF: \"%s\": %d %d \n",
 				   //t->leaf->text, t->leaf->category, type1); 
 	      if(rel_exp)
-		  {
-			  //printf("yay!!\n");
+		  { 
+               if(type1 == STRING_TYPE
+			   || type1 == CHAR_TYPE
+			   || type1 == VOID_TYPE
+			   || type1 == PTR_TYPE)
+			   {
+				   semanticerror("Need a bool or int or double type.", t);
+			   }
 		       if(type1 != BOOL_TYPE 
 			   && type1 != INT_TYPE 
 			   && type1 != DOUBLE_TYPE
@@ -154,7 +159,7 @@ void type_relation_check(struct tree *t, char *table_name)
 		  // you cannot have double types in a logical expression 
 		  else
 		  {
-
+               //printf("exit 2\n"); 
 		       if(type1 > 0 && type1 != BOOL_TYPE && type1 != INT_TYPE)
 		       {
 
@@ -227,9 +232,17 @@ void type_add_check(struct tree *t, char *table_name, int base_type)
 	  if (t->nkids == 0)
 	  {
 		  // TODO: make sure type1 > 0: checkundeclared here
+		 
 		  type1 = find_type_in_list(t->leaf->text, table_name);
 		  //printf(" LEAF: \"%s\": %d %d\n",
 				// t->leaf->text, t->leaf->category, type1); 
+		  if(t->leaf->category == IDENTIFIER)
+		  {
+				if(!find_sym_in_list(t->leaf->text, table_name))
+				{
+					semanticerror("Undeclared variable", t); 
+				}
+		  }
 		  
 		  // if not an operator 
 		  if(type1 > 0 && type1 != parent_type)
@@ -438,8 +451,8 @@ void type_return_check(struct tree *t, char *table_name, int func_type)
 	  if (t->nkids == 0)
 	  {
 		  type1 = find_type_in_list(t->leaf->text, table_name);
-		  printf(" LEAF: \"%s\": %d %d\n",
-				 t->leaf->text, t->leaf->category, type1); 
+		  //printf(" LEAF: \"%s\": %d %d\n",
+				 //t->leaf->text, t->leaf->category, type1); 
 		 if(type1 > 0 
 		 && type1 != func_type)
 		 {
@@ -621,8 +634,8 @@ void type_class_member_check_relation(struct tree *t)
 	  if (t->nkids == 0)
 	  {
 
-		  printf(" LEAF: \"%s\": %d \n",
-				  t->leaf->text, t->leaf->category); 
+		  //printf(" LEAF: \"%s\": %d \n",
+				  //t->leaf->text, t->leaf->category); 
 		  
 		  if(t->leaf->category != IDENTIFIER
 		  && t->leaf->category != DOT
@@ -648,7 +661,7 @@ void type_class_member_check_relation(struct tree *t)
 						{
 							type1 = find_type_in_list(t->leaf->text, class_tables[i]->name);
 							//curr_class_name = strdup(class_tables[i]->name); 
-							printf("Found type! %s, %d \n", t->leaf->text, type1); 
+							//printf("Found type! %s, %d \n", t->leaf->text, type1); 
 							if(type1 > 0 
 							&& type1 != BOOL_TYPE
 							&& type1 != INT_TYPE)

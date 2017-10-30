@@ -373,13 +373,18 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 			{
 				// somehow need to check if this has been declared in class scope
 				check_class_members_jump(t);
+				// check class member jump types
 			}
 			else
 			{
-				// check undeclared for regular postfix (function)			
+				// check undeclared for regular postfix (function)				
 				checkundeclared(t->kid[1], scope);
 
 			}
+		}
+		else if(t->kid[1]->prodrule == POSTFIX_EXPRESSION_4)
+		{
+			// TODO: 
 		}
 		else
 		{		
@@ -412,14 +417,18 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		else
 		{
             // check for class postfix exp
-
-			/*if(t->kid[2]->kid[0]->prodrule == POSTFIX_EXPRESSION_4
-			|| t->kid[2]->kid[2]->prodrule == POSTFIX_EXPRESSION_4)
+	
+			if(t->kid[2]->kid[0] != NULL) // this fixes seg fault :)
 			{
-				//printf("yay!\n"); 
-				type_class_member_check_relation(t->kid[2]); 
+				//printf("seg fault?\n"); 
+				if(t->kid[2]->kid[0]->prodrule == POSTFIX_EXPRESSION_4
+			    || t->kid[2]->kid[2]->prodrule == POSTFIX_EXPRESSION_4)
+			    {
+					//printf("yay!\n"); 
+					type_class_member_check_relation(t->kid[2]); 
+			    }
 			}
-			else*/
+			else
 			{
 			checkundeclared(t->kid[2], scope); 
 			if(t->kid[2]->prodrule == RELATIONAL_EXPRESSION_1
@@ -427,7 +436,11 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 			|| t->kid[2]->prodrule == LOGICAL_OR_EXPRESSION_1
 			|| t->kid[2]->prodrule == LOGICAL_AND_EXPRESSION_1)
 			{
-				//printf("Check types here for relational expressions.\n");
+				printf("Check types here for relational expressions.\n");
+				type_relation_check(t->kid[2], scope->name);
+			}
+			else
+			{
 				type_relation_check(t->kid[2], scope->name);
 			}
 
@@ -435,10 +448,11 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 			
 		}
 		//break;
-	case ITERATION_STATEMENT_2:
+	//case ITERATION_STATEMENT_2:
 	    // TODO: do while statement
-		// TODO: Figure out seg fault with calc.cpp!!
+		//printf("iteration_statement_2.\n"); 		
 		//break; 
+		
 	case ITERATION_STATEMENT_1:
 	    // checking inside if and switch statements
 		if(t->kid[2]->prodrule == POSTFIX_EXPRESSION_4)
@@ -453,16 +467,17 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		else
 		{
             // check for class postfix exp
-			// this causes a seg fault
-			
-			/*if(t->kid[2]->kid[0]->prodrule == POSTFIX_EXPRESSION_4
-			|| t->kid[2]->kid[2]->prodrule == POSTFIX_EXPRESSION_4)
+			if(t->kid[2]->kid[0] != NULL) // this fixes seg fault :)
 			{
-				//printf("yay!\n"); 
-				type_class_member_check_relation(t->kid[2]); 
+				if(t->kid[2]->kid[0]->prodrule == POSTFIX_EXPRESSION_4
+			    || t->kid[2]->kid[2]->prodrule == POSTFIX_EXPRESSION_4)
+			    {
+					type_class_member_check_relation(t->kid[2]); 
+			    }
 			}
-			else*/
+			else
 			{
+			
 			checkundeclared(t->kid[2], scope); 
 			if(t->kid[2]->prodrule == RELATIONAL_EXPRESSION_1
 			|| t->kid[2]->prodrule == EQUALITY_EXPRESSION_1
@@ -475,6 +490,7 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 				
 			}
 			}
+			
 		}
 		//break;
 		// do not need a break statement so that 
