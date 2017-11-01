@@ -34,30 +34,19 @@ int main()
 	char a[12];
     //x = a[6]; // this works
 	//x = ch;
-    cout << a[5] << endl;
+    //cout << 1 << endl;
 	//cout << fargo() << endl;
 	//double y;
      x = z * y * g ;
-	//x = z * y;
-	//x = x * x;
-	//x = foo();
-	//x = z;
-	//j = leaf;
-	cout << "hey" << endl;
-	cout << "hey there" << x << endl;
-	
-	cin >> x;
-    
 	//int x;
 	// TODO:
 	//x =  yay;
 	//lyd.cool = leaf;
-	if(ch)
-	{
-	}
+
 	//lyd.yool = foo();
 	
-     while(lyd.cool && x)
+	// TODO: fix this
+     if(a && 1)
 	 {
 	 }
 	

@@ -8,7 +8,10 @@ ofstream was INSERTED into scope: ct with type 0
      KID: compound_statement_1: 3
        LEAF: "{": 123
        KID: shift_expression_1: 3
-         LEAF: "cout": 258
+         KID: shift_expression_1: 3
+           LEAF: "cout": 258
+           LEAF: "<<": 277
+           LEAF: ""yo"": 262
          LEAF: "<<": 277
-         LEAF: ""hey there"": 262
+         LEAF: "endl": 258
        LEAF: "}": 125

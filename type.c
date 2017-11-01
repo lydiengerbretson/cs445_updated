@@ -62,6 +62,10 @@ void type_shift_check(struct tree *t, char *table_name)
   }
   else 
   { 
+	   //printf("SIZEOF: %d\n", sizeof(0x65a00)); 
+	   
+      //if((long)t > 0x60000 && (long)t < 0x80000)
+	  {
 	  if (t->nkids == 0)
 	  {
 		  type1 = find_type_in_list(t->leaf->text, table_name);
@@ -101,6 +105,8 @@ void type_shift_check(struct tree *t, char *table_name)
 			type_shift_check(t->kid[j], table_name);
 		}
 	  }
+	  }
+
 }
 }
 
@@ -135,9 +141,9 @@ void type_relation_check(struct tree *t, char *table_name)
 			   }
 		       if(type1 != BOOL_TYPE 
 			   && type1 != INT_TYPE 
-			   && type1 != DOUBLE_TYPE
-			   && t->leaf->category != DOUBLE
-			   && t->leaf->category != FLOATING
+			   /*&& type1 != DOUBLE_TYPE*/
+			   /* && t->leaf->category != DOUBLE*/
+			   /*&& t->leaf->category != FLOATING*/
 		       && t->leaf->category != BOOL
 		       && t->leaf->category != INTEGER
 		       && t->leaf->category != IDENTIFIER
@@ -613,6 +619,34 @@ void type_class_member_check(struct tree *t,char *s)
 		{
 			semanticerror("Incorrect type:", t->kid[2]); 
 		}
+	}
+	
+}
+
+// in assignment expressions
+void type_class_member_func_check(struct tree *t, int assn_type)
+{
+    int i; 
+    int type1; 
+	//int type2; 
+	char *curr_class_name; 
+	
+	for(i=0; i < TABLE_SIZE; i++)
+	{
+		if(class_tables[i])
+		{
+			if(find_sym_in_list(t->kid[2]->kid[0]->kid[2]->leaf->text, class_tables[i]->name))
+				{
+					type1 = find_type_in_list(t->kid[2]->kid[0]->kid[2]->leaf->text, class_tables[i]->name);
+					curr_class_name = strdup(class_tables[i]->name); 
+					printf("Found type! %s, %d, %s\n", t->kid[2]->kid[0]->kid[2]->leaf->text, type1, curr_class_name); 
+					if(type1 != assn_type)
+					{
+						semanticerror("Class function does not match assignment type:", t->kid[2]->kid[0]->kid[2]); 
+					}
+				}
+		}
+
 	}
 	
 }

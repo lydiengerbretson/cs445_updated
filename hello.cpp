@@ -4,6 +4,7 @@ using namespace std;
 int main()
 {
    //int x;
-   cout << "yo";
+   
+   cout << "hey" << endl;
    //printf("hey there");
 }

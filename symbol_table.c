@@ -108,6 +108,7 @@ bool lookup(char *n, SymbolTable t) {
 // TODO: Class iteration statement (simple): Done
 // TODO: Class selection statement (simple): Done
 // TODO: Class jump statement: 
+// TODO: Class function assignment statement:
 // TODO: Work on warnings: Done!
 // TODO: Checking operands: add/mult/sub/div, bool ops, >><<: Done
 // TODO: Multiple variable declarations on the same line: 
@@ -277,7 +278,17 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 			// if right hand side is a function
 			if(t->kid[2]->prodrule == POSTFIX_EXPRESSION_2)
 			{
-			checkundeclared(t->kid[2]->kid[0], GLOBAL_TABLE); 
+				if(t->kid[2]->kid[0]->prodrule == POSTFIX_EXPRESSION_4)
+				{
+					printf("post fix yay!!\n"); 
+					type = find_type_in_list(t->kid[0]->leaf->text,scope->name); 
+					printf("type: %d\n", type); 
+					type_class_member_func_check(t, type);
+					
+				}
+				else
+				{
+			 checkundeclared(t->kid[2]->kid[0], GLOBAL_TABLE); 
 			
 			// check type
 		     type = find_type_in_list(t->kid[0]->leaf->text, scope->name);
@@ -286,8 +297,8 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 			 {
 				 semanticerror("Function type does not match assignment type.", t);
 			 }
+			    }
 			}
-			
 			
 		}
 		else if(t->kid[2]->prodrule == ADDITIVE_EXPRESSION_1 
@@ -315,10 +326,12 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		}
 		break;	
 		
-    case POSTFIX_EXPRESSION_1:
+    case POSTFIX_EXPRESSION_2:
 	     // checking if a class function has been declared in the class scope
 		 if(t->kid[0]->prodrule == POSTFIX_EXPRESSION_4)
 		 {
+			 // TODO: type check!!
+			 printf("post fix yay!!\n"); 
 			 check_class_members_post(t);
 			 break; // does this need to be here?
 		 }
@@ -327,6 +340,7 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		 {
 			if(strcmp(t->kid[0]->leaf->text, "printf") != 0 && (strcmp(t->kid[0]->leaf->text, "scanf") != 0 )) // slightly cheating here
 				checkundeclared(t->kid[0], GLOBAL_TABLE); 
+				
 		 }
 		 break; 	
 	
@@ -455,6 +469,7 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		
 	case ITERATION_STATEMENT_1:
 	    // checking inside if and switch statements
+		printf("Check types here for relational expressions.\n");
 		if(t->kid[2]->prodrule == POSTFIX_EXPRESSION_4)
 		{
 			// helper function to check if variable is declared in class scope
@@ -466,32 +481,37 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		}
 		else
 		{
+			printf("0: Check types here for relational expressions.\n");
             // check for class postfix exp
-			if(t->kid[2]->kid[0] != NULL) // this fixes seg fault :)
+			// this causes problems so I am commenting it for now 
+			/*if(t->kid[2]->kid[0] != NULL) // this fixes seg fault :)
 			{
 				if(t->kid[2]->kid[0]->prodrule == POSTFIX_EXPRESSION_4
 			    || t->kid[2]->kid[2]->prodrule == POSTFIX_EXPRESSION_4)
 			    {
+					printf("1: Check types here for relational expressions.\n");
 					type_class_member_check_relation(t->kid[2]); 
 			    }
-			}
-			else
-			{
-			
+			}*/
+
 			checkundeclared(t->kid[2], scope); 
 			if(t->kid[2]->prodrule == RELATIONAL_EXPRESSION_1
 			|| t->kid[2]->prodrule == EQUALITY_EXPRESSION_1
 			|| t->kid[2]->prodrule == LOGICAL_OR_EXPRESSION_1
 			|| t->kid[2]->prodrule == LOGICAL_AND_EXPRESSION_1)
 			{
-
-				//printf("Check types here for relational expressions.\n");
+				//printf("2: Check types here for relational expressions.\n");
 				type_relation_check(t->kid[2], scope->name);
 				
 			}
+			else 
+			{
+				// if there is only one variable within while statement
+				//printf("3: Check types here for relational expressions.\n");
+				type_relation_check(t->kid[2], scope->name);
+			}			
 			}
 			
-		}
 		//break;
 		// do not need a break statement so that 
 		// the rest of the variables can be processed within the iteration statement scope

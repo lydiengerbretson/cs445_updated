@@ -33,10 +33,10 @@ int main() {
 
 int play(Crew PlanetExpress) {
   // play game while stable
- 
-  while ( PlanetExpress.stable) {
+  void test; 
+  while ( PlanetExpress.yay) {
     int choice;
-    PlanetExpress.print_menu();
+    //test = PlanetExpress.print_menu();
     cin >> choice;
     // implement game logic: use switch(choice) to call correct member
     // functions, or set stable = false to exit. You may want to use

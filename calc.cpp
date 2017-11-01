@@ -16,7 +16,7 @@ int main()
   double operand2;
 
 	double answer;
-  char choice;
+  int  choice;
   //double valid_choice;
   int valid_choice;
   while(choice != 1) {

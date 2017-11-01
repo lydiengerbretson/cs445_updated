@@ -11,6 +11,7 @@ private:
   int hunger;		// Zoidberg's hunger level
   int beauty;		// Amy's prettiness
   int receipts;		// Hermes's backlog of receipts to process
+  double yay;
 public:
   Crew();
   bool stable;		// Crew's ability to continue co-existing

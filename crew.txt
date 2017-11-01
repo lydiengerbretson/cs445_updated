@@ -192,62 +192,64 @@ ofstream was INSERTED into scope: ct with type 0
        KID: compound_statement_1: 3
          LEAF: "{": 123
          KID: statement_seq_1: 2
-           KID: iteration_statement_1: 5
-             LEAF: "while": 353
-             LEAF: "(": 40
-             KID: logical_and_expression_1: 3
-               LEAF: "true": 341
-               LEAF: "&&": 285
+           KID: statement_seq_1: 2
+             KID: simple_declaration_1: 2
+               LEAF: "void": 350
+               KID: init_declarator_1: 2
+                 LEAF: "test": 258
+             KID: iteration_statement_1: 5
+               LEAF: "while": 353
+               LEAF: "(": 40
                KID: postfix_expression_4: 3
                  LEAF: "PlanetExpress": 258
                  LEAF: ".": 46
                  LEAF: "stable": 258
-             LEAF: ")": 41
-             KID: compound_statement_1: 3
-               LEAF: "{": 123
-               KID: statement_seq_1: 2
+               LEAF: ")": 41
+               KID: compound_statement_1: 3
+                 LEAF: "{": 123
                  KID: statement_seq_1: 2
                    KID: statement_seq_1: 2
-                     KID: simple_declaration_1: 2
-                       LEAF: "int": 319
-                       KID: init_declarator_1: 2
-                         LEAF: "choice": 258
-                     KID: postfix_expression_2: 4
-                       KID: postfix_expression_4: 3
-                         LEAF: "PlanetExpress": 258
-                         LEAF: ".": 46
-                         LEAF: "print_menu": 258
-                       LEAF: "(": 40
-                       LEAF: ")": 41
-                   KID: shift_expression_2: 3
-                     LEAF: "cin": 258
-                     LEAF: ">>": 278
-                     LEAF: "choice": 258
-                 KID: selection_statement_1: 5
-                   LEAF: "if": 317
-                   LEAF: "(": 40
-                   KID: logical_and_expression_1: 3
+                     KID: statement_seq_1: 2
+                       KID: simple_declaration_1: 2
+                         LEAF: "int": 319
+                         KID: init_declarator_1: 2
+                           LEAF: "choice": 258
+                       KID: assignment_expression_1: 3
+                         LEAF: "test": 258
+                         LEAF: "=": 61
+                         KID: postfix_expression_2: 4
+                           KID: postfix_expression_4: 3
+                             LEAF: "PlanetExpress": 258
+                             LEAF: ".": 46
+                             LEAF: "print_menu": 258
+                           LEAF: "(": 40
+                           LEAF: ")": 41
+                     KID: shift_expression_2: 3
+                       LEAF: "cin": 258
+                       LEAF: ">>": 278
+                       LEAF: "choice": 258
+                   KID: selection_statement_1: 5
+                     LEAF: "if": 317
+                     LEAF: "(": 40
                      KID: postfix_expression_4: 3
                        LEAF: "PlanetExpress": 258
                        LEAF: ".": 46
                        LEAF: "stable": 258
-                     LEAF: "&&": 285
-                     LEAF: "true": 341
-                   LEAF: ")": 41
-                   KID: assignment_expression_1: 3
-                     KID: postfix_expression_4: 3
-                       LEAF: "PlanetExpress": 258
-                       LEAF: ".": 46
-                       LEAF: "stable": 258
-                     LEAF: "=": 61
-                     KID: postfix_expression_2: 4
+                     LEAF: ")": 41
+                     KID: assignment_expression_1: 3
                        KID: postfix_expression_4: 3
                          LEAF: "PlanetExpress": 258
                          LEAF: ".": 46
-                         LEAF: "check": 258
-                       LEAF: "(": 40
-                       LEAF: ")": 41
-               LEAF: "}": 125
+                         LEAF: "stable": 258
+                       LEAF: "=": 61
+                       KID: postfix_expression_2: 4
+                         KID: postfix_expression_4: 3
+                           LEAF: "PlanetExpress": 258
+                           LEAF: ".": 46
+                           LEAF: "check": 258
+                         LEAF: "(": 40
+                         LEAF: ")": 41
+                 LEAF: "}": 125
            KID: jump_statement_1: 2
              LEAF: "return": 330
              KID: postfix_expression_2: 4
