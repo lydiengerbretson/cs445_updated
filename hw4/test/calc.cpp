@@ -14,12 +14,10 @@ int main()
 {
   double operand1;
   double operand2;
-
-	double answer;
-  int  choice;
-  //double valid_choice;
+  double answer;
+  int choice; 
   int valid_choice;
-  while(choice != 1) {
+  do {
     print_menu();
     cin >> choice;
 
@@ -46,11 +44,11 @@ int main()
       // choice is invalid
       cout << "Invalid Choice." << endl;
     }
-    if (valid_choice ) {
+    if (valid_choice) {
       // if choice is valid, print the answer
-      //cout << endl << "Answer = " << answer << endl;
+      cout << endl << "Answer = " << answer << endl;
     }
-  } 
+  } while (choice != 0);
   // if the user didn't choose 0, loop back to start
   return 0;
 }
@@ -58,17 +56,16 @@ int main()
 //-------------- Functions -------------------
 double divide(double dividend, double divisor)
 {
-  if (divisor == 0.0)
+  if (divisor == 0)
     return 0;			// avoids divide by zero errors
   else
-   return (dividend / divisor);
+    return (dividend / divisor);
 }
 
 //----------------- get_value function ----------------
 double get_value()
 {
   double temp_value;
-
   cout << "Enter a value: ";
   cin >> temp_value;
   return temp_value;

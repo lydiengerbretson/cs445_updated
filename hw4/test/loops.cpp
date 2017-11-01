@@ -1,7 +1,11 @@
 #include <iostream>
 using namespace std;
 
-int f( float val );
+int f( float val )
+{
+   return val < 3.0;
+}
+
 
 
 int main()
@@ -11,11 +15,4 @@ int main()
      cin >> g;
      if ( f(g) )
        cout << "f is " << f(g) << endl;
-}
-
-
-
-int f( float val )
-{
-   return val < 3.0;
 }
