@@ -68,6 +68,7 @@ void type_shift_check(struct tree *t, char *table_name)
 	  {
 	  if (t->nkids == 0)
 	  {
+          
 		  type1 = find_type_in_list(t->leaf->text, table_name);
 		  //printf(" LEAF: \"%s\": %d %d\n",
 				 // t->leaf->text, t->leaf->category, type1); 
@@ -99,7 +100,7 @@ void type_shift_check(struct tree *t, char *table_name)
 			//printf("it's a postfix!!\n");
 			is_post = 1;
 		}
- 
+        
 		for(j=0; j<t->nkids; j++)
 		{
 			type_shift_check(t->kid[j], table_name);
@@ -132,12 +133,13 @@ void type_relation_check(struct tree *t, char *table_name)
 				   //t->leaf->text, t->leaf->category, type1); 
 	      if(rel_exp)
 		  { 
-               if(type1 == STRING_TYPE
+               if(type1 == DOUBLE_TYPE
+			   || type1 == STRING_TYPE
 			   || type1 == CHAR_TYPE
 			   || type1 == VOID_TYPE
 			   || type1 == PTR_TYPE)
 			   {
-				   semanticerror("Need a bool or int or double type.", t);
+				   semanticerror("Need a bool or int type:", t);
 			   }
 		       if(type1 != BOOL_TYPE 
 			   && type1 != INT_TYPE 
@@ -157,7 +159,7 @@ void type_relation_check(struct tree *t, char *table_name)
 			   && t->leaf->category != GTEQ)
 		       {
 
-			        semanticerror("Need a bool or int or double type.", t);
+			        semanticerror(" Need a bool or int type:", t);
 		  
 		       }
 		  }
@@ -169,7 +171,7 @@ void type_relation_check(struct tree *t, char *table_name)
 		       if(type1 > 0 && type1 != BOOL_TYPE && type1 != INT_TYPE)
 		       {
 
-			       semanticerror("Need a bool or int type.", t);
+			       semanticerror("Need a bool or int type:", t);
 		  
 		       }
 
@@ -190,7 +192,7 @@ void type_relation_check(struct tree *t, char *table_name)
 			   && t->leaf->category != LTEQ
 			   && t->leaf->category != GTEQ)
 		       {
-			       semanticerror("2: Incompatible types.", t);
+			       semanticerror("Incompatible types.", t);
 		       }
 		  }
 	  }
@@ -253,8 +255,64 @@ void type_add_check(struct tree *t, char *table_name, int base_type)
 		  // if not an operator 
 		  if(type1 > 0 && type1 != parent_type)
 		  {
-			  semanticerror("3: Incompatible types.", t);
+			  semanticerror("Incompatible types.", t);
 		  }
+
+	  }
+	  else
+	  {
+		//printf(" KID: %s: %d\n", t->prodrule_name, t->nkids);
+ 
+		for(j=0; j<t->nkids; j++)
+		{
+			type_add_check(t->kid[j], table_name, base_type);
+		}
+	  }
+}
+
+
+}
+
+// trying to traverse tree for expressions like x = a%b
+void type_mod_check(struct tree *t, char *table_name, int base_type)
+{
+	int type1; 
+    int j;
+
+	static int parent_type; 
+	// find type of left side of expression 
+	//printf("calling temp func!!\n");
+	
+	//t = t->kid[2];
+  parent_type = base_type; 
+  //printf("parent type: %d\n", parent_type);
+  if(!t)
+  {
+      // do nothing
+  }
+  else 
+  { 
+	  if (t->nkids == 0)
+	  {
+		  // TODO: make sure type1 > 0: checkundeclared here
+		 
+		  type1 = find_type_in_list(t->leaf->text, table_name);
+		  //printf(" LEAF: \"%s\": %d %d\n",
+				// t->leaf->text, t->leaf->category, type1); 
+		  if(t->leaf->category == IDENTIFIER)
+		  {
+				if(!find_sym_in_list(t->leaf->text, table_name))
+				{
+					semanticerror("Undeclared variable", t); 
+				}
+		  }
+		  
+		  // if not an operator 
+		  if((type1 > 0 && type1 != parent_type) || type1 != INT_TYPE)
+		  {
+			  semanticerror("Incompatible types.", t);
+		  }
+
 	  }
 	  else
 	  {
@@ -297,7 +355,7 @@ void type_switch_check(struct tree *t, char *table_name)
 		  && type1 != INT_TYPE
 		  && type1 != CHAR_TYPE) 
 		  {
-			  semanticerror("4: Incompatible types.", t);
+			  semanticerror("Incompatible types.", t);
 		  }
 		  
 
@@ -579,7 +637,7 @@ void type_class_member_check(struct tree *t,char *s)
 			//printf("%s in %s with type: %d\n", t->kid[2]->kid[0]->kid[2]->leaf->text, curr_class_name, type2);
 			if(type1 != type2)
 			{
-				semanticerror("Incorrect type for class member:", t->kid[2]);
+				semanticerror("Incorrect type:", t->kid[2]->kid[0]->kid[2]);
 			}
 		}
 		else

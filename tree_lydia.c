@@ -13,6 +13,9 @@ Treeptr create_tree(char* prod_name, int category, int num_kids, ...)
 {
     va_list args;
 	struct tree *T = malloc(sizeof(struct tree)); // possibly cast this malloc 
+	
+	struct instr *code = calloc(1, sizeof(struct instr*)); 
+	struct addr *address = calloc(1, sizeof(struct addr*));
 	int j;
 	
 	if(T == NULL)
@@ -21,13 +24,14 @@ Treeptr create_tree(char* prod_name, int category, int num_kids, ...)
 		exit(1); 
 	}
 	// product rule name 
-	char* prod_name_t = strdup(prod_name); 
+	//char* prod_name_t = (char*)calloc(1, 2048);
+	char *prod_name_t = strdup(prod_name); 
 	T->prodrule_name = prod_name_t; 
 	// product rule number 
 	T->prodrule = category; 
 	// number of kids
 	T->nkids = num_kids; 
-	T->typ = 10; // default for now
+	T->typ = 0; // default for now
 
 	// add any children to tree
 	if(num_kids > 0)

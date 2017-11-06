@@ -48,8 +48,10 @@ struct token* create_token(int category, char *text, int lineno, char *filename)
 		new_token->category = category; 
 		new_token->lineno = lineno; 
 		
-		new_token->text = calloc(strlen(text)+1, sizeof(char));
-		strcpy(new_token->text, text);    
+		//new_token->text = calloc(strlen(text)+1, sizeof(char));
+		new_token->text = (char*)calloc(1, 2048);
+		//strcpy(new_token->text, text);   
+		new_token->text = strdup(text); 
 		new_token->filename = calloc(strlen(filename)+1, sizeof(char));
 		strcpy(new_token->filename, filename); 
 		

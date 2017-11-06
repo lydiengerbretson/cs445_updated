@@ -58,7 +58,7 @@ void insert(Entry e, SymbolTable t, int typ) {
    
    t->entry[key] = e;
 		
-   //fprintf( stdout , "%s was INSERTED into scope: %s with type %d \n" , e->name , t->name, typ);
+   fprintf( stdout , "%s was INSERTED into scope: %s with type %d \n" , e->name , t->name, typ);
 
 	
 }
@@ -295,6 +295,12 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 			}
 			
 		}
+		else if(t->kid[2]->prodrule == MULTIPLICATIVE_EXPRESSION_3)
+		{
+			//printf("modulus!\n"); 
+			type = find_type_in_list(t->kid[0]->leaf->text, scope->name);
+			type_mod_check(t->kid[2], scope->name, type); 
+		}
 		else if(t->kid[2]->prodrule == ADDITIVE_EXPRESSION_1 
 		     || t->kid[2]->prodrule == MULTIPLICATIVE_EXPRESSION_1)
 		{
@@ -350,6 +356,7 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 			else
 			{
 				checkundeclared(t->kid[0]->kid[2], scope);
+				
 				type_shift_check(t, scope->name);
 			}
 		}

@@ -50,6 +50,7 @@ enum base_types
 
 int get_base_type(struct tree *);
 void type_add_check(struct tree *, char *, int);
+void type_mod_check(struct tree *, char *, int);
 void type_shift_check(struct tree *, char *);
 void type_relation_check(struct tree *, char *);
 void type_switch_check(struct tree *, char *);

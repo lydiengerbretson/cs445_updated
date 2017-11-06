@@ -2,6 +2,7 @@
 #define TREE_LYDIA_H_
 
 #include "token.h"
+#include "tac.h"
 
 // structure adapted from http://www2.cs.uidaho.edu/~jeffery/courses/445/hw2.html
 typedef struct tree {
@@ -10,6 +11,9 @@ typedef struct tree {
    int prodrule;
    int nkids;
    int typ;
+   int label; 
+   struct instr *code;
+   struct addr address; 
    struct tree *kid[9];
    struct token *leaf;
 } * Treeptr;

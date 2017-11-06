@@ -350,7 +350,7 @@ multiplicative_expression:
 	pm_expression {$$ = $1;}
 	| multiplicative_expression '*' pm_expression {$$ = create_tree("multiplicative_expression_1", MULTIPLICATIVE_EXPRESSION_1, 3, $1, $2, $3);}
 	| multiplicative_expression '/' pm_expression {$$ = create_tree("multiplicative_expression_2", MULTIPLICATIVE_EXPRESSION_1, 3, $1, $2, $3);}
-	| multiplicative_expression '%' pm_expression {$$ = create_tree("multiplicative_expression_3", MULTIPLICATIVE_EXPRESSION_1, 3, $1, $2, $3);}
+	| multiplicative_expression '%' pm_expression {$$ = create_tree("multiplicative_expression_3", MULTIPLICATIVE_EXPRESSION_3, 3, $1, $2, $3);}
 	;
 
 additive_expression:

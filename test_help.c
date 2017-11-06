@@ -3,20 +3,31 @@
 
 using namespace std; 
 
-
+int foo(); 
 int main()
 {
 	ofstream cout; 
 	ofstream cin; 
     int z; // shows up as double if #include string is commented!!
 	int yay;
-
+    double g;
 	int x; 
 	//int x;
-	x =  yay;
+	//x =  yay;
 	string sstr; // fails if it is string s 
 	//string sstr;
-    sstr = z; 
+    //sstr = z; 
+	x = z % x;
+    x = x * z * x;
+	sstr++;
+	
+	//g = foo();
+	if (yay == 1)
+	{
+		// yay
+	}
+	
+	x = z * x * z;
 	//xo = 1; 
 	
     return 0;
