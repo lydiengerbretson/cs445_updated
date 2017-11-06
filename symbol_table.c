@@ -305,7 +305,7 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		     || t->kid[2]->prodrule == MULTIPLICATIVE_EXPRESSION_1)
 		{
 			// only finds the first thing in the additive expression
-
+           // t->label = O_ADD;
 			checkundeclared(t->kid[2]->kid[0], scope); 
 			
 			// trying to process expressions with more than two operands

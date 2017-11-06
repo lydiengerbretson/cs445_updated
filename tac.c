@@ -49,3 +49,24 @@ struct instr *concat(struct instr *l1, struct instr *l2)
 	// may not necessary? This is for debugging
    return append(copylist(l1), l2);
 }
+
+void print_icg_list(struct instr *l1, struct instr *l2)
+{
+	// walk down the end of l1 
+   if (l1 == NULL) 
+   {
+	   printf("l1 is null.\n");
+	   return;
+   }
+   struct instr *ltmp = l1;
+   if(ltmp->next == NULL)
+   {
+	   printf("ltmp is null.\n");
+   }
+   while(ltmp->next != NULL) 
+   {
+	   printf("Printing list.\n"); 
+	   ltmp = ltmp->next;
+   }
+
+}

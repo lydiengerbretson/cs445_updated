@@ -17,8 +17,9 @@ int main()
 	string sstr; // fails if it is string s 
 	//string sstr;
     //sstr = z; 
+	x = yay + z;
 	x = z % x;
-    x = x * z * x;
+    x = x * z ;
 	sstr++;
 	
 	//g = foo();
@@ -27,8 +28,6 @@ int main()
 		// yay
 	}
 	
-	x = z * x * z;
-	//xo = 1; 
 	
     return 0;
 }

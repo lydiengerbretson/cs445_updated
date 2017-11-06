@@ -95,7 +95,7 @@ int main(int argc, char **argv)
 			//populate the symbol table, inserting variables into symbol tables
 			// TODO: add user option to print out symbol table
 			populate_symbol_table( YYPROGRAM , GLOBAL_TABLE );
-			//codegen(YYPROGRAM); 
+			codegen(YYPROGRAM); 
 			 
 			 // print the names of the symbol tables for testing purposes
              //print_tables(1);

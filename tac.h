@@ -51,5 +51,6 @@ struct instr {
 
 struct instr *gen(int, struct addr, struct addr, struct addr);
 struct instr *concat(struct instr *, struct instr *);
+void print_icg_list(struct instr *l1, struct instr *l2);
 
 #endif
