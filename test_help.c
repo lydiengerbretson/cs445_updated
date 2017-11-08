@@ -4,11 +4,11 @@
 using namespace std; 
 
 int foo(); 
-int main()
+double main()
 {
 	ofstream cout; 
 	ofstream cin; 
-    int z; // shows up as double if #include string is commented!!
+    double zoo; // shows up as double if #include string is commented!!
 	int yay;
     double g;
 	int x; 
@@ -17,9 +17,8 @@ int main()
 	string sstr; // fails if it is string s 
 	//string sstr;
     //sstr = z; 
-	x = yay + z;
-	x = z % x;
-    x = x * z ;
+	//x = yay + zoo;
+
 	sstr++;
 	
 	//g = foo();
@@ -29,7 +28,7 @@ int main()
 	}
 	
 	
-    return 0;
+    return g + zoo;
 }
 
 int foo()

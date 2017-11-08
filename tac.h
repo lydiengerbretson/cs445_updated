@@ -4,7 +4,8 @@
 #ifndef TAC_H
 #define TAC_H
 
-struct addr {
+struct addr 
+{
   int region, offset;
 };
 
@@ -15,10 +16,10 @@ struct addr {
 #define R_LABEL  2004 /* pseudo-region for labels in the code region */
 #define R_CONST  2005 /* pseudo-region for immediate mode constants */
 
-struct instr {
+struct TAC {
    int opcode;
    struct addr dest, src1, src2;
-   struct instr *next;
+   struct TAC *next;
 };
 /* Opcodes, per lecture notes */
 #define O_ADD   3001
@@ -49,8 +50,10 @@ struct instr {
 #define D_LABEL 3054
 #define D_END   3055
 
-struct instr *gen(int, struct addr, struct addr, struct addr);
-struct instr *concat(struct instr *, struct instr *);
-void print_icg_list(struct instr *l1, struct instr *l2);
+struct TAC *gen(int, struct addr, struct addr, struct addr);
+struct TAC *concat(struct TAC *, struct TAC *);
+void print_icg_list(struct TAC *l1, struct TAC *l2);
+
+
 
 #endif

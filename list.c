@@ -72,6 +72,8 @@ int find_type_in_list(char *s, char *t)
 	return 0;
 }
 
+
+
 void print_syms_in_list( char *t)
 {
 	struct entry *temp;

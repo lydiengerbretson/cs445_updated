@@ -7,9 +7,9 @@
 #include <stdlib.h>
 #include "tac.h"
 
-struct instr *gen(int op, struct addr a1, struct addr a2, struct addr a3)
+struct TAC *gen(int op, struct addr a1, struct addr a2, struct addr a3)
 {
-  struct instr *rv = malloc(sizeof (struct instr));
+  struct TAC *rv = malloc(sizeof (struct TAC));
   if (rv == NULL) {
      fprintf(stderr, "out of memory\n");
      exit(4);
@@ -22,27 +22,27 @@ struct instr *gen(int op, struct addr a1, struct addr a2, struct addr a3)
   return rv;
 }
 
-struct instr *copylist(struct instr *l)
+struct TAC *copylist(struct TAC *l)
 {
    if (l == NULL) return NULL;
-   // copy first instruction 
-   struct instr *lcopy = gen(l->opcode, l->dest, l->src1, l->src2);
-   // copy the rest of the instructions 
+   // copy first TACuction 
+   struct TAC *lcopy = gen(l->opcode, l->dest, l->src1, l->src2);
+   // copy the rest of the TACuctions 
    lcopy->next = copylist(l->next);
    return lcopy;
 }
 
-struct instr *append(struct instr *l1, struct instr *l2)
+struct TAC *append(struct TAC *l1, struct TAC *l2)
 {
 	// walk down the end of l1 
    if (l1 == NULL) return l2;
-   struct instr *ltmp = l1;
+   struct TAC *ltmp = l1;
    while(ltmp->next != NULL) ltmp = ltmp->next;
    ltmp->next = l2;
    return l1;
 }
 
-struct instr *concat(struct instr *l1, struct instr *l2)
+struct TAC *concat(struct TAC *l1, struct TAC *l2)
 {
 	// append l2 at the end of a copy of l1 (for a paranoid person)
 	// leaving the children's linked list intact 
@@ -50,7 +50,7 @@ struct instr *concat(struct instr *l1, struct instr *l2)
    return append(copylist(l1), l2);
 }
 
-void print_icg_list(struct instr *l1, struct instr *l2)
+void print_icg_list(struct TAC *l1, struct TAC *l2)
 {
 	// walk down the end of l1 
    if (l1 == NULL) 
@@ -58,7 +58,7 @@ void print_icg_list(struct instr *l1, struct instr *l2)
 	   printf("l1 is null.\n");
 	   return;
    }
-   struct instr *ltmp = l1;
+   struct TAC *ltmp = l1;
    if(ltmp->next == NULL)
    {
 	   printf("ltmp is null.\n");

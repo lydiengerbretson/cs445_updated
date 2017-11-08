@@ -1,18 +1,22 @@
-file list test_help.c
-Opening test_help.c
-ofstream was INSERTED into scope: classtable at location 6247 
-string was INSERTED into scope: classtable at location 6369 
+File: test_help.c
+ofstream was INSERTED into scope: ct with type 0 
+string was INSERTED into scope: ct with type 0 
   KID: program: 1
    KID: declaration_seq_1: 2
      KID: declaration_seq_1: 2
        KID: declaration_seq_1: 2
-         KID: function_definition_2: 4
-           LEAF: "int": 319
-           KID: direct_declarator_4: 2
-             LEAF: "main": 258
-           KID: compound_statement_1: 3
-             LEAF: "{": 123
-             KID: statement_seq_1: 2
+         KID: declaration_seq_1: 2
+           KID: simple_declaration_1: 2
+             LEAF: "int": 319
+             KID: init_declarator_1: 2
+               KID: direct_declarator_4: 2
+                 LEAF: "foo": 258
+           KID: function_definition_2: 4
+             LEAF: "int": 319
+             KID: direct_declarator_4: 2
+               LEAF: "main": 258
+             KID: compound_statement_1: 3
+               LEAF: "{": 123
                KID: statement_seq_1: 2
                  KID: statement_seq_1: 2
                    KID: statement_seq_1: 2
@@ -23,66 +27,62 @@ string was INSERTED into scope: classtable at location 6369
                              KID: statement_seq_1: 2
                                KID: statement_seq_1: 2
                                  KID: statement_seq_1: 2
-                                   KID: statement_seq_1: 2
-                                     KID: simple_declaration_1: 2
-                                       LEAF: "int": 319
-                                       KID: init_declarator_1: 2
-                                         LEAF: "z": 258
-                                     KID: simple_declaration_1: 2
-                                       LEAF: "int": 319
-                                       KID: init_declarator_1: 2
-                                         LEAF: "yay": 258
                                    KID: simple_declaration_1: 2
-                                     LEAF: "int": 319
+                                     LEAF: "ofstream": 264
                                      KID: init_declarator_1: 2
-                                       LEAF: "x": 258
+                                       LEAF: "cout": 258
+                                   KID: simple_declaration_1: 2
+                                     LEAF: "ofstream": 264
+                                     KID: init_declarator_1: 2
+                                       LEAF: "cin": 258
                                  KID: simple_declaration_1: 2
                                    LEAF: "int": 319
                                    KID: init_declarator_1: 2
-                                     LEAF: "yowzer": 258
+                                     LEAF: "zoo": 258
                                KID: simple_declaration_1: 2
                                  LEAF: "int": 319
                                  KID: init_declarator_1: 2
-                                   LEAF: "zoo": 258
-                                   KID: initializer_1: 2
-                                     LEAF: "=": 61
-                                     LEAF: "0": 259
+                                   LEAF: "yay": 258
                              KID: simple_declaration_1: 2
-                               LEAF: "int": 319
+                               LEAF: "double": 305
                                KID: init_declarator_1: 2
-                                 LEAF: "y": 258
+                                 LEAF: "g": 258
                            KID: simple_declaration_1: 2
                              LEAF: "int": 319
                              KID: init_declarator_1: 2
-                               LEAF: "zane": 258
+                               LEAF: "x": 258
                          KID: simple_declaration_1: 2
-                           LEAF: "int": 319
+                           LEAF: "string": 264
                            KID: init_declarator_1: 2
-                             LEAF: "a": 258
-                       KID: simple_declaration_1: 2
-                         LEAF: "int": 319
-                         KID: init_declarator_1: 2
-                           LEAF: "b": 258
-                     KID: simple_declaration_1: 2
-                       LEAF: "string": 264
-                       KID: init_declarator_1: 2
-                         LEAF: "sstr": 258
-                   KID: assignment_expression_1: 3
+                             LEAF: "sstr": 258
+                       KID: assignment_expression_1: 3
+                         LEAF: "x": 258
+                         LEAF: "=": 61
+                         KID: additive_expression_1: 3
+                           LEAF: "yay": 258
+                           LEAF: "+": 43
+                           LEAF: "zoo": 258
+                     KID: postfix_expression_7: 2
+                       LEAF: "sstr": 258
+                       LEAF: "++": 287
+                   KID: selection_statement_1: 5
+                     LEAF: "if": 317
+                     LEAF: "(": 40
+                     KID: equality_expression_1: 3
+                       LEAF: "yay": 258
+                       LEAF: "==": 281
+                       LEAF: "1": 259
+                     LEAF: ")": 41
+                     KID: compound_statement_1: 3
+                       LEAF: "{": 123
+                       LEAF: "}": 125
+                 KID: jump_statement_1: 2
+                   LEAF: "return": 330
+                   KID: additive_expression_1: 3
+                     LEAF: "x": 258
+                     LEAF: "+": 43
                      LEAF: "zoo": 258
-                     LEAF: "=": 61
-                     KID: postfix_expression_2: 4
-                       LEAF: "use_foo": 258
-                       LEAF: "(": 40
-                       LEAF: "11": 259
-                       LEAF: ")": 41
-                 KID: assignment_expression_1: 3
-                   LEAF: "z": 258
-                   LEAF: "=": 61
-                   LEAF: "10": 259
-               KID: jump_statement_1: 2
-                 LEAF: "return": 330
-                 LEAF: "0": 259
-             LEAF: "}": 125
+               LEAF: "}": 125
          KID: function_definition_2: 4
            LEAF: "int": 319
            KID: direct_declarator_4: 2
@@ -92,36 +92,21 @@ string was INSERTED into scope: classtable at location 6369
              KID: statement_seq_1: 2
                KID: statement_seq_1: 2
                  KID: statement_seq_1: 2
-                   KID: statement_seq_1: 2
-                     KID: statement_seq_1: 2
-                       KID: statement_seq_1: 2
-                         KID: simple_declaration_1: 2
-                           LEAF: "int": 319
-                           KID: init_declarator_1: 2
-                             LEAF: "yas": 258
-                         KID: simple_declaration_1: 2
-                           LEAF: "int": 319
-                           KID: init_declarator_1: 2
-                             LEAF: "y": 258
-                       KID: simple_declaration_1: 2
-                         LEAF: "int": 319
-                         KID: init_declarator_1: 2
-                           LEAF: "x": 258
-                     KID: assignment_expression_1: 3
-                       LEAF: "yas": 258
-                       LEAF: "=": 61
-                       LEAF: "3": 259
                    KID: simple_declaration_1: 2
                      LEAF: "int": 319
                      KID: init_declarator_1: 2
-                       LEAF: "zane": 258
-                 KID: assignment_expression_1: 3
-                   LEAF: "y": 258
-                   LEAF: "=": 61
-                   LEAF: "3": 259
+                       LEAF: "yas": 258
+                   KID: simple_declaration_1: 2
+                     LEAF: "int": 319
+                     KID: init_declarator_1: 2
+                       LEAF: "y": 258
+                 KID: simple_declaration_1: 2
+                   LEAF: "int": 319
+                   KID: init_declarator_1: 2
+                     LEAF: "x": 258
                KID: jump_statement_1: 2
                  LEAF: "return": 330
-                 LEAF: "y": 258
+                 LEAF: "0": 259
              LEAF: "}": 125
        KID: function_definition_2: 4
          LEAF: "int": 319
@@ -134,15 +119,10 @@ string was INSERTED into scope: classtable at location 6369
            LEAF: "{": 123
            KID: statement_seq_1: 2
              KID: statement_seq_1: 2
-               KID: statement_seq_1: 2
-                 KID: simple_declaration_1: 2
-                   LEAF: "int": 319
-                   KID: init_declarator_1: 2
-                     LEAF: "z": 258
-                 KID: simple_declaration_1: 2
-                   LEAF: "int": 319
-                   KID: init_declarator_1: 2
-                     LEAF: "x": 258
+               KID: simple_declaration_1: 2
+                 LEAF: "int": 319
+                 KID: init_declarator_1: 2
+                   LEAF: "x": 258
                KID: simple_declaration_1: 2
                  LEAF: "int": 319
                  KID: init_declarator_1: 2

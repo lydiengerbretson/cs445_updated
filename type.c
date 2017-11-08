@@ -834,3 +834,28 @@ void type_class_member_check_relation(struct tree *t)
 }
 }
 
+int find_type_in_list_icg(struct tree *t)
+{
+	int i; 
+	struct entry *temp; 
+	temp = start; 
+	int type1; 
+	
+	while(temp != NULL)
+	{
+	for(i=0; i < TABLE_SIZE; i++)
+	{
+		if(local_tables[i])
+		{
+			if(find_sym_in_list(t->leaf->text, local_tables[i]->name))
+				{
+					type1 = find_type_in_list(t->leaf->text, local_tables[i]->name);
+					return type1; 
+				}
+		}
+
+	}
+	}
+	return 0; 
+}
+

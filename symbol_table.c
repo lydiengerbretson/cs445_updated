@@ -13,6 +13,9 @@ extern SymbolTable CLASSTABLE;
 extern SymbolTable FUNCTION_TABLE; 
 extern SymbolTable GLOBAL_TABLE; 
 
+int glob_addr = 100;
+
+int new_temp_addr(struct tree *t, int type);
 
 // adapted from https://github.com/park2331/compiler
 
@@ -34,7 +37,7 @@ Entry new_entry(char *n, int typ) {
 
 // Initialize new table for use, initialize memory and store name. 
 SymbolTable new_table(char* n) {
-
+ 
  // possibly change to calloc instead of malloc: Done
  
   SymbolTable t = (SymbolTable)calloc(1, sizeof(SymbolTable));
@@ -142,6 +145,7 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
   char * func_name = NULL;
   char * class_name = NULL;
   static bool direct_declare = false;
+
   
   if ( !t ) {
     //return NULL;
@@ -632,6 +636,7 @@ void checkundeclared(struct tree * t, SymbolTable ST)
 
 void populate_init_decls(struct tree *t, SymbolTable scope, int type)
 {
+
 	switch(t->prodrule)
 	{
 		case INIT_DECLARATOR_1:
@@ -653,10 +658,11 @@ void populate_init_decls(struct tree *t, SymbolTable scope, int type)
 			insert_sym(t->kid[1]->leaf->text, scope, type);
 			break;
 		case IDENTIFIER:
-		    // inserting into tree for use later 
-		    t->typ = type;
-			//printf("Inserting %s as type %d\n", t->leaf->text, t->typ);
+		    // finding memory address, which is just an offset for now
+			t->mem_addr = new_temp_addr(t, type); 
+			printf("---Inserting %s with mem addr %d ---\n", t->leaf->text, t->mem_addr);
 			insert_sym(t->leaf->text, scope, type);
+			
 			break;
 	}
 }
@@ -670,7 +676,6 @@ void populate_params(struct tree *t, SymbolTable scope, int type)
 			break;
 		case IDENTIFIER:
 		    // inserting into tree for use later 
-		    t->typ = type;
 			//printf("Inserting %s as type %d\n", t->leaf->text, t->typ);
 			insert_sym(t->leaf->text, scope, type);
 			break;

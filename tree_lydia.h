@@ -10,10 +10,10 @@ typedef struct tree {
    char* prodrule_name; 
    int prodrule;
    int nkids;
-   int typ;
-   int label; 
-   struct instr *code;
-   struct addr address; 
+   int mem_addr;
+   int place; 
+   struct TAC *code;
+   struct addr address;   
    struct tree *kid[9];
    struct token *leaf;
 } * Treeptr;
