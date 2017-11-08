@@ -12,7 +12,7 @@
 void codegen(struct tree * t)
 {
    int j; 
-   int reg; 
+   //int reg; 
 
    if (t==NULL) 
    {
@@ -43,18 +43,22 @@ void codegen(struct tree * t)
 			{
 				if(t->kid[0]->kid[0] != NULL)
 				{
-					printf("Func init: %s %d\n", t->kid[0]->kid[0]->leaf->text, t->kid[0]->kid[0]->leaf->address.region); 
+					//printf("Func init: %s %d %d\n", t->kid[0]->kid[0]->leaf->text, t->kid[0]->kid[0]->leaf->address.region, t->kid[0]->kid[0]->leaf->address.offset); 
+					// add to a linked list of addresses
+					insert_addr_list(t->kid[0]->kid[0]->leaf->text, t->kid[0]->kid[0]->leaf->address.region,t->kid[0]->kid[0]->leaf->address.offset);
 				}
 				else
 				{
-					printf("Norm init: %s %d\n", t->kid[0]->leaf->text, t->kid[0]->leaf->address.region);
+					//printf("Norm init: %s %d %d\n", t->kid[0]->leaf->text, t->kid[0]->leaf->address.region, t->kid[0]->leaf->address.offset);
+					// add to a linked list of addresses
+					insert_addr_list(t->kid[0]->leaf->text, t->kid[0]->leaf->address.region, t->kid[0]->leaf->address.offset);
 				}
 			}
 
 			break; 
         case FUNCTION_DEFINITION_1:
 		{
-            struct TAC *g;
+            //struct TAC *g;
 			//g = gen(R_LOCAL, t->leaf->address, t->kid[0]->leaf->address, t->kid[1]->leaf->address); 
 			printf("Found func def: %s\n", t->kid[1]->kid[0]->leaf->text); 
 			//t->code = concat(t->kid[0]->code, t->kid[1]->code);
@@ -65,19 +69,25 @@ void codegen(struct tree * t)
 		case ADDITIVE_EXPRESSION_1:
 		{
 			printf("Entering code gen for add exp.\n"); 
-            struct TAC *g;
-			int reg;
-            
+            struct TAC_2 *g;
+			struct addr *a1, *a2, *a3;
+            // look up variable address in linked list of addresses
             //g = gen(O_ADD, t->leaf->address,
             //t->kid[0]->leaf->address, t->kid[1]->leaf->address);
             
 			//t->code = concat(t->kid[0]->code, t->kid[1]->code);
 
-           // t->code = concat(t->code, g);
-			
+            // t->code = concat(t->code, g);
 
+		   a1 = find_addr_in_list(t->kid[0]->leaf->text); 
+		   a2 = find_addr_in_list(t->kid[2]->leaf->text); 
 
-			break;
+		   printf("Found addr: %s %d %d\n", a1->var_name, a1->region, a1->offset); 
+		   printf("Found addr: %s %d %d\n", a2->var_name, a2->region, a2->offset); 
+		   
+		   g = gen_2(O_ADD, a3, a1, a2);
+           printf("Printing g: %d, %d, %d, %d\n", g->opcode, g->dest->region, g->src1->region, g->src2->region); 
+		   break;
 		}
 		default:
 			//printf("Default.\n");

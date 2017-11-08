@@ -64,7 +64,6 @@ void type_class_member_jump_check(struct tree *, int);
 void type_class_member_jump_2_check(struct tree *, int );
 
 int find_type_in_list_icg(struct tree *t);
-int find_region_in_list_icg(struct tree *t); 
 
 
 

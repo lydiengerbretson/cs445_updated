@@ -4,11 +4,16 @@
 #ifndef TAC_H
 #define TAC_H
 
+#include "string.h"
+
 struct addr 
 {
+  char *var_name;
   int region, offset;
+  struct addr *next; 
 };
 
+struct addr *start_addr;
 /* Regions: */
 #define R_GLOBAL 2001 /* can assemble as relative to the pc */
 #define R_LOCAL  2002 /* can assemble as relative to the ebp */
@@ -19,6 +24,12 @@ struct addr
 struct TAC {
    int opcode;
    struct addr dest, src1, src2;
+   struct TAC *next;
+};
+
+struct TAC_2 {
+   int opcode;
+   struct addr *dest, *src1, *src2;
    struct TAC *next;
 };
 /* Opcodes, per lecture notes */
@@ -51,8 +62,12 @@ struct TAC {
 #define D_END   3055
 
 struct TAC *gen(int, struct addr, struct addr, struct addr);
+struct TAC_2 *gen_2(int, struct addr *, struct addr *, struct addr *);
 struct TAC *concat(struct TAC *, struct TAC *);
 void print_icg_list(struct TAC *l1);
+void insert_addr_list(char *, int, int);
+void print_addr_list(); 
+struct addr *find_addr_in_list(char *); 
 
 
 

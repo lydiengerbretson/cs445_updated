@@ -859,48 +859,4 @@ int find_type_in_list_icg(struct tree *t)
 	return 0; 
 }
 
-int find_region_in_list_icg(struct tree *t)
-{
-	int j; 
-	static int reg = 0;
-	
-	if(!t)
-	{
-	}
-	else if(t->prodrule == INIT_DECLARATOR_1)
-	{
-
-		if(t->kid[0] != NULL)
-		{
-			if(t->kid[0]->kid[0] != NULL)
-			{
-				//printf("init decl: %s\n", t->kid[0]->kid[0]->leaf->text); 
-				return R_GLOBAL;
-			}
-			else
-			{
-				//printf("init decl: %s\n", t->kid[0]->leaf->text); 
-				//printf("region: %d\n", t->kid[0]->leaf->address.region); 
-				return t->kid[0]->leaf->address.region; 
-			}
-		}
-		
-	}
-	else
-	{
-		if (t->nkids == 0)
-	   {
-
-	   }
-	   else
-	   {
- 
-		 for(j=0; j<t->nkids; j++)
-		 {
-			reg = find_region_in_list_icg(t->kid[j]);
-		 }
-	   }
-	}
-	return reg;
-}
 

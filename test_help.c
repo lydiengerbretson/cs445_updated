@@ -67,6 +67,6 @@ int use_foo(int c)
 	 
 	//yes = foo(); 
     
-    return woah + c;
+    return  c;
 
 }
