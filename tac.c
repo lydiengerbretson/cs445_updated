@@ -50,7 +50,7 @@ struct TAC *concat(struct TAC *l1, struct TAC *l2)
    return append(copylist(l1), l2);
 }
 
-void print_icg_list(struct TAC *l1, struct TAC *l2)
+void print_icg_list(struct TAC *l1)
 {
 	// walk down the end of l1 
    if (l1 == NULL) 

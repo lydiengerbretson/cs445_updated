@@ -40,6 +40,7 @@ char * get_cval(char *cval)
 struct token* create_token(int category, char *text, int lineno, char *filename)
 {
 	struct token *new_token =  (struct token*)malloc(sizeof(struct token)); // without *new_token I get a seg fault 
+	struct addr *address = calloc(1, sizeof(struct addr*));
 	char *c;
 	
 	if(new_token != NULL)

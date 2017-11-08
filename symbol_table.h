@@ -6,6 +6,7 @@
 #include "hash.h"
 #include "tree_lydia.h"
 #include "type.h"
+#include "tac.h"
 
 // adapted from https://github.com/park2331/compiler
 
@@ -20,7 +21,6 @@ typedef struct entry {
   char *sym_table_name;
   int typ;
   
-  struct type *entrytype;
   struct table *entrytable;
   
   struct entry *next; 

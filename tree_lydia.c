@@ -15,7 +15,7 @@ Treeptr create_tree(char* prod_name, int category, int num_kids, ...)
 	struct tree *T = malloc(sizeof(struct tree)); // possibly cast this malloc 
 	
 	struct TAC *code = calloc(1, sizeof(struct TAC*)); 
-	struct addr *address = calloc(1, sizeof(struct addr*));
+	//struct addr *address = calloc(1, sizeof(struct addr*));
 	int j;
 	
 	if(T == NULL)
@@ -31,7 +31,6 @@ Treeptr create_tree(char* prod_name, int category, int num_kids, ...)
 	T->prodrule = category; 
 	// number of kids
 	T->nkids = num_kids; 
-	T->mem_addr = 0; // default for now
 
 	// add any children to tree
 	if(num_kids > 0)
@@ -64,8 +63,8 @@ void print_tree(struct tree *treeptr, int depth)
   { 
 	  if (treeptr->nkids == 0)
 	  {
-		  printf("%*s LEAF: \"%s\": %d\n", depth*2, " ", 
-				 treeptr->leaf->text, treeptr->leaf->category); 
+		  printf("%*s LEAF: \"%s\": %d region: %d\n", depth*2, " ", 
+				 treeptr->leaf->text, treeptr->leaf->category, treeptr->leaf->address.region); 
 	  }
 	  else
 	  {

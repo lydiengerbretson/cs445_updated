@@ -52,7 +52,7 @@ struct TAC {
 
 struct TAC *gen(int, struct addr, struct addr, struct addr);
 struct TAC *concat(struct TAC *, struct TAC *);
-void print_icg_list(struct TAC *l1, struct TAC *l2);
+void print_icg_list(struct TAC *l1);
 
 
 

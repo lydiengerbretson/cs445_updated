@@ -8,6 +8,7 @@
 #include "120gram_lydia.tab.h"
 #include "utility_func.h"
 #include "list.h"
+#include "tac.h"
 
 extern SymbolTable CLASSTABLE; 
 extern SymbolTable FUNCTION_TABLE; 
@@ -61,7 +62,7 @@ void insert(Entry e, SymbolTable t, int typ) {
    
    t->entry[key] = e;
 		
-   fprintf( stdout , "%s was INSERTED into scope: %s with type %d \n" , e->name , t->name, typ);
+   //fprintf( stdout , "%s was INSERTED into scope: %s with type %d \n" , e->name , t->name, typ);
 
 	
 }
@@ -658,12 +659,39 @@ void populate_init_decls(struct tree *t, SymbolTable scope, int type)
 			insert_sym(t->kid[1]->leaf->text, scope, type);
 			break;
 		case IDENTIFIER:
+		{
+			int i; 
 		    // finding memory address, which is just an offset for now
-			t->mem_addr = new_temp_addr(t, type); 
-			printf("---Inserting %s with mem addr %d ---\n", t->leaf->text, t->mem_addr);
+			t->leaf->address.offset = new_temp_addr(t, type); 
+			// finding memory region, which is LOCAL, GLOBAL, and CLASS for now
+			if(strcmp(scope->name, "gt") == 0)
+			{
+				t->leaf->address.region = R_GLOBAL;
+			}
+			else
+			{
+				t->leaf->address.region = R_LOCAL;
+			}
+			
+			// change to R_CLASS if it is a class scope :)
+			for(i=0; i < TABLE_SIZE; i++)
+				{
+					if(class_tables[i])
+						{
+							if(strcmp(class_tables[i]->name, scope->name) == 0)
+							{
+								t->leaf->address.region = R_CLASS;
+							}
+						}
+				}
+				
+
+			 // for now
+			printf("---Inserting %s with mem addr %d and region: %d ---\n", t->leaf->text, t->leaf->address.offset, t->leaf->address.region);
 			insert_sym(t->leaf->text, scope, type);
 			
 			break;
+		}
 	}
 }
 

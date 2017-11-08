@@ -2,6 +2,8 @@
 #include <string.h>
 #include <stdio.h>
 
+#include "tac.h"
+
 #ifndef TOKEN_H
 #define TOKEN_H
 
@@ -30,6 +32,7 @@ struct token {
    int ival;       /* if you had an integer constant, store its value here */
    char *sval;      /* if you had a string constant, malloc space and store */
    double fval;
+   struct addr address; 
    };               /*    the string (less quotes and after escapes) here */ 
    
  

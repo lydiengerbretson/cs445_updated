@@ -2,9 +2,13 @@
 #include <string>
 
 using namespace std; 
-
+class LYD
+{
+	int yool;
+	int cool;
+};
 int foo(); 
-double main()
+int main()
 {
 	ofstream cout; 
 	ofstream cin; 
@@ -12,6 +16,7 @@ double main()
 	int yay;
     double g;
 	int x; 
+	yay + x; 
 	//int x;
 	//x =  yay;
 	string sstr; // fails if it is string s 
@@ -28,7 +33,7 @@ double main()
 	}
 	
 	
-    return g + zoo;
+    return 0;
 }
 
 int foo()

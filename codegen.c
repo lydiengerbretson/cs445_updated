@@ -11,8 +11,9 @@
 
 void codegen(struct tree * t)
 {
-   int j;
-   
+   int j; 
+   int reg; 
+
    if (t==NULL) 
    {
 	   return;
@@ -37,27 +38,45 @@ void codegen(struct tree * t)
 	
 	switch(t->prodrule)
 	{
+		case INIT_DECLARATOR_1:
+			if(t->kid[0] != NULL)
+			{
+				if(t->kid[0]->kid[0] != NULL)
+				{
+					printf("Func init: %s %d\n", t->kid[0]->kid[0]->leaf->text, t->kid[0]->kid[0]->leaf->address.region); 
+				}
+				else
+				{
+					printf("Norm init: %s %d\n", t->kid[0]->leaf->text, t->kid[0]->leaf->address.region);
+				}
+			}
 
+			break; 
+        case FUNCTION_DEFINITION_1:
+		{
+            struct TAC *g;
+			//g = gen(R_LOCAL, t->leaf->address, t->kid[0]->leaf->address, t->kid[1]->leaf->address); 
+			printf("Found func def: %s\n", t->kid[1]->kid[0]->leaf->text); 
+			//t->code = concat(t->kid[0]->code, t->kid[1]->code);
+            //t->code = concat(t->code, g);
+			
+			break;
+		}
 		case ADDITIVE_EXPRESSION_1:
 		{
 			printf("Entering code gen for add exp.\n"); 
             struct TAC *g;
-			// create places
-			// t->address = .place
-			// t->address[0] = .place
-			// t->address[1] = .place
-			// create TAC using OP_ADD
-            //t->place = new_temp_addr(t->kid[0]);
-			printf("Place is: %d\n", t->place); 
-            g = gen(O_ADD, t->address,
-            t->kid[0]->address, t->kid[1]->address);
+			int reg;
+            
+            //g = gen(O_ADD, t->leaf->address,
+            //t->kid[0]->leaf->address, t->kid[1]->leaf->address);
+            
+			//t->code = concat(t->kid[0]->code, t->kid[1]->code);
+
+           // t->code = concat(t->code, g);
 			
-			t->code = concat(t->kid[0]->code, t->kid[1]->code);
-            t->code = concat(t->code, g);
-			//print_icg_list(t->code, g);
-			printf("%d\n", t->code->opcode); 
-			//printf("%d\n", t->code->dest.region);
-			//printf("%d\n", g->dest.region);
+
+
 			break;
 		}
 		default:
@@ -94,6 +113,8 @@ int new_temp_addr(struct tree *t, int type)
 					return 0;
 				case 1: // integer
 					return size += 8;
+				case 2: // char
+					return size += 1; 			
 				case 5: // floating
 					return size += 16;
 				default:
