@@ -14,7 +14,7 @@ Treeptr create_tree(char* prod_name, int category, int num_kids, ...)
     va_list args;
 	struct tree *T = malloc(sizeof(struct tree)); // possibly cast this malloc 
 	
-	struct TAC *code = calloc(1, sizeof(struct TAC*)); 
+	struct TAC_2 *code = calloc(1, sizeof(struct TAC*)); 
 	//struct addr *address = calloc(1, sizeof(struct addr*));
 	int j;
 	

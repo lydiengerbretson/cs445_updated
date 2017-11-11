@@ -6,6 +6,8 @@
 
 #include "string.h"
 
+FILE *output;
+
 struct addr 
 {
   char *var_name;
@@ -30,8 +32,11 @@ struct TAC {
 struct TAC_2 {
    int opcode;
    struct addr *dest, *src1, *src2;
-   struct TAC *next;
+   struct TAC_2 *next;
 };
+
+struct TAC_2 *start_TAC; 
+
 /* Opcodes, per lecture notes */
 #define O_ADD   3001
 #define O_SUB   3002
@@ -61,14 +66,14 @@ struct TAC_2 {
 #define D_LABEL 3054
 #define D_END   3055
 
-struct TAC *gen(int, struct addr, struct addr, struct addr);
 struct TAC_2 *gen_2(int, struct addr *, struct addr *, struct addr *);
-struct TAC *concat(struct TAC *, struct TAC *);
-void print_icg_list(struct TAC *l1);
+void print_icg_list();
 void insert_addr_list(char *, int, int);
 void print_addr_list(); 
 struct addr *find_addr_in_list(char *); 
-
+struct TAC_2 *copylist(struct TAC_2 *l);
+struct TAC_2 *append(struct TAC_2 *l1, struct TAC_2 *l2);
+struct TAC_2 *concat(struct TAC_2 *l1, struct TAC_2 *l2);
 
 
 #endif

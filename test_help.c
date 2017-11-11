@@ -15,6 +15,8 @@ int main()
     double zoo; // shows up as double if #include string is commented!!
 	int yay;
     double g;
+	g = 1.0;
+	g = zoo; 
 	int x; 
 	yay + x; 
 	//int x;
@@ -55,7 +57,7 @@ int help(int a)
 	int x; 
 	int y; 
 	
-	y = foo(); 
+	//y = foo(); 
 	//u = foo(); 
 }
 
@@ -63,10 +65,10 @@ int use_foo(int c)
 {
     int woah;
 	//double woah; 
-    woah = foo();
+    //woah = foo();
 	 
 	//yes = foo(); 
     
-    return  c;
+    return c;
 
 }

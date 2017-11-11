@@ -19,6 +19,7 @@ void codegen(struct tree * t);
 
 // extern variables in 120lex_lydia.l
 extern FILE *yyin; 
+extern FILE *output;
 extern char *yytext; 
 extern struct token *YYTOKEN; 
 extern int yyparse(); 
@@ -48,7 +49,7 @@ int main(int argc, char **argv)
   CLASSTABLE = new_table( "ct" );
 
   GLOBAL_TABLE = new_table("gt"); 
-
+  
    
    ++argv, --argc;  /* skip over program name */
    
@@ -97,7 +98,7 @@ int main(int argc, char **argv)
 			populate_symbol_table( YYPROGRAM , GLOBAL_TABLE );
 			//print_tree(YYPROGRAM, 0); 
 			codegen(YYPROGRAM); 
-			 
+			
 			 // print the names of the symbol tables for testing purposes
              //print_tables(1);
 			// print_tables(2);

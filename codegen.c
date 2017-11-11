@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "tree_lydia.h"
 #include "tac.h"
 #include "nonterms.h"
@@ -9,9 +10,13 @@
 #include "utility_func.h"
 
 
+
 void codegen(struct tree * t)
 {
    int j; 
+   //printf("Opening output.is\n");
+   output = fopen("output.is", "w"); 
+   
    //int reg; 
 
    if (t==NULL) 
@@ -66,6 +71,16 @@ void codegen(struct tree * t)
 			
 			break;
 		}
+		case ASSIGNMENT_EXPRESSION_1:
+		{
+			printf("Found assignment exp: %s\n", t->kid[0]->leaf->text); 
+			printf("Found assignment exp: %s\n", t->kid[1]->leaf->text); 
+			printf("Found assignment exp: %s\n", t->kid[2]->leaf->text); 
+			struct addr *a1, *a2;
+		    a1 = find_addr_in_list(t->kid[0]->leaf->text); 
+		    a2 = find_addr_in_list(t->kid[2]->leaf->text); 
+			break; 
+		}
 		case ADDITIVE_EXPRESSION_1:
 		{
 			printf("Entering code gen for add exp.\n"); 
@@ -81,12 +96,23 @@ void codegen(struct tree * t)
 
 		   a1 = find_addr_in_list(t->kid[0]->leaf->text); 
 		   a2 = find_addr_in_list(t->kid[2]->leaf->text); 
-
+		   
 		   printf("Found addr: %s %d %d\n", a1->var_name, a1->region, a1->offset); 
 		   printf("Found addr: %s %d %d\n", a2->var_name, a2->region, a2->offset); 
 		   
+		   // need to figure out the dest address
+		   t->code = concat(t->kid[0]->code, t->kid[2]->code);
 		   g = gen_2(O_ADD, a3, a1, a2);
-           printf("Printing g: %d, %d, %d, %d\n", g->opcode, g->dest->region, g->src1->region, g->src2->region); 
+		   t->code = concat(t->code, g);
+		   
+		   printf("Printing t->code region: %d, %d, %d, %d\n", t->code->opcode, t->code->dest->region, t->code->src1->region, t->code->src2->region); 
+		   printf("Printing t->code offset: %d, %d, %d, %d\n", t->code->opcode, t->code->dest->offset, t->code->src1->offset, t->code->src2->offset);
+           printf("Printing g region: %d, %d, %d, %d\n", g->opcode, g->dest->region, g->src1->region, g->src2->region); 
+		   printf("Printing g offset: %d, %d, %d, %d\n", g->opcode, g->dest->offset, g->src1->offset, g->src2->offset); 
+		   // write to file 
+		   fprintf(output, " opcode: %d\n src1 region: %d\n src2 region: %d\n src1 loc: %d\n src2 loc: %d", t->code->opcode, t->code->src1->region, t->code->src2->region, t->code->src1->offset, t->code->src2->offset);
+		   //print_addr_list(); 
+		    //print_icg_list();
 		   break;
 		}
 		default:

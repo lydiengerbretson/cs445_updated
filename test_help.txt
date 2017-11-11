@@ -1,166 +1,32 @@
 File: test_help.c
-ofstream was INSERTED into scope: ct with type 0 
-string was INSERTED into scope: ct with type 0 
-  KID: program: 1
-   KID: declaration_seq_1: 2
-     KID: declaration_seq_1: 2
-       KID: declaration_seq_1: 2
-         KID: declaration_seq_1: 2
-           KID: simple_declaration_1: 2
-             LEAF: "int": 319
-             KID: init_declarator_1: 2
-               KID: direct_declarator_4: 2
-                 LEAF: "foo": 258
-           KID: function_definition_2: 4
-             LEAF: "int": 319
-             KID: direct_declarator_4: 2
-               LEAF: "main": 258
-             KID: compound_statement_1: 3
-               LEAF: "{": 123
-               KID: statement_seq_1: 2
-                 KID: statement_seq_1: 2
-                   KID: statement_seq_1: 2
-                     KID: statement_seq_1: 2
-                       KID: statement_seq_1: 2
-                         KID: statement_seq_1: 2
-                           KID: statement_seq_1: 2
-                             KID: statement_seq_1: 2
-                               KID: statement_seq_1: 2
-                                 KID: statement_seq_1: 2
-                                   KID: simple_declaration_1: 2
-                                     LEAF: "ofstream": 264
-                                     KID: init_declarator_1: 2
-                                       LEAF: "cout": 258
-                                   KID: simple_declaration_1: 2
-                                     LEAF: "ofstream": 264
-                                     KID: init_declarator_1: 2
-                                       LEAF: "cin": 258
-                                 KID: simple_declaration_1: 2
-                                   LEAF: "int": 319
-                                   KID: init_declarator_1: 2
-                                     LEAF: "zoo": 258
-                               KID: simple_declaration_1: 2
-                                 LEAF: "int": 319
-                                 KID: init_declarator_1: 2
-                                   LEAF: "yay": 258
-                             KID: simple_declaration_1: 2
-                               LEAF: "double": 305
-                               KID: init_declarator_1: 2
-                                 LEAF: "g": 258
-                           KID: simple_declaration_1: 2
-                             LEAF: "int": 319
-                             KID: init_declarator_1: 2
-                               LEAF: "x": 258
-                         KID: simple_declaration_1: 2
-                           LEAF: "string": 264
-                           KID: init_declarator_1: 2
-                             LEAF: "sstr": 258
-                       KID: assignment_expression_1: 3
-                         LEAF: "x": 258
-                         LEAF: "=": 61
-                         KID: additive_expression_1: 3
-                           LEAF: "yay": 258
-                           LEAF: "+": 43
-                           LEAF: "zoo": 258
-                     KID: postfix_expression_7: 2
-                       LEAF: "sstr": 258
-                       LEAF: "++": 287
-                   KID: selection_statement_1: 5
-                     LEAF: "if": 317
-                     LEAF: "(": 40
-                     KID: equality_expression_1: 3
-                       LEAF: "yay": 258
-                       LEAF: "==": 281
-                       LEAF: "1": 259
-                     LEAF: ")": 41
-                     KID: compound_statement_1: 3
-                       LEAF: "{": 123
-                       LEAF: "}": 125
-                 KID: jump_statement_1: 2
-                   LEAF: "return": 330
-                   KID: additive_expression_1: 3
-                     LEAF: "x": 258
-                     LEAF: "+": 43
-                     LEAF: "zoo": 258
-               LEAF: "}": 125
-         KID: function_definition_2: 4
-           LEAF: "int": 319
-           KID: direct_declarator_4: 2
-             LEAF: "foo": 258
-           KID: compound_statement_1: 3
-             LEAF: "{": 123
-             KID: statement_seq_1: 2
-               KID: statement_seq_1: 2
-                 KID: statement_seq_1: 2
-                   KID: simple_declaration_1: 2
-                     LEAF: "int": 319
-                     KID: init_declarator_1: 2
-                       LEAF: "yas": 258
-                   KID: simple_declaration_1: 2
-                     LEAF: "int": 319
-                     KID: init_declarator_1: 2
-                       LEAF: "y": 258
-                 KID: simple_declaration_1: 2
-                   LEAF: "int": 319
-                   KID: init_declarator_1: 2
-                     LEAF: "x": 258
-               KID: jump_statement_1: 2
-                 LEAF: "return": 330
-                 LEAF: "0": 259
-             LEAF: "}": 125
-       KID: function_definition_2: 4
-         LEAF: "int": 319
-         KID: direct_declarator_4: 2
-           LEAF: "help": 258
-           KID: parameter_declaration_1: 2
-             LEAF: "int": 319
-             LEAF: "a": 258
-         KID: compound_statement_1: 3
-           LEAF: "{": 123
-           KID: statement_seq_1: 2
-             KID: statement_seq_1: 2
-               KID: simple_declaration_1: 2
-                 LEAF: "int": 319
-                 KID: init_declarator_1: 2
-                   LEAF: "x": 258
-               KID: simple_declaration_1: 2
-                 LEAF: "int": 319
-                 KID: init_declarator_1: 2
-                   LEAF: "y": 258
-             KID: assignment_expression_1: 3
-               LEAF: "y": 258
-               LEAF: "=": 61
-               KID: postfix_expression_2: 4
-                 LEAF: "foo": 258
-                 LEAF: "(": 40
-                 LEAF: ")": 41
-           LEAF: "}": 125
-     KID: function_definition_2: 4
-       LEAF: "int": 319
-       KID: direct_declarator_4: 2
-         LEAF: "use_foo": 258
-         KID: parameter_declaration_1: 2
-           LEAF: "int": 319
-           LEAF: "c": 258
-       KID: compound_statement_1: 3
-         LEAF: "{": 123
-         KID: statement_seq_1: 2
-           KID: statement_seq_1: 2
-             KID: simple_declaration_1: 2
-               LEAF: "int": 319
-               KID: init_declarator_1: 2
-                 LEAF: "woah": 258
-             KID: assignment_expression_1: 3
-               LEAF: "woah": 258
-               LEAF: "=": 61
-               KID: postfix_expression_2: 4
-                 LEAF: "foo": 258
-                 LEAF: "(": 40
-                 LEAF: ")": 41
-           KID: jump_statement_1: 2
-             LEAF: "return": 330
-             KID: additive_expression_1: 3
-               LEAF: "woah": 258
-               LEAF: "+": 43
-               LEAF: "c": 258
-         LEAF: "}": 125
+---Inserting yool with mem addr 8 and region: 2003 ---
+---Inserting cool with mem addr 16 and region: 2003 ---
+---Inserting foo with mem addr 24 and region: 2001 ---
+---Inserting cout with mem addr 0 and region: 2002 ---
+---Inserting cin with mem addr 0 and region: 2002 ---
+---Inserting zoo with mem addr 16 and region: 2002 ---
+---Inserting yay with mem addr 24 and region: 2002 ---
+---Inserting g with mem addr 40 and region: 2002 ---
+---Inserting x with mem addr 48 and region: 2002 ---
+---Inserting sstr with mem addr 0 and region: 2002 ---
+---Inserting yas with mem addr 8 and region: 2002 ---
+---Inserting y with mem addr 16 and region: 2002 ---
+---Inserting x with mem addr 24 and region: 2002 ---
+---Inserting x with mem addr 32 and region: 2002 ---
+---Inserting y with mem addr 40 and region: 2002 ---
+---Inserting woah with mem addr 48 and region: 2002 ---
+Found assignment exp: g
+Found assignment exp: g
+Entering code gen for add exp.
+Found addr: yay 2002 24
+Found addr: x 2002 48
+Printing t->code region: 3001, 4247331, 2002, 2002
+Printing t->code offset: 3001, 0, 24, 48
+Printing g region: 3001, 4247331, 2002, 2002
+Printing g offset: 3001, 0, 24, 48
+Found func def: main
+Found func def: foo
+Found assignment exp: y
+Found func def: help
+Found assignment exp: woah
+Found func def: use_foo
