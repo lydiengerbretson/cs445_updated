@@ -49,4 +49,5 @@ clean:
 	rm 120gram_lydia.tab.c
 	rm 120gram_lydia.output
 	rm *.o
+	rm *.ic
 	rm 120++

@@ -50,7 +50,7 @@ int main(int argc, char **argv)
 
   GLOBAL_TABLE = new_table("gt"); 
   
-   
+   int nLen; 
    ++argv, --argc;  /* skip over program name */
    
    for (i = 0; i < argc; i++) 
@@ -65,8 +65,28 @@ int main(int argc, char **argv)
 	   for(i = 0; i < argc; i++)
 	   { 
 
+		// helper function adapted from: https://stackoverflow.com/questions/624990/code-to-change-file-extension-up-for-review
+          char *fn = malloc(strlen(file_list[i]) + 4);
+		  char *temp_file = strdup(file_list[i]); 
+		  nLen = strlen(temp_file);
+		  if(nLen > 0)
+		  {
+			  while(nLen)
+			  {
+				  if(temp_file[nLen] == '.')
+				  {
+					  temp_file[nLen] = '\0';
+					  break;
+				  }
+				  nLen --; 
+			  }
+		  }
+		  		  
+		  sprintf(fn, "%s.ic", temp_file);
 		  fprintf(stdout, "File: %s\n", file_list[i]); 
 		  yyin = fopen(file_list[i], "r"); 
+    
+          output = fopen(fn,"a");   
 		  
 		  if(yyin == NULL)
 		  {
@@ -92,7 +112,7 @@ int main(int argc, char **argv)
 		 if(result == 0)
 		 {		
             //print the parse tree if needed (used for testing purposes now)	 
-		    //print_tree(YYPROGRAM, 0); 
+		    // print_tree(YYPROGRAM, 0); 
 			//populate the symbol table, inserting variables into symbol tables
 			// TODO: add user option to print out symbol table
 			populate_symbol_table( YYPROGRAM , GLOBAL_TABLE );

@@ -37,13 +37,19 @@ struct TAC_2 *copylist(struct TAC_2 *l)
 struct TAC_2 *append(struct TAC_2 *l1, struct TAC_2 *l2)
 {
 	// walk down the end of l1 
-   if (l1 == NULL) return l2;
-   //struct TAC_2 *ltmp = l1;
-   struct TAC_2 *ltmp = start_TAC;
+   if (l1 == NULL) 
+   {
+	   printf("*Appending to list \n"); 
+	   return l2;
+   }
+   struct TAC_2 *ltmp = l1;
+   //struct TAC_2 *ltmp = start_TAC;
    while(ltmp->next != NULL) 
    {
+	   printf("***Appending to list.\n"); 
 	   ltmp = ltmp->next;
    }
+    printf("*Appending to list.\n"); 
    ltmp->next = l2;
    return l1;
 }
@@ -130,6 +136,8 @@ struct addr* find_addr_in_list(char *var_name)
 	struct addr *temp;
 	temp = start_addr; 
 	
+		// TODO: Need to know what region it is in!
+		// Possibly look it up in symbol table instead
 	while(temp != NULL)
 	{
 		if(strcmp(var_name, temp->var_name) == 0 )

@@ -18,7 +18,9 @@ int main()
 	g = 1.0;
 	g = zoo; 
 	int x; 
-	yay + x; 
+	zoo + x; 
+	
+	yay = foo(); 
 	//int x;
 	//x =  yay;
 	string sstr; // fails if it is string s 

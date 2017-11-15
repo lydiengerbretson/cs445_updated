@@ -663,6 +663,7 @@ void populate_init_decls(struct tree *t, SymbolTable scope, int type)
 			int i; 
 		    // finding memory address, which is just an offset for now
 			t->leaf->address.offset = new_temp_addr(t, type); 
+			// separate counter for global
 			// finding memory region, which is LOCAL, GLOBAL, and CLASS for now
 			if(strcmp(scope->name, "gt") == 0)
 			{

@@ -1,5 +1,0 @@
- opcode: 3001
- src1 region: 2002
- src2 region: 2002
- src1 loc: 24
- src2 loc: 48
