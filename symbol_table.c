@@ -320,12 +320,16 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		}      
 		else 
 		{
-			 // checking left hand side of assignment expression
-			checkundeclared(t->kid[0], scope); 
-			 // checking right hand side of assignment expression
-			checkundeclared(t->kid[2], scope);			
-
-            type_assign_check(t, scope->name);			
+			// right hand is already checked for classes...
+			 if(t->kid[2]->prodrule != POSTFIX_EXPRESSION_4)
+			 {
+			  // check left hand side of expression 
+				checkundeclared(t->kid[0], scope); 
+			  // checking right hand side of assignment expression
+				checkundeclared(t->kid[2], scope);		
+			 			
+				type_assign_check(t, scope->name);
+			 }		
 			
 		}
 		break;	

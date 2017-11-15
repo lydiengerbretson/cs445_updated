@@ -246,7 +246,7 @@ void type_add_check(struct tree *t, char *table_name, int base_type)
 				// t->leaf->text, t->leaf->category, type1); 
 		  if(t->leaf->category == IDENTIFIER)
 		  {
-				if(!find_sym_in_list(t->leaf->text, table_name))
+				if(!find_sym_in_list(t->leaf->text, table_name)&& !find_sym_in_list(t->leaf->text, "gt"))
 				{
 					semanticerror("Undeclared variable", t); 
 				}
