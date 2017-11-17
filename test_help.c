@@ -8,7 +8,7 @@ class LYD
 	int cool;
 };
 int foo(); 
-int use_foo(int c);
+int use_foo(int c, int b, int g, int a, int k);
 int main()
 {
 	ofstream cout; 
@@ -20,6 +20,8 @@ int main()
 	g = zoo; 
 	int x; 
 	zoo + g; 
+	
+	yay = use_foo(x, 1, 2, 3, 4); 
 	//yay = foo(); 
 	//yay = use_foo(1); 
 	//int x;

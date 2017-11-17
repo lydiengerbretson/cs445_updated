@@ -830,3 +830,45 @@ int find_type_in_list_icg(struct tree *t)
 }
 
 
+
+int parameter_count(struct tree *t)
+{
+    int j; 
+	int count = 0; 
+	
+	if(!t)
+	{
+      // do nothing
+	}
+	else 
+	{ 
+	  if (t->nkids == 0)
+	  {
+
+		  printf(" LEAF: \"%s\": %d \n",
+				  t->leaf->text, t->leaf->category); 
+ 
+		  count++; 
+		  
+		  
+	  }
+	  else
+	  {
+
+		for(j=0; j<t->nkids; j++)
+		{
+			printf("Calling self...\n"); 
+			/*if(t->prodrule == EXPRESSION_LIST_1)
+			{
+				printf("Count: %d\n", count); 
+				count++; 
+			}*/
+			count += parameter_count(t->kid[j]);
+		}
+		
+	  }
+	}
+	return count; 
+}
+
+

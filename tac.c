@@ -7,7 +7,6 @@
 #include <stdlib.h>
 #include "tac.h"
 
-
 struct TAC_2 *gen_2(int op, struct addr *a1, struct addr *a2, struct addr *a3)
 {
   struct TAC_2 *rv = malloc(sizeof (struct TAC_2));
@@ -157,3 +156,5 @@ struct addr* find_addr_in_list(char *var_name)
 	}
 	return temp;
 }
+
+

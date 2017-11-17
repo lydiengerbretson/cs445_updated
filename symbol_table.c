@@ -304,7 +304,7 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		{
 			//printf("modulus!\n"); 
 			type = find_type_in_list(t->kid[0]->leaf->text, scope->name);
-			type_mod_check(t->kid[2], scope->name, type); 
+			//type_mod_check(t->kid[2], scope->name, type); 
 		}
 		else if(t->kid[2]->prodrule == ADDITIVE_EXPRESSION_1 
 		     || t->kid[2]->prodrule == MULTIPLICATIVE_EXPRESSION_1)

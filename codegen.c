@@ -63,11 +63,9 @@ void codegen(struct tree * t)
 			break; 
         case FUNCTION_DEFINITION_1:
 		{
-            //struct TAC *g;
-			//g = gen(R_LOCAL, t->leaf->address, t->kid[0]->leaf->address, t->kid[1]->leaf->address); 
+           
 			fprintf(output, "%s:\n", t->kid[1]->kid[0]->leaf->text); 
-			//t->code = concat(t->kid[0]->code, t->kid[1]->code);
-            //t->code = concat(t->code, g);
+            
 			
 			break;
 		}
@@ -75,7 +73,16 @@ void codegen(struct tree * t)
 		{
 			if(t->kid[2]->prodrule == POSTFIX_EXPRESSION_2)
 			{
-				fprintf(output, "call:   %s\n", t->kid[2]->kid[0]->leaf->text); 
+                struct addr *a1; 
+				
+				a1 = find_addr_in_list(t->kid[2]->kid[0]->leaf->text); 
+				int count = 0; 
+				// function in type.c
+				// TODO: Add to three address code 
+				count = parameter_count(t->kid[2]);
+				count = count - 3; // deducting (, ), and function name
+				printf("Count: %d, offset: %d \n", count, a1->offset); 
+				fprintf(output, "call:   %s, %d, loc: %d\n", t->kid[2]->kid[0]->leaf->text, count, a1->offset ); 
 			}
 			else
 			{

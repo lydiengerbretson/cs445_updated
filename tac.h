@@ -6,6 +6,7 @@
 
 #include "string.h"
 
+
 FILE *output;
 
 struct addr 

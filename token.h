@@ -1,11 +1,12 @@
+#ifndef TOKEN_H
+#define TOKEN_H
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 
 #include "tac.h"
 
-#ifndef TOKEN_H
-#define TOKEN_H
 
 /* Size of default input buffer. */
 /* Retrieved from lex.yy.c file */
