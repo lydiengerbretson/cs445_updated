@@ -849,8 +849,8 @@ int parameter_count(struct tree *t)
 	  if (t->nkids == 0)
 	  {
 
-		  printf(" LEAF: \"%s\": %d \n",
-				  t->leaf->text, t->leaf->category); 
+		  //printf(" LEAF: \"%s\": %d \n",
+				 // t->leaf->text, t->leaf->category); 
  
 		  count++; 
 		  
@@ -861,7 +861,7 @@ int parameter_count(struct tree *t)
 
 		for(j=0; j<t->nkids; j++)
 		{
-			printf("Calling self...\n"); 
+			//printf("Calling self...\n"); 
 			/*if(t->prodrule == EXPRESSION_LIST_1)
 			{
 				printf("Count: %d\n", count); 

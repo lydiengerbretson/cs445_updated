@@ -38,17 +38,17 @@ struct TAC_2 *append(struct TAC_2 *l1, struct TAC_2 *l2)
 	// walk down the end of l1 
    if (l1 == NULL) 
    {
-	   printf("*Appending to list \n"); 
+	   //printf("*Appending to list \n"); 
 	   return l2;
    }
    struct TAC_2 *ltmp = l1;
    //struct TAC_2 *ltmp = start_TAC;
    while(ltmp->next != NULL) 
    {
-	   printf("***Appending to list.\n"); 
+	   //printf("***Appending to list.\n"); 
 	   ltmp = ltmp->next;
    }
-    printf("*Appending to list.\n"); 
+   //printf("*Appending to list.\n"); 
    ltmp->next = l2;
    return l1;
 }
@@ -144,6 +144,7 @@ struct addr* find_addr_in_list(char *var_name, int cat)
 		{
 		//printf("**Printing the wanted symbol: %s type: %d\n", temp->name, temp->typ); 
 		temp_region = temp->region; 
+		temp->is_const = 0; 
 		return temp; 
 		}
 		temp = temp->next;
@@ -158,8 +159,9 @@ struct addr* find_addr_in_list(char *var_name, int cat)
 		// add this new node to list and then return it?? 
 		struct addr *new_node = calloc(1, sizeof(struct addr *));
 	
-        new_node->var_name = strdup("const"); 
+        new_node->var_name = strdup(var_name);  
 	    new_node->region = temp_region;	
+		new_node->is_const = 1; 
 		switch(cat)
 		{
 			case 259:

@@ -7,7 +7,7 @@ class LYD
 	int yool;
 	int cool;
 };
-int foo(); 
+void foo(); 
 int use_foo(int c, int b, int g, int a, int k);
 int x; 
 int main()
@@ -20,7 +20,8 @@ int main()
 	g = 1.0;
 	g = zoo; 
 	//int x; 
-	yay = 5.0 + 1;  
+	foo(); 
+	yay = 10 + 2;  
 	yay = use_foo(x, 1, 2, 3, 4); 
 	//yay = foo(); 
 	//yay = use_foo(1); 

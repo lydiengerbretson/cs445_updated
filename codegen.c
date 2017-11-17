@@ -48,13 +48,13 @@ void codegen(struct tree * t)
 			{
 				if(t->kid[0]->kid[0] != NULL)
 				{
-					//printf("Func init: %s %d %d\n", t->kid[0]->kid[0]->leaf->text, t->kid[0]->kid[0]->leaf->address.region, t->kid[0]->kid[0]->leaf->address.offset); 
+
 					// add to a linked list of addresses
 					insert_addr_list(t->kid[0]->kid[0]->leaf->text, t->kid[0]->kid[0]->leaf->address.region,t->kid[0]->kid[0]->leaf->address.offset);
 				}
 				else
 				{
-					//printf("Norm init: %s %d %d\n", t->kid[0]->leaf->text, t->kid[0]->leaf->address.region, t->kid[0]->leaf->address.offset);
+
 					// add to a linked list of addresses
 					insert_addr_list(t->kid[0]->leaf->text, t->kid[0]->leaf->address.region, t->kid[0]->leaf->address.offset);
 				}
@@ -66,7 +66,6 @@ void codegen(struct tree * t)
            
 			fprintf(output, "%s:\n", t->kid[1]->kid[0]->leaf->text); 
             
-			
 			break;
 		}
 		case ASSIGNMENT_EXPRESSION_1:
@@ -75,7 +74,7 @@ void codegen(struct tree * t)
 			{
 				struct TAC_2 *g; 
                 struct addr *a1, *a2; 
-				
+				int i, pc = 0; 
 				a1 = find_addr_in_list(t->kid[0]->leaf->text, 0); 
 				a2 = find_addr_in_list(t->kid[2]->kid[0]->leaf->text, 0); 
 				int count = 0; 
@@ -83,11 +82,18 @@ void codegen(struct tree * t)
 				// TODO: Add to three address code - Done
 				count = parameter_count(t->kid[2]);
 				count = count - 3; // deducting (, ), and function name
-				//printf("Count: %d, offset: %d \n", count, a1->offset); 
+				printf("Count: %d \n", count); 
+
 				t->code = concat(t->kid[2]->kid[0]->code, t->kid[2]->kid[2]->code); 
 				g = gen_2(O_ASN, a1, a2, NULL);
 				t->code = concat(t->code, g);
 				fprintf(output, "call:   %s, %d, loc: %d\n", t->kid[2]->kid[0]->leaf->text, count, t->code->dest->offset ); 
+				for(i=0; i < count; i++)
+				{
+					fprintf(output, "parm:  loc: %d \n", pc); 
+					pc+=8; 
+				}
+				
 			}
 			else if(t->kid[2]->prodrule == ADDITIVE_EXPRESSION_1 
 			     || t->kid[2]->prodrule == MULTIPLICATIVE_EXPRESSION_1)
@@ -106,8 +112,23 @@ void codegen(struct tree * t)
 		    t->code = concat(t->code, g);
 			
 		    // write to file 
-			fprintf(output, "asn:  "); 
-		    fprintf(output, " loc: %d loc: %d loc: %d\n", t->code->dest->offset,t->code->src1->offset, t->code->src2->offset); 
+			fprintf(output, "add:  "); 
+			if(t->code->src1->is_const && t->code->src2->is_const)
+			{
+				fprintf(output, " loc: %d const: %s const: %s\n", t->code->dest->offset,t->code->src1->var_name, t->code->src2->var_name); 
+			}
+			else if(t->code->src1->is_const && !t->code->src2->is_const)
+			{
+				fprintf(output, " loc: %d const: %s loc: %d\n", t->code->dest->offset,t->code->src1->var_name, t->code->src2->offset); 
+			}
+			else if(!t->code->src1->is_const && t->code->src2->is_const)
+			{
+				fprintf(output, " loc: %d loc: %d const: %s\n", t->code->dest->offset,t->code->src1->offset, t->code->src2->var_name); 
+			}
+			else 
+			{
+				fprintf(output, " loc: %d loc: %d loc: %d\n", t->code->dest->offset,t->code->src1->offset, t->code->src2->offset); 
+			}
 			}
 			else
 			{
@@ -115,37 +136,7 @@ void codegen(struct tree * t)
 			}
 			break; 
 		}
-		case ADDITIVE_EXPRESSION_1:
-		{
-			/*printf("Entering code gen for add exp.\n"); 
-            struct TAC_2 *g;
-			struct addr *a1, *a2, *a3;
-            // look up variable address in linked list of addresses
 
-		   a1 = find_addr_in_list(t->kid[0]->leaf->text); 
-		   a2 = find_addr_in_list(t->kid[2]->leaf->text); 
-		   
-		   //printf("Found addr: %s %d %d\n", a1->var_name, a1->region, a1->offset); 
-		   //printf("Found addr: %s %d %d\n", a2->var_name, a2->region, a2->offset); 
-		   
-		   // need to figure out the dest address
-		   // need to figure out t->code
-		   t->code = concat(t->kid[0]->code, t->kid[2]->code);
-		   g = gen_2(O_ADD, a3, a1, a2);
-		   printf("g: %p\n", g); 
-		   t->code = concat(t->code, g);
-		   printf("t->code: %p\n", t->code); 
-		    
-		   // write to file 
-		   fprintf(output, "add:\n"); 
-		   fprintf(output, " opcode: %d\n src1 region: %d\n src2 region: %d\n src1 loc: %d\n src2 loc: %d\n", t->code->opcode, t->code->src1->region, t->code->src2->region, t->code->src1->offset, t->code->src2->offset);
-		   // need to write to file only once or else everything
-		   // gets messed up 
-		  // printf("Printing addr list.\n"); 
-		   //print_addr_list(); 
-		   //print_icg_list();*/
-		   break;
-		}
 		default:
 		{
 			//int i; 
