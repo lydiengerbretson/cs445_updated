@@ -314,16 +314,23 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 			checkundeclared(t->kid[2]->kid[0], scope); 
 			
 			// trying to process expressions with more than two operands
-			type = find_type_in_list(t->kid[0]->leaf->text, scope->name);
+			if(find_sym_in_list(t->kid[0]->leaf->text, "gt"))
+			{
+				type = find_type_in_list(t->kid[0]->leaf->text, "gt");
+			}
+			else
+			{
+				type = find_type_in_list(t->kid[0]->leaf->text, scope->name);
+			}
 			type_add_check(t->kid[2], scope->name, type);
 
 		}      
 		else 
 		{
-			// right hand is already checked for classes...
+			// left and right hand is already checked for classes...
 			 if(t->kid[2]->prodrule != POSTFIX_EXPRESSION_4)
 			 {
-			  // check left hand side of expression 
+			  // check left hand side of  assignment expression 
 				checkundeclared(t->kid[0], scope); 
 			  // checking right hand side of assignment expression
 				checkundeclared(t->kid[2], scope);		

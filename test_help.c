@@ -8,6 +8,7 @@ class LYD
 	int cool;
 };
 int foo(); 
+int use_foo(int c);
 int main()
 {
 	ofstream cout; 
@@ -18,9 +19,9 @@ int main()
 	g = 1.0;
 	g = zoo; 
 	int x; 
-	zoo + x; 
-	
-	yay = foo(); 
+	zoo + g; 
+	//yay = foo(); 
+	//yay = use_foo(1); 
 	//int x;
 	//x =  yay;
 	string sstr; // fails if it is string s 

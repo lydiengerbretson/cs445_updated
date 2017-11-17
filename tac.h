@@ -11,7 +11,7 @@ FILE *output;
 struct addr 
 {
   char *var_name;
-  int region, offset;
+  int region, offset, is_const;
   struct addr *next; 
 };
 
@@ -70,7 +70,7 @@ struct TAC_2 *gen_2(int, struct addr *, struct addr *, struct addr *);
 void print_icg_list();
 void insert_addr_list(char *, int, int);
 void print_addr_list(); 
-struct addr *find_addr_in_list(char *); 
+struct addr *find_addr_in_list( char *n); 
 struct TAC_2 *copylist(struct TAC_2 *l);
 struct TAC_2 *append(struct TAC_2 *l1, struct TAC_2 *l2);
 struct TAC_2 *concat(struct TAC_2 *l1, struct TAC_2 *l2);

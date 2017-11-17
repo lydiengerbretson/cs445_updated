@@ -85,8 +85,8 @@ void codegen(struct tree * t)
 			struct TAC_2 *g;
 			struct addr *a1, *a2;
 			// TODO: Grab region and offset directly from kid[0] and kid[2] instead of looking it up
-		    a1 = find_addr_in_list(t->kid[0]->leaf->text); 
-		    a2 = find_addr_in_list(t->kid[2]->leaf->text); 
+		    a1 = find_addr_in_list( t->kid[0]->leaf->text); 
+		    a2 = find_addr_in_list( t->kid[2]->leaf->text); 
 			t->code = concat(t->kid[0]->code, t->kid[2]->code);
 		    g = gen_2(O_ASN, a1, a2, NULL);
 		    t->code = concat(t->code, g);
@@ -150,13 +150,18 @@ int new_temp_addr(struct tree *t, int type)
 	{
 		case INTEGER: 
 		    //printf("found an int.\n"); 
+			// const 
 			size += 8;
 			return size;
 			//break; 
 		case FLOATING: 
+			// const 
 		    //printf("found a float.\n"); 
 			size += 16;
 			return size; 
+		case STRING:
+		    // string 
+			return size +=8;
 			//break; 
 		case IDENTIFIER:
 			//type = find_type_in_list_icg(t);
@@ -190,3 +195,4 @@ int new_temp_addr(struct tree *t, int type)
 	
 	return size; 
 }
+

@@ -222,7 +222,8 @@ void type_relation_check(struct tree *t, char *table_name)
 void type_add_check(struct tree *t, char *table_name, int base_type)
 {
 	int type1; 
-    int j;
+    int j, i; 
+	static bool postfix = false; 
 
 	static int parent_type; 
 	// find type of left side of expression 
@@ -239,14 +240,20 @@ void type_add_check(struct tree *t, char *table_name, int base_type)
   { 
 	  if (t->nkids == 0)
 	  {
-		  // TODO: make sure type1 > 0: checkundeclared here
-		 
-		  type1 = find_type_in_list(t->leaf->text, table_name);
-		  //printf(" LEAF: \"%s\": %d %d\n",
-				// t->leaf->text, t->leaf->category, type1); 
+
+		  if(find_sym_in_list(t->leaf->text, "gt"))
+		  {
+			  type1 = find_type_in_list(t->leaf->text, "gt");
+		  }
+		  else
+		  {
+			  type1 = find_type_in_list(t->leaf->text, table_name);
+		  }
+		  printf(" LEAF: \"%s\": %d %d\n",
+				 t->leaf->text, t->leaf->category, type1); 
 		  if(t->leaf->category == IDENTIFIER)
 		  {
-				if(!find_sym_in_list(t->leaf->text, table_name)&& !find_sym_in_list(t->leaf->text, "gt"))
+				if(!find_sym_in_list(t->leaf->text, table_name) && !find_sym_in_list(t->leaf->text, "gt"))
 				{
 					semanticerror("Undeclared variable", t); 
 				}
@@ -257,74 +264,37 @@ void type_add_check(struct tree *t, char *table_name, int base_type)
 		  {
 			  semanticerror("Incompatible types.", t);
 		  }
+          
+		  // if it is an identifier with type 0, probably a function?
+		  if(t->leaf->category == IDENTIFIER && !postfix)
+		  {
+			  for(i=0; i<TABLE_SIZE; i++)
+			  {
+				  if(find_sym_in_list(t->leaf->text, local_tables[i]->name))
+				  {
+					  // should be a postfix, but it's not
+					  semanticerror("Incompatible types.", t);
+				  }
+			  }
+			  
+		  }
+
 
 	  }
 	  else
 	  {
 		//printf(" KID: %s: %d\n", t->prodrule_name, t->nkids);
- 
+ 		if(t->prodrule == POSTFIX_EXPRESSION_2)
+		 {
+			  //printf("Yay!\n");
+			  postfix = true; 
+		 }
 		for(j=0; j<t->nkids; j++)
 		{
 			type_add_check(t->kid[j], table_name, base_type);
 		}
 	  }
 }
-
-
-}
-
-// trying to traverse tree for expressions like x = a%b
-void type_mod_check(struct tree *t, char *table_name, int base_type)
-{
-	int type1; 
-    int j;
-
-	static int parent_type; 
-	// find type of left side of expression 
-	//printf("calling temp func!!\n");
-	
-	//t = t->kid[2];
-  parent_type = base_type; 
-  //printf("parent type: %d\n", parent_type);
-  if(!t)
-  {
-      // do nothing
-  }
-  else 
-  { 
-	  if (t->nkids == 0)
-	  {
-		  // TODO: make sure type1 > 0: checkundeclared here
-		 
-		  type1 = find_type_in_list(t->leaf->text, table_name);
-		  //printf(" LEAF: \"%s\": %d %d\n",
-				// t->leaf->text, t->leaf->category, type1); 
-		  if(t->leaf->category == IDENTIFIER)
-		  {
-				if(!find_sym_in_list(t->leaf->text, table_name))
-				{
-					semanticerror("Undeclared variable", t); 
-				}
-		  }
-		  
-		  // if not an operator 
-		  if((type1 > 0 && type1 != parent_type) || type1 != INT_TYPE)
-		  {
-			  semanticerror("Incompatible types.", t);
-		  }
-
-	  }
-	  else
-	  {
-		//printf(" KID: %s: %d\n", t->prodrule_name, t->nkids);
- 
-		for(j=0; j<t->nkids; j++)
-		{
-			type_add_check(t->kid[j], table_name, base_type);
-		}
-	  }
-}
-
 
 }
 

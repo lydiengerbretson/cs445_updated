@@ -148,6 +148,12 @@ struct addr* find_addr_in_list(char *var_name)
 		temp = temp->next;
 		
 	}
-	
+	if(temp == NULL)
+	{
+		printf("Maybe a constant!!\n"); 
+		// create new temp node w/ constant info ?? 
+		// add this new node to list and then return it?? 
+		
+	}
 	return temp;
 }
