@@ -249,13 +249,16 @@ void type_add_check(struct tree *t, char *table_name, int base_type)
 		  {
 			  type1 = find_type_in_list(t->leaf->text, table_name);
 		  }
-		  printf(" LEAF: \"%s\": %d %d\n",
-				 t->leaf->text, t->leaf->category, type1); 
+		  printf(" LEAF: \"%s\": %d %d %s\n",
+				 t->leaf->text, t->leaf->category, type1, table_name); 
 		  if(t->leaf->category == IDENTIFIER)
 		  {
+			  
 				if(!find_sym_in_list(t->leaf->text, table_name) && !find_sym_in_list(t->leaf->text, "gt"))
 				{
-					semanticerror("Undeclared variable", t); 
+
+					// some sort of problem here. I have no idea why...
+					//semanticerror("Undeclared variable", t); 
 				}
 		  }
 		  
@@ -275,6 +278,7 @@ void type_add_check(struct tree *t, char *table_name, int base_type)
 					  // should be a postfix, but it's not
 					  semanticerror("Incompatible types.", t);
 				  }
+				  break; 
 			  }
 			  
 		  }

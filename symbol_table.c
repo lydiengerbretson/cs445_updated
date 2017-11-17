@@ -310,7 +310,7 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		     || t->kid[2]->prodrule == MULTIPLICATIVE_EXPRESSION_1)
 		{
 			// only finds the first thing in the additive expression
-           // t->label = O_ADD;
+
 			checkundeclared(t->kid[2]->kid[0], scope); 
 			
 			// trying to process expressions with more than two operands
@@ -332,7 +332,7 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 			 {
 			  // check left hand side of  assignment expression 
 				checkundeclared(t->kid[0], scope); 
-			  // checking right hand side of assignment expression
+			  // checking right hand side of assignment expression 
 				checkundeclared(t->kid[2], scope);		
 			 			
 				type_assign_check(t, scope->name);

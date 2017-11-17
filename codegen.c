@@ -73,40 +73,51 @@ void codegen(struct tree * t)
 		{
 			if(t->kid[2]->prodrule == POSTFIX_EXPRESSION_2)
 			{
-                struct addr *a1; 
+				struct TAC_2 *g; 
+                struct addr *a1, *a2; 
 				
-				a1 = find_addr_in_list(t->kid[2]->kid[0]->leaf->text); 
+				a1 = find_addr_in_list(t->kid[0]->leaf->text, 0); 
+				a2 = find_addr_in_list(t->kid[2]->kid[0]->leaf->text, 0); 
 				int count = 0; 
 				// function in type.c
-				// TODO: Add to three address code 
+				// TODO: Add to three address code - Done
 				count = parameter_count(t->kid[2]);
 				count = count - 3; // deducting (, ), and function name
-				printf("Count: %d, offset: %d \n", count, a1->offset); 
-				fprintf(output, "call:   %s, %d, loc: %d\n", t->kid[2]->kid[0]->leaf->text, count, a1->offset ); 
+				//printf("Count: %d, offset: %d \n", count, a1->offset); 
+				t->code = concat(t->kid[2]->kid[0]->code, t->kid[2]->kid[2]->code); 
+				g = gen_2(O_ASN, a1, a2, NULL);
+				t->code = concat(t->code, g);
+				fprintf(output, "call:   %s, %d, loc: %d\n", t->kid[2]->kid[0]->leaf->text, count, t->code->dest->offset ); 
 			}
-			else
+			else if(t->kid[2]->prodrule == ADDITIVE_EXPRESSION_1 
+			     || t->kid[2]->prodrule == MULTIPLICATIVE_EXPRESSION_1)
 			{
-			printf("Found assignment exp: %s\n", t->kid[0]->leaf->text); 
-			printf("Found assignment exp: %s\n", t->kid[1]->leaf->text); 
-			printf("Found assignment exp: %s\n", t->kid[2]->leaf->text); 
+ 
 			struct TAC_2 *g;
-			struct addr *a1, *a2;
+			struct addr *a1, *a2, *a3;
 			// TODO: Grab region and offset directly from kid[0] and kid[2] instead of looking it up
-		    a1 = find_addr_in_list( t->kid[0]->leaf->text); 
-		    a2 = find_addr_in_list( t->kid[2]->leaf->text); 
+			// left side of equation 
+			a3 = find_addr_in_list(t->kid[0]->leaf->text, 0); 
+			// right side of equation operands
+		    a1 = find_addr_in_list( t->kid[2]->kid[0]->leaf->text, t->kid[2]->kid[0]->leaf->category); 
+		    a2 = find_addr_in_list( t->kid[2]->kid[2]->leaf->text, t->kid[2]->kid[2]->leaf->category); 
 			t->code = concat(t->kid[0]->code, t->kid[2]->code);
-		    g = gen_2(O_ASN, a1, a2, NULL);
+		    g = gen_2(O_ASN, a3, a1, a2);
 		    t->code = concat(t->code, g);
 			
 		    // write to file 
-			fprintf(output, "asn:\n"); 
-		    fprintf(output, " opcode: %d\n", t->code->opcode); 
+			fprintf(output, "asn:  "); 
+		    fprintf(output, " loc: %d loc: %d loc: %d\n", t->code->dest->offset,t->code->src1->offset, t->code->src2->offset); 
+			}
+			else
+			{
+				// normal assignment expression 
 			}
 			break; 
 		}
 		case ADDITIVE_EXPRESSION_1:
 		{
-			printf("Entering code gen for add exp.\n"); 
+			/*printf("Entering code gen for add exp.\n"); 
             struct TAC_2 *g;
 			struct addr *a1, *a2, *a3;
             // look up variable address in linked list of addresses
@@ -114,8 +125,8 @@ void codegen(struct tree * t)
 		   a1 = find_addr_in_list(t->kid[0]->leaf->text); 
 		   a2 = find_addr_in_list(t->kid[2]->leaf->text); 
 		   
-		   printf("Found addr: %s %d %d\n", a1->var_name, a1->region, a1->offset); 
-		   printf("Found addr: %s %d %d\n", a2->var_name, a2->region, a2->offset); 
+		   //printf("Found addr: %s %d %d\n", a1->var_name, a1->region, a1->offset); 
+		   //printf("Found addr: %s %d %d\n", a2->var_name, a2->region, a2->offset); 
 		   
 		   // need to figure out the dest address
 		   // need to figure out t->code
@@ -132,7 +143,7 @@ void codegen(struct tree * t)
 		   // gets messed up 
 		  // printf("Printing addr list.\n"); 
 		   //print_addr_list(); 
-		   //print_icg_list();
+		   //print_icg_list();*/
 		   break;
 		}
 		default:

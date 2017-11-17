@@ -6,45 +6,54 @@ File: test_help.c
          KID: declaration_seq_1: 2
            KID: declaration_seq_1: 2
              KID: declaration_seq_1: 2
-               KID: class_specifier_1: 4
-                 KID: class_head_1: 2
-                   LEAF: "class": 298 region: 0
-                   LEAF: "LYD": 258 region: 0
-                 LEAF: "{": 123 region: 0
-                 KID: member_specification_1: 2
-                   KID: member_declaration_1: 2
-                     LEAF: "int": 319 region: 0
-                     LEAF: "yool": 258 region: 0
+               KID: declaration_seq_1: 2
+                 KID: class_specifier_1: 4
+                   KID: class_head_1: 2
+                     LEAF: "class": 298 region: 0
+                     LEAF: "LYD": 258 region: 0
+                   LEAF: "{": 123 region: 0
                    KID: member_specification_1: 2
                      KID: member_declaration_1: 2
                        LEAF: "int": 319 region: 0
-                       LEAF: "cool": 258 region: 0
-                 LEAF: "}": 125 region: 0
+                       LEAF: "yool": 258 region: 0
+                     KID: member_specification_1: 2
+                       KID: member_declaration_1: 2
+                         LEAF: "int": 319 region: 0
+                         LEAF: "cool": 258 region: 0
+                   LEAF: "}": 125 region: 0
+                 KID: simple_declaration_1: 2
+                   LEAF: "int": 319 region: 0
+                   KID: init_declarator_1: 2
+                     KID: direct_declarator_4: 2
+                       LEAF: "foo": 258 region: 0
                KID: simple_declaration_1: 2
                  LEAF: "int": 319 region: 0
                  KID: init_declarator_1: 2
                    KID: direct_declarator_4: 2
-                     LEAF: "foo": 258 region: 0
+                     LEAF: "use_foo": 258 region: 0
+                     KID: parameter_declaration_list_1: 2
+                       KID: parameter_declaration_list_1: 2
+                         KID: parameter_declaration_list_1: 2
+                           KID: parameter_declaration_list_1: 2
+                             KID: parameter_declaration_1: 2
+                               LEAF: "int": 319 region: 0
+                               LEAF: "c": 258 region: 0
+                             KID: parameter_declaration_1: 2
+                               LEAF: "int": 319 region: 0
+                               LEAF: "b": 258 region: 0
+                           KID: parameter_declaration_1: 2
+                             LEAF: "int": 319 region: 0
+                             LEAF: "g": 258 region: 0
+                         KID: parameter_declaration_1: 2
+                           LEAF: "int": 319 region: 0
+                           LEAF: "a": 258 region: 0
+                       KID: parameter_declaration_1: 2
+                         LEAF: "int": 319 region: 0
+                         LEAF: "k": 258 region: 0
              KID: simple_declaration_1: 2
                LEAF: "int": 319 region: 0
                KID: init_declarator_1: 2
-                 KID: direct_declarator_4: 2
-                   LEAF: "use_foo": 258 region: 0
-                   KID: parameter_declaration_list_1: 2
-                     KID: parameter_declaration_list_1: 2
-                       KID: parameter_declaration_list_1: 2
-                         KID: parameter_declaration_1: 2
-                           LEAF: "int": 319 region: 0
-                           LEAF: "c": 258 region: 0
-                         KID: parameter_declaration_1: 2
-                           LEAF: "int": 319 region: 0
-                           LEAF: "b": 258 region: 0
-                       KID: parameter_declaration_1: 2
-                         LEAF: "int": 319 region: 0
-                         LEAF: "g": 258 region: 0
-                     KID: parameter_declaration_1: 2
-                       LEAF: "int": 319 region: 0
-                       LEAF: "k": 258 region: 0
+                 LEAF: "x": 258 region: 0
            KID: function_definition_2: 4
              LEAF: "int": 319 region: 0
              KID: direct_declarator_4: 2
@@ -63,43 +72,41 @@ File: test_help.c
                                  KID: statement_seq_1: 2
                                    KID: statement_seq_1: 2
                                      KID: statement_seq_1: 2
-                                       KID: statement_seq_1: 2
-                                         KID: simple_declaration_1: 2
-                                           LEAF: "ofstream": 264 region: 0
-                                           KID: init_declarator_1: 2
-                                             LEAF: "cout": 258 region: 0
-                                         KID: simple_declaration_1: 2
-                                           LEAF: "ofstream": 264 region: 0
-                                           KID: init_declarator_1: 2
-                                             LEAF: "cin": 258 region: 0
                                        KID: simple_declaration_1: 2
-                                         LEAF: "double": 305 region: 0
+                                         LEAF: "ofstream": 264 region: 0
                                          KID: init_declarator_1: 2
-                                           LEAF: "zoo": 258 region: 0
+                                           LEAF: "cout": 258 region: 0
+                                       KID: simple_declaration_1: 2
+                                         LEAF: "ofstream": 264 region: 0
+                                         KID: init_declarator_1: 2
+                                           LEAF: "cin": 258 region: 0
                                      KID: simple_declaration_1: 2
-                                       LEAF: "int": 319 region: 0
+                                       LEAF: "double": 305 region: 0
                                        KID: init_declarator_1: 2
-                                         LEAF: "yay": 258 region: 0
+                                         LEAF: "zoo": 258 region: 0
                                    KID: simple_declaration_1: 2
-                                     LEAF: "double": 305 region: 0
+                                     LEAF: "int": 319 region: 0
                                      KID: init_declarator_1: 2
-                                       LEAF: "g": 258 region: 0
-                                 KID: assignment_expression_1: 3
-                                   LEAF: "g": 258 region: 0
-                                   LEAF: "=": 61 region: 0
-                                   LEAF: "1.0": 260 region: 0
+                                       LEAF: "yay": 258 region: 0
+                                 KID: simple_declaration_1: 2
+                                   LEAF: "double": 305 region: 0
+                                   KID: init_declarator_1: 2
+                                     LEAF: "g": 258 region: 0
                                KID: assignment_expression_1: 3
                                  LEAF: "g": 258 region: 0
                                  LEAF: "=": 61 region: 0
-                                 LEAF: "zoo": 258 region: 0
-                             KID: simple_declaration_1: 2
-                               LEAF: "int": 319 region: 0
-                               KID: init_declarator_1: 2
-                                 LEAF: "x": 258 region: 0
-                           KID: additive_expression_1: 3
-                             LEAF: "zoo": 258 region: 0
-                             LEAF: "+": 43 region: 0
-                             LEAF: "g": 258 region: 0
+                                 LEAF: "1.0": 260 region: 0
+                             KID: assignment_expression_1: 3
+                               LEAF: "g": 258 region: 0
+                               LEAF: "=": 61 region: 0
+                               LEAF: "zoo": 258 region: 0
+                           KID: assignment_expression_1: 3
+                             LEAF: "yay": 258 region: 0
+                             LEAF: "=": 61 region: 0
+                             KID: additive_expression_1: 3
+                               LEAF: "x": 258 region: 0
+                               LEAF: "+": 43 region: 0
+                               LEAF: "g": 258 region: 0
                          KID: assignment_expression_1: 3
                            LEAF: "yay": 258 region: 0
                            LEAF: "=": 61 region: 0
@@ -109,10 +116,12 @@ File: test_help.c
                              KID: expression_list_1: 2
                                KID: expression_list_1: 2
                                  KID: expression_list_1: 2
-                                   LEAF: "x": 258 region: 0
-                                   LEAF: "1": 259 region: 0
-                                 LEAF: "2": 259 region: 0
-                               LEAF: "3": 259 region: 0
+                                   KID: expression_list_1: 2
+                                     LEAF: "x": 258 region: 0
+                                     LEAF: "1": 259 region: 0
+                                   LEAF: "2": 259 region: 0
+                                 LEAF: "3": 259 region: 0
+                               LEAF: "4": 259 region: 0
                              LEAF: ")": 41 region: 0
                        KID: simple_declaration_1: 2
                          LEAF: "string": 264 region: 0

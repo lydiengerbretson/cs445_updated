@@ -112,7 +112,7 @@ int main(int argc, char **argv)
 		 if(result == 0)
 		 {		
             //print the parse tree if needed (used for testing purposes now)	 
-		    // print_tree(YYPROGRAM, 0); 
+		    //print_tree(YYPROGRAM, 0); 
 			//populate the symbol table, inserting variables into symbol tables
 			// TODO: add user option to print out symbol table
 			populate_symbol_table( YYPROGRAM , GLOBAL_TABLE );

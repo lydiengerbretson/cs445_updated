@@ -130,10 +130,11 @@ void print_addr_list()
 		
 }
 
-struct addr* find_addr_in_list(char *var_name)
+struct addr* find_addr_in_list(char *var_name, int cat)
 {
 	struct addr *temp;
 	temp = start_addr; 
+	static int temp_region = 0; 
 	
 		// TODO: Need to know what region it is in!
 		// Possibly look it up in symbol table instead
@@ -142,9 +143,12 @@ struct addr* find_addr_in_list(char *var_name)
 		if(strcmp(var_name, temp->var_name) == 0 )
 		{
 		//printf("**Printing the wanted symbol: %s type: %d\n", temp->name, temp->typ); 
+		temp_region = temp->region; 
 		return temp; 
 		}
 		temp = temp->next;
+		//printf("What is the current region? %d\n", temp->region); 
+		
 		
 	}
 	if(temp == NULL)
@@ -152,7 +156,25 @@ struct addr* find_addr_in_list(char *var_name)
 		printf("Maybe a constant!!\n"); 
 		// create new temp node w/ constant info ?? 
 		// add this new node to list and then return it?? 
-		
+		struct addr *new_node = calloc(1, sizeof(struct addr *));
+	
+        new_node->var_name = strdup("const"); 
+	    new_node->region = temp_region;	
+		switch(cat)
+		{
+			case 259:
+				new_node->offset = 8;
+				break; 
+			case 260: 
+				new_node->offset = 16;
+				break; 
+			default:
+				new_node->offset = 0; 
+				break; 
+		}
+	    
+	    new_node->next = NULL; 
+		temp = new_node; 
 	}
 	return temp;
 }
