@@ -87,7 +87,7 @@ int main(int argc, char **argv)
 		  yyin = fopen(file_list[i], "r"); 
     
           output = fopen(fn,"a");   
-		  
+		  //fprintf(output, "main: \n"); 
 		  if(yyin == NULL)
 		  {
 			  fprintf(stderr, "File does not exist.\n"); 

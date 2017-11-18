@@ -14,10 +14,11 @@ FILE *output;
 void codegen(struct tree * t)
 {
    int j; 
-   //printf("Opening output.is\n");
    
-   
-   //int reg; 
+   // TODO: POSTFIX_EXPRESSION_2 - Done
+   // TODO: Strings...
+   // TODO: JUMP_STATEMENT_1 - Done
+   // TODO: RElATIONAL_EXPRESSION_1
 
    if (t==NULL) 
    {
@@ -43,6 +44,12 @@ void codegen(struct tree * t)
 	
 	switch(t->prodrule)
 	{
+	    case FUNCTION_DEFINITION_1:
+		{
+           //printf("Found func def!\n"); 
+		   fprintf(output, "%s:\n", t->kid[1]->kid[0]->leaf->text); 
+			break;
+		}
 		case INIT_DECLARATOR_1:
 			if(t->kid[0] != NULL)
 			{
@@ -61,13 +68,7 @@ void codegen(struct tree * t)
 			}
 
 			break; 
-        case FUNCTION_DEFINITION_1:
-		{
-           
-			fprintf(output, "%s:\n", t->kid[1]->kid[0]->leaf->text); 
-            
-			break;
-		}
+
 		case ASSIGNMENT_EXPRESSION_1:
 		{
 			if(t->kid[2]->prodrule == POSTFIX_EXPRESSION_2)
@@ -85,9 +86,9 @@ void codegen(struct tree * t)
 				printf("Count: %d \n", count); 
 
 				t->code = concat(t->kid[2]->kid[0]->code, t->kid[2]->kid[2]->code); 
-				g = gen_2(O_ASN, a1, a2, NULL);
+				g = gen_2(O_CALL, a1, a2, NULL);
 				t->code = concat(t->code, g);
-				fprintf(output, "call:   %s, %d, loc: %d\n", t->kid[2]->kid[0]->leaf->text, count, t->code->dest->offset ); 
+				fprintf(output, "asn call: %s, %d, loc: %d\n", t->kid[2]->kid[0]->leaf->text, count, t->code->dest->offset ); 
 				for(i=0; i < count; i++)
 				{
 					fprintf(output, "parm:  loc: %d \n", pc); 
@@ -103,7 +104,7 @@ void codegen(struct tree * t)
 			struct addr *a1, *a2, *a3;
 			// TODO: Grab region and offset directly from kid[0] and kid[2] instead of looking it up
 			// left side of equation 
-			a3 = find_addr_in_list(t->kid[0]->leaf->text, 0); 
+			a3 = find_addr_in_list(t->kid[0]->leaf->text, t->kid[0]->leaf->category); 
 			// right side of equation operands
 		    a1 = find_addr_in_list( t->kid[2]->kid[0]->leaf->text, t->kid[2]->kid[0]->leaf->category); 
 		    a2 = find_addr_in_list( t->kid[2]->kid[2]->leaf->text, t->kid[2]->kid[2]->leaf->category); 
@@ -112,7 +113,7 @@ void codegen(struct tree * t)
 		    t->code = concat(t->code, g);
 			
 		    // write to file 
-			fprintf(output, "add:  "); 
+			fprintf(output, "add: "); 
 			if(t->code->src1->is_const && t->code->src2->is_const)
 			{
 				fprintf(output, " loc: %d const: %s const: %s\n", t->code->dest->offset,t->code->src1->var_name, t->code->src2->var_name); 
@@ -133,10 +134,57 @@ void codegen(struct tree * t)
 			else
 			{
 				// normal assignment expression 
+				struct TAC_2 *g;
+				struct addr *a1, *a2;
+				a1 = find_addr_in_list(t->kid[0]->leaf->text, t->kid[0]->leaf->category); 
+				a2 = find_addr_in_list(t->kid[2]->leaf->text, t->kid[2]->leaf->category); 
+				
+				
+				t->code = concat(t->kid[0]->code, t->kid[2]->code); 
+				g = gen_2(O_ASN, a1, a2, NULL);
+				t->code = concat(t->code, g);
+				
+
+				if(t->code->src1->is_const)
+				{
+					fprintf(output, "asn:  loc: %d const: %s   \n", t->code->dest->offset, t->kid[2]->leaf->text );
+				}
+				else
+				{
+					fprintf(output, "asn:  loc: %d loc: %d   \n", t->code->dest->offset, t->code->src1->offset );
+				}
+
 			}
 			break; 
 		}
-
+		case JUMP_STATEMENT_1:
+			printf("Found jump statement.\n"); 
+			if(t->kid[1]->leaf->category != IDENTIFIER)
+			{
+				// TODO: Do I need to find a location for constants?
+				fprintf(output, "return: const: %s   \n", t->kid[1]->leaf->text );
+			}
+			else
+			{
+				struct addr *a1; 
+				struct TAC_2 *g;
+				a1 = find_addr_in_list(t->kid[1]->leaf->text, t->kid[1]->leaf->category); 
+				g = gen_2(O_RET, a1, NULL, NULL);
+				t->code = concat(t->code, g);
+				fprintf(output, "return: loc: %d  \n", t->code->dest->offset );
+			}
+			break; 
+		case POSTFIX_EXPRESSION_2:
+		{
+			struct addr *a1; 
+			struct TAC_2 *g;
+			a1 = find_addr_in_list(t->kid[0]->leaf->text, t->kid[0]->leaf->category); 
+			g = gen_2(O_CALL, a1, NULL, NULL);
+			t->code = concat(t->code, g);
+			
+			fprintf(output, "call: loc: %s %d  \n", t->kid[0]->leaf->text, t->code->dest->offset );
+			break; 
+		}
 		default:
 		{
 			//int i; 

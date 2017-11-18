@@ -70,11 +70,12 @@ int help(int a)
 int use_foo(int c)
 {
     int woah;
+	
 	//double woah; 
     //woah = foo();
 	 
 	//yes = foo(); 
     
-    return c;
+    return woah;
 
 }
