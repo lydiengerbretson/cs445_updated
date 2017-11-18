@@ -154,7 +154,7 @@ struct addr* find_addr_in_list(char *var_name, int cat)
 	}
 	if(temp == NULL)
 	{
-		printf("Maybe a constant!!\n"); 
+		//printf("Maybe a constant!!\n"); 
 		// create new temp node w/ constant info ?? 
 		// add this new node to list and then return it?? 
 		struct addr *new_node = calloc(1, sizeof(struct addr *));

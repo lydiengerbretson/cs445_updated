@@ -83,17 +83,18 @@ void codegen(struct tree * t)
 				// TODO: Add to three address code - Done
 				count = parameter_count(t->kid[2]);
 				count = count - 3; // deducting (, ), and function name
-				printf("Count: %d \n", count); 
+				//printf("Count: %d \n", count); 
 
 				t->code = concat(t->kid[2]->kid[0]->code, t->kid[2]->kid[2]->code); 
 				g = gen_2(O_CALL, a1, a2, NULL);
 				t->code = concat(t->code, g);
-				fprintf(output, "asn call: %s, %d, loc: %d\n", t->kid[2]->kid[0]->leaf->text, count, t->code->dest->offset ); 
 				for(i=0; i < count; i++)
 				{
 					fprintf(output, "parm:  loc: %d \n", pc); 
 					pc+=8; 
 				}
+				fprintf(output, "asn call: %s, %d, loc: %d\n", t->kid[2]->kid[0]->leaf->text, count, t->code->dest->offset ); 
+
 				
 			}
 			else if(t->kid[2]->prodrule == ADDITIVE_EXPRESSION_1 
@@ -158,7 +159,7 @@ void codegen(struct tree * t)
 			break; 
 		}
 		case JUMP_STATEMENT_1:
-			printf("Found jump statement.\n"); 
+			//printf("Found jump statement.\n"); 
 			if(t->kid[1]->leaf->category != IDENTIFIER)
 			{
 				// TODO: Do I need to find a location for constants?
