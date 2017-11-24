@@ -92,3 +92,57 @@ void print_syms_in_list( char *t)
 	//return false;
 		
 }
+
+void parm_entry_in_list(char *t, char* parent_text, int parent_type)
+{
+	struct entry *temp;
+	temp = start; 
+	
+	while(temp != NULL)
+	{
+		if(strcmp(temp->sym_table_name, t) == 0)
+		{
+            //printf(" parent text: %s, type: %d\n", parent_text, parent_type); 
+			if(parent_type > 0 && parent_type != temp->typ)
+			{
+				printf("Problem here.\n"); 
+			}
+			printf("    %s %d\n", temp->name, temp->typ); 
+
+		}
+		temp = temp->next;
+		
+	}
+
+		
+}
+
+int check_syms_in_list( char *t, int type)
+{
+	struct entry *temp;
+	temp = start; 
+	
+	while(temp != NULL)
+	{
+		if(strcmp(temp->sym_table_name, t) == 0)
+		{
+		//printf("    %s %d\n", temp->name, temp->typ); 
+		if(temp->typ > 0 && type != temp->typ)
+		{
+			//printf("Error %d is not equal to %d\n", type, temp->typ); 
+			return 0;
+		}
+		if(temp->typ > 0 && type == temp->typ)
+		{
+			// only runs through it once.
+			//printf("Correct %d is equal to %d\n", type, temp->typ); 
+			return 1;
+		}
+		
+		}
+		temp = temp->next;
+		
+	}
+	return 1;
+		
+}

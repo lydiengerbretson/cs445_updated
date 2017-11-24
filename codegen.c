@@ -17,8 +17,11 @@ void codegen(struct tree * t)
    
    // TODO: POSTFIX_EXPRESSION_2 - Done
    // TODO: Strings...
+   // TODO: More functions and parameters
+   // TODO: cout << "hello world" << endl;
    // TODO: JUMP_STATEMENT_1 - Done
    // TODO: RElATIONAL_EXPRESSION_1
+   // TODO: Classes
 
    if (t==NULL) 
    {
@@ -184,6 +187,12 @@ void codegen(struct tree * t)
 			t->code = concat(t->code, g);
 			
 			fprintf(output, "call: loc: %s %d  \n", t->kid[0]->leaf->text, t->code->dest->offset );
+			break; 
+		}
+		case SHIFT_EXPRESSION_1:
+		{
+			printf("hey there.\n"); 
+			fprintf(output, "shift: %s\n", t->kid[2]->leaf->text); 
 			break; 
 		}
 		default:

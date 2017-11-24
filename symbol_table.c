@@ -146,6 +146,7 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
   char * func_name = NULL;
   char * class_name = NULL;
   static bool direct_declare = false;
+    static bool is_constructor = false; 
 
   
   if ( !t ) {
@@ -323,20 +324,50 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 				type = find_type_in_list(t->kid[0]->leaf->text, scope->name);
 			}
 			type_add_check(t->kid[2], scope->name, type);
+			if(t->kid[2]->kid[2]->prodrule == POSTFIX_EXPRESSION_2)
+			{
+				//printf("Checking assignment statement.\n"); 
+				parameter_check(t->kid[2]->kid[2], scope); 
+			}
+			if(t->kid[2]->kid[0]->prodrule == POSTFIX_EXPRESSION_2)
+			{
+				//printf("Checking assignment statement.\n"); 
+				parameter_check(t->kid[2]->kid[0], scope); 
+			}
 
 		}      
 		else 
 		{
-			// left and right hand is already checked for classes...
+			 // checking left hand side of assignment expression
+			 // right hand is already checked for classes...
 			 if(t->kid[2]->prodrule != POSTFIX_EXPRESSION_4)
 			 {
-			  // check left hand side of  assignment expression 
-				checkundeclared(t->kid[0], scope); 
-			  // checking right hand side of assignment expression 
-				checkundeclared(t->kid[2], scope);		
-			 			
-				type_assign_check(t, scope->name);
-			 }		
+				 //printf("exit 1\n"); 
+                 //print_tables(2);
+				 for(i=0; i<TABLE_SIZE; i++)
+				 {
+					 if(class_tables[i]) // check if there are even class tables
+					 {
+						if(find_sym_in_list(t->kid[0]->leaf->text, class_tables[i]->name))
+						{
+							//printf("yay!\n"); 
+							is_constructor = true; 
+							break; 
+						}
+
+					 }
+				 }
+				 if(!is_constructor)
+				 {
+
+					checkundeclared(t->kid[0], scope); 
+					// checking right hand side of assignment expression
+					printf("exit 2\n"); 
+					checkundeclared(t->kid[2], scope);		
+			 		printf("exit 3\n"); 	
+					type_assign_check(t, scope->name);
+				 }
+			 }	
 			
 		}
 		break;	
@@ -352,7 +383,8 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		 // checking if a function has been declared in the global scope
 		 if(t->kid[0] != NULL || t->kid[0]->leaf->text != NULL)
 		 {
-			if(strcmp(t->kid[0]->leaf->text, "printf") != 0 && (strcmp(t->kid[0]->leaf->text, "scanf") != 0 )) // slightly cheating here
+			if(strcmp(t->kid[0]->leaf->text, "printf") != 0 && (strcmp(t->kid[0]->leaf->text, "scanf") != 0 )) 
+				// 	slightly cheating here
 				checkundeclared(t->kid[0], GLOBAL_TABLE); 
 				
 		 }
@@ -720,6 +752,61 @@ void populate_params(struct tree *t, SymbolTable scope, int type)
 			insert_sym(t->leaf->text, scope, type);
 			break;
 	}
+}
+
+void parameter_check(struct tree *t, SymbolTable ptable)
+{
+    int j, i; 
+	//int type1; 
+	int type2; 
+	// TODO: Get help from Tovah ! 
+
+	if(!t)
+	{
+      // do nothing
+	}
+	else 
+	{ 
+	  if (t->nkids == 0)
+	  { 
+		  //type1 = find_type_in_list(t->leaf->text, ptable->name); 
+		  
+		  //printf(" LEAF: \"%s\": %d curr table: %s type: %d\n",
+				 // t->leaf->text, t->leaf->category, ptable->name, type1);
+
+
+		  //parm_entry_in_list(ptable->name, t->leaf->text, type1);
+		  for(i=0; i<TABLE_SIZE; i++)
+		  {
+			if(t->leaf->category == IDENTIFIER)
+			{
+				type2 = find_type_in_list(t->leaf->text, ptable->name ); 
+				//printf("%s must be a param: %d\n", t->leaf->text, type2); 
+				if(t->leaf->category == IDENTIFIER && type2 == 0 && strcmp(t->leaf->text, local_tables[i]->name) != 0)
+				{
+					semanticerror("Incorrect parameter:", t); 
+					break; 
+				}
+
+			    break; 
+				
+			}
+
+		  }
+	       
+		  
+
+	  }
+	  else
+	  {
+
+		for(j=0; j<t->nkids; j++)
+		{
+			parameter_check(t->kid[j], ptable);
+		}
+		
+	  }
+	}	
 }
 
 
