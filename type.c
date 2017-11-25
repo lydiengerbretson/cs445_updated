@@ -249,8 +249,8 @@ void type_add_check(struct tree *t, char *table_name, int base_type)
 		  {
 			  type1 = find_type_in_list(t->leaf->text, table_name);
 		  }
-		  printf(" LEAF: \"%s\": %d %d %s\n",
-				 t->leaf->text, t->leaf->category, type1, table_name); 
+		 // printf(" LEAF: \"%s\": %d %d %s\n",
+				// t->leaf->text, t->leaf->category, type1, table_name); 
 		  if(t->leaf->category == IDENTIFIER)
 		  {
 			  

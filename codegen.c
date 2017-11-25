@@ -18,9 +18,10 @@ void codegen(struct tree * t)
    // TODO: POSTFIX_EXPRESSION_2 - Done
    // TODO: Strings...
    // TODO: More functions and parameters
-   // TODO: cout << "hello world" << endl;
+   // TODO: cout << "hello world" << endl; - Done
    // TODO: JUMP_STATEMENT_1 - Done
    // TODO: RElATIONAL_EXPRESSION_1
+   // TODO: While loops 
    // TODO: Classes
 
    if (t==NULL) 
@@ -50,7 +51,7 @@ void codegen(struct tree * t)
 	    case FUNCTION_DEFINITION_1:
 		{
            //printf("Found func def!\n"); 
-		   fprintf(output, "*TAC for %s is listed above.* \n", t->kid[1]->kid[0]->leaf->text); 
+		   fprintf(output, ".code: %s listed above. \n", t->kid[1]->kid[0]->leaf->text); 
 			break;
 		}
 		case INIT_DECLARATOR_1:
@@ -93,14 +94,14 @@ void codegen(struct tree * t)
 				t->code = concat(t->code, g);
 				for(i=0; i < count; i++)
 				{
-					fprintf(output, "	PARAM:  loc: %d \n", pc); 
+					fprintf(output, "	param	loc: %d \n", pc); 
 					pc+=8; 
 				}
-				fprintf(output, "	ASN CALL: %s, %d, loc: %d\n", t->kid[2]->kid[0]->leaf->text, count, t->code->dest->offset ); 
+				fprintf(output, "	call    %s, %d, loc: %d\n", t->kid[2]->kid[0]->leaf->text, count, t->code->dest->offset ); 
 
 				
 			}
-			else if(t->kid[2]->prodrule == ADDITIVE_EXPRESSION_1 
+			else if(t->kid[2]->prodrule == ADDITIVE_EXPRESSION_1
 			     || t->kid[2]->prodrule == MULTIPLICATIVE_EXPRESSION_1)
 			{
  
@@ -112,27 +113,38 @@ void codegen(struct tree * t)
 			// right side of equation operands
 		    a1 = find_addr_in_list( t->kid[2]->kid[0]->leaf->text, t->kid[2]->kid[0]->leaf->category); 
 		    a2 = find_addr_in_list( t->kid[2]->kid[2]->leaf->text, t->kid[2]->kid[2]->leaf->category); 
-			t->code = concat(t->kid[0]->code, t->kid[2]->code);
-		    g = gen_2(O_ASN, a3, a1, a2);
-		    t->code = concat(t->code, g);
+
 			
 		    // write to file 
-			fprintf(output, "	ADD: "); 
+			if(t->kid[2]->prodrule == MULTIPLICATIVE_EXPRESSION_1)
+			{
+				fprintf(output, "	mul"); 
+				t->code = concat(t->kid[0]->code, t->kid[2]->code);
+				g = gen_2(O_MUL, a3, a1, a2);
+				t->code = concat(t->code, g);
+			}
+			else
+			{
+				fprintf(output, "	add"); 
+				t->code = concat(t->kid[0]->code, t->kid[2]->code);
+				g = gen_2(O_ADD, a3, a1, a2);
+				t->code = concat(t->code, g);
+			}
 			if(t->code->src1->is_const && t->code->src2->is_const)
 			{
-				fprintf(output, " loc: %d const: %s const: %s\n", t->code->dest->offset,t->code->src1->var_name, t->code->src2->var_name); 
+				fprintf(output, "	loc: %d const: %s const: %s\n", t->code->dest->offset,t->code->src1->var_name, t->code->src2->var_name); 
 			}
 			else if(t->code->src1->is_const && !t->code->src2->is_const)
 			{
-				fprintf(output, " loc: %d const: %s loc: %d\n", t->code->dest->offset,t->code->src1->var_name, t->code->src2->offset); 
+				fprintf(output, "	loc %d const: %s loc: %d\n", t->code->dest->offset,t->code->src1->var_name, t->code->src2->offset); 
 			}
 			else if(!t->code->src1->is_const && t->code->src2->is_const)
 			{
-				fprintf(output, " loc: %d loc: %d const: %s\n", t->code->dest->offset,t->code->src1->offset, t->code->src2->var_name); 
+				fprintf(output, "	loc: %d loc: %d const: %s\n", t->code->dest->offset,t->code->src1->offset, t->code->src2->var_name); 
 			}
 			else 
 			{
-				fprintf(output, " loc: %d loc: %d loc: %d\n", t->code->dest->offset,t->code->src1->offset, t->code->src2->offset); 
+				fprintf(output, "	loc: %d loc: %d loc: %d\n", t->code->dest->offset,t->code->src1->offset, t->code->src2->offset); 
 			}
 			}
 			else
@@ -151,11 +163,11 @@ void codegen(struct tree * t)
 
 				if(t->code->src1->is_const)
 				{
-					fprintf(output, "	ASN:  loc: %d const: %s   \n", t->code->dest->offset, t->kid[2]->leaf->text );
+					fprintf(output, "	asn     loc: %d const: %s   \n", t->code->dest->offset, t->kid[2]->leaf->text );
 				}
 				else
 				{
-					fprintf(output, "	ASN:  loc: %d loc: %d   \n", t->code->dest->offset, t->code->src1->offset );
+					fprintf(output, "	asn     loc: %d loc: %d   \n", t->code->dest->offset, t->code->src1->offset );
 				}
 
 			}
@@ -166,7 +178,7 @@ void codegen(struct tree * t)
 			if(t->kid[1]->leaf->category != IDENTIFIER)
 			{
 				// TODO: Do I need to find a location for constants?
-				fprintf(output, "	RET: const: %s   \n", t->kid[1]->leaf->text );
+				fprintf(output, "	ret     const: %s   \n", t->kid[1]->leaf->text );
 			}
 			else
 			{
@@ -175,7 +187,7 @@ void codegen(struct tree * t)
 				a1 = find_addr_in_list(t->kid[1]->leaf->text, t->kid[1]->leaf->category); 
 				g = gen_2(O_RET, a1, NULL, NULL);
 				t->code = concat(t->code, g);
-				fprintf(output, "	RET: loc: %d  \n", t->code->dest->offset );
+				fprintf(output, "	ret     loc: %d  \n", t->code->dest->offset );
 			}
 			break; 
 		case POSTFIX_EXPRESSION_2:
@@ -185,8 +197,7 @@ void codegen(struct tree * t)
 			a1 = find_addr_in_list(t->kid[0]->leaf->text, t->kid[0]->leaf->category); 
 			g = gen_2(O_CALL, a1, NULL, NULL);
 			t->code = concat(t->code, g);
-			
-			fprintf(output, "	CALL: loc: %s %d  \n", t->kid[0]->leaf->text, t->code->dest->offset );
+			fprintf(output, "	call    %s, loc: %d  \n", t->kid[0]->leaf->text, t->code->dest->offset );
 			break; 
 		}
 		case SHIFT_EXPRESSION_1:
@@ -195,7 +206,14 @@ void codegen(struct tree * t)
 			struct TAC_2 *g;
 			if(t->kid[2]->leaf->category == IDENTIFIER)
 			{
+				if(strcmp(t->kid[2]->leaf->text, "endl") != 0)
+				{
 				// location
+				a1 = find_addr_in_list(t->kid[2]->leaf->text, t->kid[2]->leaf->category); 
+				g = gen_2(O_SHIFT, a1, NULL, NULL);
+				t->code = concat(t->code, g);
+				fprintf(output, "	shift   loc: %d  \n",  t->code->dest->offset );
+				}
 			}
 			else 
 			{
@@ -203,9 +221,65 @@ void codegen(struct tree * t)
 				a1 = find_addr_in_list(t->kid[2]->leaf->text, t->kid[2]->leaf->category); 
 				g = gen_2(O_SHIFT, a1, NULL, NULL);
 				t->code = concat(t->code, g);
-				fprintf(output, "	SHIFT: const: %s loc: %d  \n", t->kid[2]->leaf->text, t->code->dest->offset );
+				fprintf(output, "	shift   const: %s loc: %d  \n", t->kid[2]->leaf->text, t->code->dest->offset );
 			}
 			break; 
+		}
+		case SELECTION_STATEMENT_1:
+		{
+			struct addr *a1; 
+			struct TAC_2 *g;
+			
+			if(t->kid[2]->prodrule == EQUALITY_EXPRESSION_1
+			|| t->kid[2]->prodrule == RELATIONAL_EXPRESSION_1)
+			{
+               //BLT,...	
+			   //if x rop y then goto L 	
+			   //binary conditional jump to L 
+			    struct addr *a2;
+				a1 = find_addr_in_list(t->kid[2]->kid[0]->leaf->text, t->kid[2]->kid[0]->leaf->category); 
+				a2 = find_addr_in_list(t->kid[2]->kid[2]->leaf->text, t->kid[2]->kid[2]->leaf->category); 
+				struct addr *L1 = malloc(sizeof(struct addr)); 
+				L1->var_name = "label_1";
+				L1->region = R_LABEL;
+				L1->offset = 0; 
+				L1->next = NULL; 
+				g = gen_2(O_BLT, L1, a1, a2); 
+				t->code = concat(t->code, g); 
+				fprintf(output, "	blt     loc: %d, goto: %d \n", t->code->dest->offset, t->code->dest->region );
+			}
+			else if(t->kid[2]->prodrule == EQUALITY_EXPRESSION_2)
+			{
+				// inequality expression
+				// BNIF	if !x then goto L 	
+				// unary negative conditional jump to L 
+				struct addr *a2;
+				a1 = find_addr_in_list(t->kid[2]->kid[0]->leaf->text, t->kid[2]->kid[0]->leaf->category); 
+				a2 = find_addr_in_list(t->kid[2]->kid[2]->leaf->text, t->kid[2]->kid[2]->leaf->category); 
+				struct addr *L1 = malloc(sizeof(struct addr)); 
+				L1->var_name = "label_1";
+				L1->region = R_LABEL;
+				L1->offset = 0; 
+				L1->next = NULL; 
+				g = gen_2(O_BNIF, L1, a1, a2); 
+				t->code = concat(t->code, g); 
+				fprintf(output, "	bnif    loc: %d, goto: %d \n", t->code->dest->offset, t->code->dest->region );
+			}
+			else
+			{
+				// BIF	if x then goto L 	
+				// unary conditional jump to L 
+				a1 = find_addr_in_list(t->kid[2]->leaf->text, t->kid[2]->leaf->category); 
+				struct addr *L1 = malloc(sizeof(struct addr)); 
+				L1->var_name = "label_1";
+				L1->region = R_LABEL;
+				L1->offset = 0; 
+				L1->next = NULL; 
+				g = gen_2(O_BIF, L1, a1, NULL); 
+				t->code = concat(t->code, g); 
+				fprintf(output, "	bif     %s, loc: %d, goto: %d \n", t->kid[2]->leaf->text, t->code->dest->offset, t->code->dest->region );
+			}
+			
 		}
 		default:
 		{

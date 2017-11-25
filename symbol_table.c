@@ -362,9 +362,9 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
 					checkundeclared(t->kid[0], scope); 
 					// checking right hand side of assignment expression
-					printf("exit 2\n"); 
+					//printf("exit 2\n"); 
 					checkundeclared(t->kid[2], scope);		
-			 		printf("exit 3\n"); 	
+			 		//printf("exit 3\n"); 	
 					type_assign_check(t, scope->name);
 				 }
 			 }	
@@ -731,7 +731,7 @@ void populate_init_decls(struct tree *t, SymbolTable scope, int type)
 				
 
 			 // for now
-			printf("---Inserting %s with mem addr %d and region: %d ---\n", t->leaf->text, t->leaf->address.offset, t->leaf->address.region);
+			//printf("---Inserting %s with mem addr %d and region: %d ---\n", t->leaf->text, t->leaf->address.offset, t->leaf->address.region);
 			insert_sym(t->leaf->text, scope, type);
 			
 			break;

@@ -22,8 +22,9 @@ int main()
 	//int x; 
 	foo(); 
 	yay = 10 + 2;  
+	g = zoo + 1.0; 
 	yay = use_foo(x, 1, 2, 3, 4); 
-	cout << "hello world\n"; 
+	cout << "hello world\n" << yay << endl; 
 	//yay = foo(); 
 	//yay = use_foo(1); 
 	//int x;
@@ -34,9 +35,13 @@ int main()
 	//x = yay + zoo;
 
 	sstr++;
+	if(1)
+	{
+		// 1
+	}
 	
 	//g = foo();
-	if (yay == 1)
+	if (yay != 1)
 	{
 		// yay
 	}

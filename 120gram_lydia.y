@@ -376,7 +376,7 @@ relational_expression:
 equality_expression:
 	relational_expression {$$ = $1;}
 	| equality_expression EQ relational_expression {$$ = create_tree("equality_expression_1", EQUALITY_EXPRESSION_1, 3, $1, $2, $3);}
-	| equality_expression NOTEQ relational_expression {$$ = create_tree("equality_expression_2", EQUALITY_EXPRESSION_1, 3, $1, $2, $3);}
+	| equality_expression NOTEQ relational_expression {$$ = create_tree("equality_expression_2", EQUALITY_EXPRESSION_2, 3, $1, $2, $3);}
 	;
 
 and_expression:
