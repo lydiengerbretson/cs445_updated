@@ -50,7 +50,7 @@ void codegen(struct tree * t)
 	    case FUNCTION_DEFINITION_1:
 		{
            //printf("Found func def!\n"); 
-		   fprintf(output, "%s:\n", t->kid[1]->kid[0]->leaf->text); 
+		   fprintf(output, "*TAC for %s is listed above.* \n", t->kid[1]->kid[0]->leaf->text); 
 			break;
 		}
 		case INIT_DECLARATOR_1:
@@ -93,10 +93,10 @@ void codegen(struct tree * t)
 				t->code = concat(t->code, g);
 				for(i=0; i < count; i++)
 				{
-					fprintf(output, "parm:  loc: %d \n", pc); 
+					fprintf(output, "	PARAM:  loc: %d \n", pc); 
 					pc+=8; 
 				}
-				fprintf(output, "asn call: %s, %d, loc: %d\n", t->kid[2]->kid[0]->leaf->text, count, t->code->dest->offset ); 
+				fprintf(output, "	ASN CALL: %s, %d, loc: %d\n", t->kid[2]->kid[0]->leaf->text, count, t->code->dest->offset ); 
 
 				
 			}
@@ -117,7 +117,7 @@ void codegen(struct tree * t)
 		    t->code = concat(t->code, g);
 			
 		    // write to file 
-			fprintf(output, "add: "); 
+			fprintf(output, "	ADD: "); 
 			if(t->code->src1->is_const && t->code->src2->is_const)
 			{
 				fprintf(output, " loc: %d const: %s const: %s\n", t->code->dest->offset,t->code->src1->var_name, t->code->src2->var_name); 
@@ -151,11 +151,11 @@ void codegen(struct tree * t)
 
 				if(t->code->src1->is_const)
 				{
-					fprintf(output, "asn:  loc: %d const: %s   \n", t->code->dest->offset, t->kid[2]->leaf->text );
+					fprintf(output, "	ASN:  loc: %d const: %s   \n", t->code->dest->offset, t->kid[2]->leaf->text );
 				}
 				else
 				{
-					fprintf(output, "asn:  loc: %d loc: %d   \n", t->code->dest->offset, t->code->src1->offset );
+					fprintf(output, "	ASN:  loc: %d loc: %d   \n", t->code->dest->offset, t->code->src1->offset );
 				}
 
 			}
@@ -166,7 +166,7 @@ void codegen(struct tree * t)
 			if(t->kid[1]->leaf->category != IDENTIFIER)
 			{
 				// TODO: Do I need to find a location for constants?
-				fprintf(output, "return: const: %s   \n", t->kid[1]->leaf->text );
+				fprintf(output, "	RET: const: %s   \n", t->kid[1]->leaf->text );
 			}
 			else
 			{
@@ -175,7 +175,7 @@ void codegen(struct tree * t)
 				a1 = find_addr_in_list(t->kid[1]->leaf->text, t->kid[1]->leaf->category); 
 				g = gen_2(O_RET, a1, NULL, NULL);
 				t->code = concat(t->code, g);
-				fprintf(output, "return: loc: %d  \n", t->code->dest->offset );
+				fprintf(output, "	RET: loc: %d  \n", t->code->dest->offset );
 			}
 			break; 
 		case POSTFIX_EXPRESSION_2:
@@ -186,13 +186,25 @@ void codegen(struct tree * t)
 			g = gen_2(O_CALL, a1, NULL, NULL);
 			t->code = concat(t->code, g);
 			
-			fprintf(output, "call: loc: %s %d  \n", t->kid[0]->leaf->text, t->code->dest->offset );
+			fprintf(output, "	CALL: loc: %s %d  \n", t->kid[0]->leaf->text, t->code->dest->offset );
 			break; 
 		}
 		case SHIFT_EXPRESSION_1:
 		{
-			printf("hey there.\n"); 
-			fprintf(output, "shift: %s\n", t->kid[2]->leaf->text); 
+			struct addr *a1; 
+			struct TAC_2 *g;
+			if(t->kid[2]->leaf->category == IDENTIFIER)
+			{
+				// location
+			}
+			else 
+			{
+				// constant 
+				a1 = find_addr_in_list(t->kid[2]->leaf->text, t->kid[2]->leaf->category); 
+				g = gen_2(O_SHIFT, a1, NULL, NULL);
+				t->code = concat(t->code, g);
+				fprintf(output, "	SHIFT: const: %s loc: %d  \n", t->kid[2]->leaf->text, t->code->dest->offset );
+			}
 			break; 
 		}
 		default:

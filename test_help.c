@@ -23,7 +23,7 @@ int main()
 	foo(); 
 	yay = 10 + 2;  
 	yay = use_foo(x, 1, 2, 3, 4); 
-	cout << "hello world\n" << endl; 
+	cout << "hello world\n"; 
 	//yay = foo(); 
 	//yay = use_foo(1); 
 	//int x;

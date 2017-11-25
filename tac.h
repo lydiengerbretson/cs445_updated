@@ -60,6 +60,7 @@ struct TAC_2 *start_TAC;
 #define O_PARM  3019
 #define O_CALL  3020
 #define O_RET   3021
+#define O_SHIFT 3022
 /* declarations/pseudo instructions */
 #define D_GLOB  3051
 #define D_PROC  3052
