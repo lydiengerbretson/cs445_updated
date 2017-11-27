@@ -24,12 +24,6 @@ struct addr *start_addr;
 #define R_LABEL  2004 /* pseudo-region for labels in the code region */
 #define R_CONST  2005 /* pseudo-region for immediate mode constants */
 
-struct TAC {
-   int opcode;
-   struct addr dest, src1, src2;
-   struct TAC *next;
-};
-
 struct TAC_2 {
    int opcode;
    struct addr *dest, *src1, *src2;

@@ -10,6 +10,7 @@
 #include "utility_func.h"
 
 FILE *output;
+FILE *asm_output; 
 
 void codegen(struct tree * t)
 {
@@ -20,8 +21,8 @@ void codegen(struct tree * t)
    // TODO: More functions and parameters
    // TODO: cout << "hello world" << endl; - Done
    // TODO: JUMP_STATEMENT_1 - Done
-   // TODO: RElATIONAL_EXPRESSION_1
-   // TODO: While loops 
+   // TODO: RElATIONAL_EXPRESSION_1 - Done
+   // TODO: While loops - Done
    // TODO: Classes
 
    if (t==NULL) 
@@ -226,6 +227,7 @@ void codegen(struct tree * t)
 			break; 
 		}
 		case SELECTION_STATEMENT_1:
+		case ITERATION_STATEMENT_1:
 		{
 			struct addr *a1; 
 			struct TAC_2 *g;
@@ -294,6 +296,64 @@ void codegen(struct tree * t)
 
 }
 
+void finalgen(struct tree *t)
+{
+   int j; 
+   if (t==NULL) 
+   {
+	   return;
+   }
+   else 
+   { 
+	  if (t->nkids == 0)
+	  {
+          // do nothing
+	  }
+	  else
+	  {
+ 
+		for(j=0; j<t->nkids; j++)
+		{
+			finalgen(t->kid[j]);
+		}
+	  }
+    }
+	// final code generation here 
+	if(t->code)
+	{
+		switch(t->code->opcode)
+		{	
+			case O_ADD:
+				printf("Found ADD: \n"); 
+				// write to .s file
+				printf(" t->code->dest->region: %d\n t->code->dest->offset: %d\n t->code->dest->var_name: %s\n", t->code->dest->region, t->code->dest->offset,t->code->dest->var_name);  
+				// for local variables
+				// movl -4(%rbp), %eax
+                // movl -8(%rbp), %edx
+                // leal (%rdx,%rax), %eax
+                // movl %eax, -12(%rbp)
+				break; 
+			case O_ASN:
+				printf("Found ASN: \n"); 
+				// write to .s file
+				printf(" t->code->dest->region: %d\n t->code->dest->offset: %d\n t->code->dest->var_name: %s\n", t->code->dest->region, t->code->dest->offset,t->code->dest->var_name); 
+				break;
+			case O_CALL:
+				printf("Found CALL: \n"); 
+				// write to .s file 
+				printf(" t->code->dest->region: %d\n t->code->dest->offset: %d\n t->code->dest->var_name: %s\n", t->code->dest->region, t->code->dest->offset,t->code->dest->var_name); 
+				break;
+			case O_BIF: 
+				printf("Found BIF: \n"); 
+				// write to .s file
+				printf(" t->code->dest->region: %d\n t->code->dest->offset: %d\n t->code->dest->var_name: %s\n", t->code->dest->region, t->code->dest->offset,t->code->dest->var_name); 
+				break;
+			default: 
+				break; 
+		}
+	}
+}
+
 int new_temp_addr(struct tree *t, int type)
 {
 	static int size = 0;
@@ -301,6 +361,9 @@ int new_temp_addr(struct tree *t, int type)
 	
 	switch (t->leaf->category)
 	{
+		case CHARACTER: 
+			size += 1; 
+			return size; 
 		case INTEGER: 
 		    //printf("found an int.\n"); 
 			// const 

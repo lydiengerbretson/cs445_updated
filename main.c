@@ -16,10 +16,12 @@ int yylex_destroy();
 int yy_create_buffer( FILE *file, int size );
 void yypush_buffer_state ( int buffer );
 void codegen(struct tree * t);
+void finalgen(struct tree * t); 
 
 // extern variables in 120lex_lydia.l
 extern FILE *yyin; 
 extern FILE *output;
+extern FILE *asm_output; 
 extern char *yytext; 
 extern struct token *YYTOKEN; 
 extern int yyparse(); 
@@ -67,6 +69,7 @@ int main(int argc, char **argv)
 
 		// helper function adapted from: https://stackoverflow.com/questions/624990/code-to-change-file-extension-up-for-review
           char *fn = malloc(strlen(file_list[i]) + 4);
+		  char *afile = malloc(strlen(file_list[i]) + 4);
 		  char *temp_file = strdup(file_list[i]); 
 		  nLen = strlen(temp_file);
 		  if(nLen > 0)
@@ -83,11 +86,17 @@ int main(int argc, char **argv)
 		  }
 		  		  
 		  sprintf(fn, "%s.ic", temp_file);
+		  sprintf(afile, "%s.S", temp_file);
 		  fprintf(stdout, "File: %s\n", file_list[i]); 
 		  yyin = fopen(file_list[i], "r"); 
     
-          output = fopen(fn,"a");   
-		  //fprintf(output, "main: \n"); 
+          output = fopen(fn,"a"); 	
+		  asm_output = fopen(afile, "a"); 
+		  
+		  fprintf(asm_output, ".file:   \"%s\"\n", file_list[i]); 
+		  fprintf(asm_output, ".text\n");
+		  fprintf(asm_output, ".globl:  main\n");
+		  fprintf(asm_output, ".type:   main, @function\n");
 		  if(yyin == NULL)
 		  {
 			  fprintf(stderr, "File does not exist.\n"); 
@@ -118,6 +127,8 @@ int main(int argc, char **argv)
 			populate_symbol_table( YYPROGRAM , GLOBAL_TABLE );
 			//print_tree(YYPROGRAM, 0); 
 			codegen(YYPROGRAM); 
+			// final code generation
+			finalgen(YYPROGRAM); 
 			
 			 // print the names of the symbol tables for testing purposes
              //print_tables(1);
