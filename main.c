@@ -93,10 +93,14 @@ int main(int argc, char **argv)
           output = fopen(fn,"a"); 	
 		  asm_output = fopen(afile, "a"); 
 		  
-		  fprintf(asm_output, ".file:   \"%s\"\n", file_list[i]); 
-		  fprintf(asm_output, ".text\n");
-		  fprintf(asm_output, ".globl:  main\n");
-		  fprintf(asm_output, ".type:   main, @function\n");
+		  fprintf(asm_output, "\t.file:   \"%s\"\n", file_list[i]); 
+		  fprintf(asm_output, "\t.text\n");
+		  fprintf(asm_output, "\t.globl:  main\n");
+		  fprintf(asm_output, "\t.type:   main, @function\n");
+		  fprintf(asm_output, "main:\n");
+		  // One label for now...
+		  fprintf(asm_output, "LFB2:\n");
+		  
 		  if(yyin == NULL)
 		  {
 			  fprintf(stderr, "File does not exist.\n"); 

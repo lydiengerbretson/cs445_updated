@@ -311,8 +311,10 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 		     || t->kid[2]->prodrule == MULTIPLICATIVE_EXPRESSION_1)
 		{
 			// only finds the first thing in the additive expression
+            //printf("exit 4\n"); 
 
 			checkundeclared(t->kid[2]->kid[0], scope); 
+		
 			
 			// trying to process expressions with more than two operands
 			if(find_sym_in_list(t->kid[0]->leaf->text, "gt"))
@@ -359,7 +361,7 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 				 }
 				 if(!is_constructor)
 				 {
-
+                    //printf("exit 1\n"); 
 					checkundeclared(t->kid[0], scope); 
 					// checking right hand side of assignment expression
 					//printf("exit 2\n"); 
@@ -731,7 +733,7 @@ void populate_init_decls(struct tree *t, SymbolTable scope, int type)
 				
 
 			 // for now
-			//printf("---Inserting %s with mem addr %d and region: %d ---\n", t->leaf->text, t->leaf->address.offset, t->leaf->address.region);
+			printf("---Inserting %s with mem addr %d and region: %d ---\n", t->leaf->text, t->leaf->address.offset, t->leaf->address.region);
 			insert_sym(t->leaf->text, scope, type);
 			
 			break;

@@ -299,6 +299,7 @@ void codegen(struct tree * t)
 void finalgen(struct tree *t)
 {
    int j; 
+   int a;
    if (t==NULL) 
    {
 	   return;
@@ -324,29 +325,82 @@ void finalgen(struct tree *t)
 		switch(t->code->opcode)
 		{	
 			case O_ADD:
-				printf("Found ADD: \n"); 
+				/*printf("Found ADD: \n"); 
 				// write to .s file
 				printf(" t->code->dest->region: %d\n t->code->dest->offset: %d\n t->code->dest->var_name: %s\n", t->code->dest->region, t->code->dest->offset,t->code->dest->var_name);  
-				// for local variables
-				// movl -4(%rbp), %eax
-                // movl -8(%rbp), %edx
-                // leal (%rdx,%rax), %eax
-                // movl %eax, -12(%rbp)
+				printf(" t->code->src1->region: %d\n t->code->src1->offset: %d\n t->code->src1->var_name: %s\n", t->code->src1->region, t->code->src1->offset,t->code->src1->var_name); 
+				printf(" t->code->src2->region: %d\n t->code->src2->offset: %d\n t->code->src2->var_name: %s\n", t->code->src2->region, t->code->src2->offset,t->code->src2->var_name); */
+				
+			    // local variables
+				// TODO: global variables
+				fprintf(asm_output, "---ADDITION---\n"); 
+				if(t->code->dest->region == R_LOCAL)
+				{
+					// move first operand to a register
+					if(t->code->src1->is_const)
+					{
+						// make float an integer
+						// type "promote" it to an integer... 
+						a = atoi( t->code->src1->var_name); 
+						fprintf(asm_output, "\t movl $%d, %%eax\n", a);
+						//printf("%s \n", t->code->src1->var_name);
+
+					}
+					else
+					{
+						fprintf(asm_output, "\t movl -%d(%%rbp), %%eax\n", t->code->src1->offset);
+					}
+
+					// move second operand to a register 
+					if(t->code->src2->is_const)
+					{
+						// make float an integer
+						// type "promote" it to an integer... 
+						a = atoi( t->code->src2->var_name); 
+						fprintf(asm_output, "\t movl $%d, %%edx\n", a);
+					}
+					else
+					{
+						fprintf(asm_output, "\t movl -%d(%%rbp), %%edx\n", t->code->src2->offset);
+					}
+					// not using leal..
+					fprintf(asm_output, "\t addl %%edx, %%eax\n");
+					fprintf(asm_output, "\t movl %%eax, -%d(%%rbp)\n", t->code->dest->offset);
+				}
+				if(t->code->dest->region == R_GLOBAL)
+				{
+					// do something
+				}
 				break; 
 			case O_ASN:
 				printf("Found ASN: \n"); 
 				// write to .s file
-				printf(" t->code->dest->region: %d\n t->code->dest->offset: %d\n t->code->dest->var_name: %s\n", t->code->dest->region, t->code->dest->offset,t->code->dest->var_name); 
+				//movl -4(%rbp), %eax
+                //movl %eax, -8(%rbp) 
+				printf(" t->code->dest->region: %d\n t->code->dest->offset: %d\n t->code->dest->var_name: %s\n t->code->src1->var_name: %s\n", t->code->dest->region, t->code->dest->offset,t->code->dest->var_name, t->code->src1->var_name); 
+				fprintf(asm_output, "---ASSIGNMENT---\n"); 
+				if(t->code->src1->is_const)
+				{
+					a = atoi( t->code->src1->var_name); 
+				    fprintf(asm_output, "\t movl $%d, %%eax\n", a);
+
+				}
+				else
+				{
+					fprintf(asm_output, "\t movl -%d(%%rbp), %%eax\n", t->code->src1->offset);
+					
+				}
+				fprintf(asm_output, "\t movl %%eax, -%d(%%rbp)\n", t->code->dest->offset); 
 				break;
 			case O_CALL:
 				printf("Found CALL: \n"); 
 				// write to .s file 
-				printf(" t->code->dest->region: %d\n t->code->dest->offset: %d\n t->code->dest->var_name: %s\n", t->code->dest->region, t->code->dest->offset,t->code->dest->var_name); 
+				//printf(" t->code->dest->region: %d\n t->code->dest->offset: %d\n t->code->dest->var_name: %s\n", t->code->dest->region, t->code->dest->offset,t->code->dest->var_name); 
 				break;
 			case O_BIF: 
 				printf("Found BIF: \n"); 
 				// write to .s file
-				printf(" t->code->dest->region: %d\n t->code->dest->offset: %d\n t->code->dest->var_name: %s\n", t->code->dest->region, t->code->dest->offset,t->code->dest->var_name); 
+				//printf(" t->code->dest->region: %d\n t->code->dest->offset: %d\n t->code->dest->var_name: %s\n", t->code->dest->region, t->code->dest->offset,t->code->dest->var_name); 
 				break;
 			default: 
 				break; 
@@ -362,18 +416,18 @@ int new_temp_addr(struct tree *t, int type)
 	switch (t->leaf->category)
 	{
 		case CHARACTER: 
-			size += 1; 
+			size += 1; // should this be 5??
 			return size; 
 		case INTEGER: 
 		    //printf("found an int.\n"); 
 			// const 
-			size += 8;
+			size += 4;
 			return size;
 			//break; 
 		case FLOATING: 
 			// const 
 		    //printf("found a float.\n"); 
-			size += 16;
+			size += 8;
 			return size; 
 		case STRING:
 		    // string 
@@ -387,11 +441,11 @@ int new_temp_addr(struct tree *t, int type)
 				case 0: // nothing 
 					return 0;
 				case 1: // integer
-					return size += 8;
+					return size += 4;
 				case 2: // char
 					return size += 1; 			
 				case 5: // floating
-					return size += 16;
+					return size += 8;
 				default:
 				    size = 0;
 					return size;
