@@ -17,6 +17,9 @@ int main()
 	ofstream cin; 
     double zoo; // shows up as double if #include string is commented!!
 	int yay;
+	char ch;
+	
+	ch = '\n';
     double g;
 	g = 1.0;
 	g = zoo; 
@@ -25,7 +28,7 @@ int main()
 	yay = g + zoo;  
 	g = zoo + 1.0; 
 	yay = use_foo(x, 1, 2, 3, 4); 
-	//cout << "hello world\n" << yay << endl; 
+	cout << yay  << endl; 
 	//yay = foo(); 
 	//yay = use_foo(1); 
 	//int x;

@@ -342,13 +342,13 @@ void finalgen(struct tree *t)
 						// make float an integer
 						// type "promote" it to an integer... 
 						a = atoi( t->code->src1->var_name); 
-						fprintf(asm_output, "\t movl $%d, %%eax\n", a);
+						fprintf(asm_output, "\t movl    $%d, %%eax\n", a);
 						//printf("%s \n", t->code->src1->var_name);
 
 					}
 					else
 					{
-						fprintf(asm_output, "\t movl -%d(%%rbp), %%eax\n", t->code->src1->offset);
+						fprintf(asm_output, "\t movl    -%d(%%rbp), %%eax\n", t->code->src1->offset);
 					}
 
 					// move second operand to a register 
@@ -357,15 +357,15 @@ void finalgen(struct tree *t)
 						// make float an integer
 						// type "promote" it to an integer... 
 						a = atoi( t->code->src2->var_name); 
-						fprintf(asm_output, "\t movl $%d, %%edx\n", a);
+						fprintf(asm_output, "\t movl    $%d, %%edx\n", a);
 					}
 					else
 					{
-						fprintf(asm_output, "\t movl -%d(%%rbp), %%edx\n", t->code->src2->offset);
+						fprintf(asm_output, "\t movl    -%d(%%rbp), %%edx\n", t->code->src2->offset);
 					}
 					// not using leal..
-					fprintf(asm_output, "\t addl %%edx, %%eax\n");
-					fprintf(asm_output, "\t movl %%eax, -%d(%%rbp)\n", t->code->dest->offset);
+					fprintf(asm_output, "\t addl    %%edx, %%eax\n");
+					fprintf(asm_output, "\t movl    %%eax, -%d(%%rbp)\n", t->code->dest->offset);
 				}
 				if(t->code->dest->region == R_GLOBAL)
 				{
@@ -381,16 +381,39 @@ void finalgen(struct tree *t)
 				fprintf(asm_output, "---ASSIGNMENT---\n"); 
 				if(t->code->src1->is_const)
 				{
-					a = atoi( t->code->src1->var_name); 
-				    fprintf(asm_output, "\t movl $%d, %%eax\n", a);
+					
+					if(t->kid[2]->leaf->category == CHARACTER)
+					{
+						// change character to ascii :)
+						int ascii;
+                        ascii = (int)t->kid[2]->leaf->text[1]; 
+						fprintf(asm_output, "\t movl    $%d, %%eax\n", ascii);
+					}
+					else
+					{
+						// then it is a integer or float 
+						a = atoi( t->code->src1->var_name); 
+						fprintf(asm_output, "\t movl    $%d, %%eax\n", a);
+					}
 
 				}
 				else
 				{
-					fprintf(asm_output, "\t movl -%d(%%rbp), %%eax\n", t->code->src1->offset);
+					fprintf(asm_output, "\t movl    -%d(%%rbp), %%eax\n", t->code->src1->offset);
 					
 				}
-				fprintf(asm_output, "\t movl %%eax, -%d(%%rbp)\n", t->code->dest->offset); 
+				fprintf(asm_output, "\t movl    %%eax, -%d(%%rbp)\n", t->code->dest->offset); 
+				break;
+			case O_SHIFT:
+			    //         movl    $_ZSt4cout, %edi
+                //         call    _ZNSolsEi
+                //         movl    $_ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_, %esi
+                //         movq    %rax, %rdi
+                //         call    _ZNSolsEPFRSoS_E
+				// if the thing that is being outputted is an integer... 
+				fprintf(asm_output, "---SHIFT: %s \n", t->code->dest->var_name); 
+				fprintf(asm_output, "\t movl    $_ZSt4cout, %%edi\n");
+				fprintf(asm_output, "\t call    _ZNSolsEi\n"); 
 				break;
 			case O_CALL:
 				printf("Found CALL: \n"); 
