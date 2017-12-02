@@ -410,14 +410,21 @@ void finalgen(struct tree *t)
                 //         movl    $_ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_, %esi
                 //         movq    %rax, %rdi
                 //         call    _ZNSolsEPFRSoS_E
-				// if the thing that is being outputted is an integer... 
+				// *** if the thing that is being outputted is an integer... ***
 				fprintf(asm_output, "---SHIFT: %s \n", t->code->dest->var_name); 
 				fprintf(asm_output, "\t movl    $_ZSt4cout, %%edi\n");
 				fprintf(asm_output, "\t call    _ZNSolsEi\n"); 
+				fprintf(asm_output, "\t movl    $_ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_, %%esi\n");
+				fprintf(asm_output, "\t movq    %%rax, %%rdi\n"); 
+				fprintf(asm_output, "\t call    _ZNSolsEPFRSoS_E\n"); 
+				fprintf(asm_output, "\t movl    $0, %%eax\n"); 
 				break;
 			case O_CALL:
 				printf("Found CALL: \n"); 
+				//printf("Length of function: %s is %d\n", t->code->dest->var_name, strlen(t->code->dest->var_name)); 
 				// write to .s file 
+				fprintf(asm_output, "---CALL---\n"); 
+				fprintf(asm_output, "\t call    _Z%zu%sv\n", strlen(t->code->dest->var_name), t->code->dest->var_name);
 				//printf(" t->code->dest->region: %d\n t->code->dest->offset: %d\n t->code->dest->var_name: %s\n", t->code->dest->region, t->code->dest->offset,t->code->dest->var_name); 
 				break;
 			case O_BIF: 

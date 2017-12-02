@@ -12,25 +12,33 @@ main:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-	subq	$16, %rsp
-	movl	$0, -4(%rbp)
-	movl	-4(%rbp), %eax
-	movl	%eax, %esi
-	movl	$_ZSt4cout, %edi
-	call	_ZNSolsEi
-	movl	$_ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_, %esi
-	movq	%rax, %rdi
-	call	_ZNSolsEPFRSoS_E
+	call	_Z3foov
 	movl	$0, %eax
-	leave
+	popq	%rbp
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
 .LFE971:
 	.size	main, .-main
+	.globl	_Z3foov
+	.type	_Z3foov, @function
+_Z3foov:
+.LFB972:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	popq	%rbp
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE972:
+	.size	_Z3foov, .-_Z3foov
 	.type	_Z41__static_initialization_and_destruction_0ii, @function
 _Z41__static_initialization_and_destruction_0ii:
-.LFB977:
+.LFB973:
 	.cfi_startproc
 	pushq	%rbp
 	.cfi_def_cfa_offset 16
@@ -41,25 +49,25 @@ _Z41__static_initialization_and_destruction_0ii:
 	movl	%edi, -4(%rbp)
 	movl	%esi, -8(%rbp)
 	cmpl	$1, -4(%rbp)
-	jne	.L3
+	jne	.L4
 	cmpl	$65535, -8(%rbp)
-	jne	.L3
+	jne	.L4
 	movl	$_ZStL8__ioinit, %edi
 	call	_ZNSt8ios_base4InitC1Ev
 	movl	$__dso_handle, %edx
 	movl	$_ZStL8__ioinit, %esi
 	movl	$_ZNSt8ios_base4InitD1Ev, %edi
 	call	__cxa_atexit
-.L3:
+.L4:
 	leave
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE977:
+.LFE973:
 	.size	_Z41__static_initialization_and_destruction_0ii, .-_Z41__static_initialization_and_destruction_0ii
 	.type	_GLOBAL__sub_I_main, @function
 _GLOBAL__sub_I_main:
-.LFB978:
+.LFB974:
 	.cfi_startproc
 	pushq	%rbp
 	.cfi_def_cfa_offset 16
@@ -73,7 +81,7 @@ _GLOBAL__sub_I_main:
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE978:
+.LFE974:
 	.size	_GLOBAL__sub_I_main, .-_GLOBAL__sub_I_main
 	.section	.init_array,"aw"
 	.align 8

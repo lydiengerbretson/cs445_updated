@@ -100,6 +100,7 @@ int main(int argc, char **argv)
 		  fprintf(asm_output, "main:\n");
 		  // One label for now...
 		  fprintf(asm_output, "LFB2:\n");
+		  fprintf(asm_output, "\t pushq   %%rbp\n"); 
 		  
 		  if(yyin == NULL)
 		  {
@@ -133,7 +134,7 @@ int main(int argc, char **argv)
 			codegen(YYPROGRAM); 
 			// final code generation
 			finalgen(YYPROGRAM); 
-			
+			fprintf(asm_output, "\t popq    %%rbp\n"); 
 			 // print the names of the symbol tables for testing purposes
              //print_tables(1);
 			// print_tables(2);
