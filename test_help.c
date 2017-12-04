@@ -24,10 +24,10 @@ int main()
 	g = 1.0;
 	g = zoo; 
 	//int x; 
-	foo(); 
+	//foo(); 
 	yay = g + zoo;  
 	g = zoo + 1.0; 
-	yay = use_foo(x, 1, 2, 3, 4); 
+	//yay = use_foo(x, 1, 2, 3, 4); 
 	cout << yay  << endl; 
 	//yay = foo(); 
 	//yay = use_foo(1); 
@@ -57,7 +57,7 @@ int main()
 	
     return 0;
 }
-
+/*
 int foo()
 {
     int yas;
@@ -70,6 +70,7 @@ int foo()
     
     return 0;
 }
+*/
 
 int help(int a)
 {

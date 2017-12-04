@@ -311,7 +311,8 @@ void finalgen(struct tree *t)
 {
    int j; 
    int a;
-   static int lfcount = 0; 
+   static int lfcount = 1; 
+   
    if (t==NULL) 
    {
 	   return;
@@ -337,10 +338,22 @@ void finalgen(struct tree *t)
 		switch(t->code->opcode)
 		{	
 			case D_PROC:
-				//printf("Found func: %s \n", t->code->dest->var_name); 
-				fprintf(asm_output, "%s:\n", t->code->dest->var_name); 
-				fprintf(asm_output, ".LFB%d:\n", lfcount); 
-				lfcount++;
+				printf("Found func: %s \n", t->code->dest->var_name); 
+				if(strcmp(t->code->dest->var_name, "main") != 0)
+				{
+					fprintf(asm_output, "%s:\n", t->code->dest->var_name); 
+					fprintf(asm_output, ".LFB%d:\n", lfcount); 
+					lfcount++;
+					fprintf(asm_output, "\t .cfi_startproc\n");fprintf(asm_output, "\t pushq   %%rbp\n"); 
+					for(j=0; j<t->nkids; j++)
+					{
+						finalgen(t->kid[j]);
+						
+					}
+				    
+				fprintf(asm_output, "\t popq   %%rbp\n");
+                fprintf(asm_output, "\t ret\n"); 	
+				}				
 				break;
 			case O_ADD:
 				/*printf("Found ADD: \n"); 
@@ -351,7 +364,7 @@ void finalgen(struct tree *t)
 				
 			    // local variables
 				// TODO: global variables
-				fprintf(asm_output, "---ADDITION---\n"); 
+				//fprintf(asm_output, "---ADDITION---\n"); 
 				if(t->code->dest->region == R_LOCAL)
 				{
 					// move first operand to a register
@@ -396,7 +409,7 @@ void finalgen(struct tree *t)
 				//movl -4(%rbp), %eax
                 //movl %eax, -8(%rbp) 
 				//printf(" t->code->dest->region: %d\n t->code->dest->offset: %d\n t->code->dest->var_name: %s\n t->code->src1->var_name: %s\n", t->code->dest->region, t->code->dest->offset,t->code->dest->var_name, t->code->src1->var_name); 
-				fprintf(asm_output, "---ASSIGNMENT---\n"); 
+				//fprintf(asm_output, "---ASSIGNMENT---\n"); 
 				if(t->code->src1->is_const)
 				{
 					
@@ -429,7 +442,7 @@ void finalgen(struct tree *t)
                 //         movq    %rax, %rdi
                 //         call    _ZNSolsEPFRSoS_E
 				// *** if the thing that is being outputted is an integer... ***
-				fprintf(asm_output, "---SHIFT: %s \n", t->code->dest->var_name); 
+				//fprintf(asm_output, "---SHIFT: %s \n", t->code->dest->var_name); 
 				fprintf(asm_output, "\t movl    $_ZSt4cout, %%edi\n");
 				fprintf(asm_output, "\t call    _ZNSolsEi\n"); 
 				fprintf(asm_output, "\t movl    $_ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_, %%esi\n");
@@ -441,7 +454,7 @@ void finalgen(struct tree *t)
 				//printf("Found CALL: \n"); 
 				//printf("Length of function: %s is %d\n", t->code->dest->var_name, strlen(t->code->dest->var_name)); 
 				// write to .s file 
-				fprintf(asm_output, "---CALL---\n"); 
+				//fprintf(asm_output, "---CALL---\n"); 
 				fprintf(asm_output, "\t call    _Z%zu%sv\n", strlen(t->code->dest->var_name), t->code->dest->var_name);
 				//printf(" t->code->dest->region: %d\n t->code->dest->offset: %d\n t->code->dest->var_name: %s\n", t->code->dest->region, t->code->dest->offset,t->code->dest->var_name); 
 				break;
@@ -450,15 +463,22 @@ void finalgen(struct tree *t)
 				// write to .s file
 				//printf(" t->code->dest->region: %d\n t->code->dest->offset: %d\n t->code->dest->var_name: %s\n", t->code->dest->region, t->code->dest->offset,t->code->dest->var_name); 
 				break;
-			default: 
-				break; 
 			case O_RET:
-			    printf("found ret\n"); 
-			    fprintf(asm_output, "\t popq    %%rbp\n");
+			    //printf("found ret\n"); 
+			    //fprintf(asm_output, "\t popq    %%rbp\n");
 				break;
+			default: 
+				for(j=0; j<t->nkids; j++)
+				{
+
+					//finalgen(t->kid[j]);
+				}
+				break; 
+
 		}
 	}
 }
+
 
 int new_temp_addr(struct tree *t, int type)
 {

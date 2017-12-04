@@ -103,7 +103,7 @@ int main(int argc, char **argv)
 		  fprintf(asm_output, "\t.type:   main, @function\n");
 		  fprintf(asm_output, "main:\n");
 		  // One label for now...
-		  fprintf(asm_output, "LFB2:\n");
+		  fprintf(asm_output, "LFB0:\n");
 		  fprintf(asm_output, "\t pushq   %%rbp\n"); 
 		  
 		  if(yyin == NULL)

@@ -210,7 +210,7 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
     case FUNCTION_DEFINITION_1:   
 
-	  //printf("\n------FUNCTION------\n"); 
+	  printf("\n------FUNCTION------\n"); 
       func_name = get_func_name(t, &class_func);
 	  if (func_name == NULL)
 	  {
