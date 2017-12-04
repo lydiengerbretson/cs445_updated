@@ -53,7 +53,12 @@ void codegen(struct tree * t)
 		{
            //printf("Found func def!\n"); 
 		   fprintf(output, ".code: %s listed above. \n", t->kid[1]->kid[0]->leaf->text); 
-			break;
+		   struct addr *a1; 
+		   struct TAC_2 *g;
+		   a1 = find_addr_in_list(t->kid[1]->kid[0]->leaf->text, t->kid[1]->kid[0]->leaf->category); 
+		   g = gen_2(D_PROC, a1, NULL, NULL);
+		   t->code = concat(t->code, g);	
+		   break;
 		}
 		case INIT_DECLARATOR_1:
 			if(t->kid[0] != NULL)
@@ -179,7 +184,12 @@ void codegen(struct tree * t)
 			if(t->kid[1]->leaf->category != IDENTIFIER)
 			{
 				// TODO: Do I need to find a location for constants?
-				fprintf(output, "	ret     const: %s   \n", t->kid[1]->leaf->text );
+				struct addr *a1; 
+				struct TAC_2 *g;
+				a1 = find_addr_in_list(t->kid[1]->leaf->text, t->kid[1]->leaf->category); 
+				g = gen_2(O_RET, a1, NULL, NULL);
+				t->code = concat(t->code, g);
+				fprintf(output, "	ret     const: %s   \n", t->code->dest->var_name );
 			}
 			else
 			{
@@ -296,10 +306,12 @@ void codegen(struct tree * t)
 
 }
 
+/*********************** Final Code Generator - assembly output ************************/
 void finalgen(struct tree *t)
 {
    int j; 
    int a;
+   static int lfcount = 0; 
    if (t==NULL) 
    {
 	   return;
@@ -324,6 +336,12 @@ void finalgen(struct tree *t)
 	{
 		switch(t->code->opcode)
 		{	
+			case D_PROC:
+				//printf("Found func: %s \n", t->code->dest->var_name); 
+				fprintf(asm_output, "%s:\n", t->code->dest->var_name); 
+				fprintf(asm_output, ".LFB%d:\n", lfcount); 
+				lfcount++;
+				break;
 			case O_ADD:
 				/*printf("Found ADD: \n"); 
 				// write to .s file
@@ -373,11 +391,11 @@ void finalgen(struct tree *t)
 				}
 				break; 
 			case O_ASN:
-				printf("Found ASN: \n"); 
+				//printf("Found ASN: \n"); 
 				// write to .s file
 				//movl -4(%rbp), %eax
                 //movl %eax, -8(%rbp) 
-				printf(" t->code->dest->region: %d\n t->code->dest->offset: %d\n t->code->dest->var_name: %s\n t->code->src1->var_name: %s\n", t->code->dest->region, t->code->dest->offset,t->code->dest->var_name, t->code->src1->var_name); 
+				//printf(" t->code->dest->region: %d\n t->code->dest->offset: %d\n t->code->dest->var_name: %s\n t->code->src1->var_name: %s\n", t->code->dest->region, t->code->dest->offset,t->code->dest->var_name, t->code->src1->var_name); 
 				fprintf(asm_output, "---ASSIGNMENT---\n"); 
 				if(t->code->src1->is_const)
 				{
@@ -420,7 +438,7 @@ void finalgen(struct tree *t)
 				fprintf(asm_output, "\t movl    $0, %%eax\n"); 
 				break;
 			case O_CALL:
-				printf("Found CALL: \n"); 
+				//printf("Found CALL: \n"); 
 				//printf("Length of function: %s is %d\n", t->code->dest->var_name, strlen(t->code->dest->var_name)); 
 				// write to .s file 
 				fprintf(asm_output, "---CALL---\n"); 
@@ -428,12 +446,16 @@ void finalgen(struct tree *t)
 				//printf(" t->code->dest->region: %d\n t->code->dest->offset: %d\n t->code->dest->var_name: %s\n", t->code->dest->region, t->code->dest->offset,t->code->dest->var_name); 
 				break;
 			case O_BIF: 
-				printf("Found BIF: \n"); 
+				//printf("Found BIF: \n"); 
 				// write to .s file
 				//printf(" t->code->dest->region: %d\n t->code->dest->offset: %d\n t->code->dest->var_name: %s\n", t->code->dest->region, t->code->dest->offset,t->code->dest->var_name); 
 				break;
 			default: 
 				break; 
+			case O_RET:
+			    printf("found ret\n"); 
+			    fprintf(asm_output, "\t popq    %%rbp\n");
+				break;
 		}
 	}
 }

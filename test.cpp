@@ -4,11 +4,13 @@ using namespace std;
 void foo();
 int main()
 {
-    foo();
-	
+    int x; 
+	int y; 
+	y = x + 1;
+	return 0;
 }
 
 void foo()
 {
-// void
+	
 }

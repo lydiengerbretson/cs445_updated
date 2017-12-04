@@ -76,6 +76,10 @@ int help(int a)
 	//int z; 
 	int x; 
 	int y; 
+	double g; 
+	double zoo; 
+	zoo = 0.0;
+	g = zoo + 1.0;
 	
 	//y = foo(); 
 	//u = foo(); 

@@ -38,7 +38,7 @@ SymbolTable PARAM_TABLE;
 char *filetext; 
 filenodeptr file_stack = NULL; 
 
- 
+// TODO: Add -s option to command line
 
 int main(int argc, char **argv)
 {
@@ -46,6 +46,7 @@ int main(int argc, char **argv)
    char *file_list[argc]; 
    int result = 0; 
    YYPROGRAM = NULL; 
+   static bool final_code = false;
   //struct typenametable_entry *tmp_head; 
   
   CLASSTABLE = new_table( "ct" );
@@ -57,7 +58,8 @@ int main(int argc, char **argv)
    
    for (i = 0; i < argc; i++) 
    {
-		file_list[i] = argv[i];
+
+       file_list[i] = argv[i];
 		//printf("file list %s\n", file_list[i]); 
    }
    
@@ -68,6 +70,8 @@ int main(int argc, char **argv)
 	   { 
 
 		// helper function adapted from: https://stackoverflow.com/questions/624990/code-to-change-file-extension-up-for-review
+		if(strcmp(file_list[i], "-s") != 0)
+		{
           char *fn = malloc(strlen(file_list[i]) + 4);
 		  char *afile = malloc(strlen(file_list[i]) + 4);
 		  char *temp_file = strdup(file_list[i]); 
@@ -113,6 +117,11 @@ int main(int argc, char **argv)
 		  yypush_buffer_state(yy_create_buffer(yyin, YY_BUF_SIZE));
 	   
 	   }
+	   else 
+	   {
+		   final_code = true;
+	   }
+	   }
 		result = yyparse(); 
 	
 		 if (yyin) 
@@ -133,8 +142,11 @@ int main(int argc, char **argv)
 			//print_tree(YYPROGRAM, 0); 
 			codegen(YYPROGRAM); 
 			// final code generation
-			finalgen(YYPROGRAM); 
-			fprintf(asm_output, "\t popq    %%rbp\n"); 
+            if(final_code)
+			{
+				finalgen(YYPROGRAM); 
+				//fprintf(asm_output, "\t popq    %%rbp\n"); 
+			}
 			 // print the names of the symbol tables for testing purposes
              //print_tables(1);
 			// print_tables(2);
