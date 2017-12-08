@@ -90,7 +90,7 @@ int main(int argc, char **argv)
 		  }
 		  		  
 		  sprintf(fn, "%s.ic", temp_file);
-		  sprintf(afile, "%s.S", temp_file);
+		  sprintf(afile, "%s.s", temp_file);
 		  fprintf(stdout, "File: %s\n", file_list[i]); 
 		  yyin = fopen(file_list[i], "r"); 
     
@@ -103,7 +103,9 @@ int main(int argc, char **argv)
 		  fprintf(asm_output, "\t.type:   main, @function\n");
 		  fprintf(asm_output, "main:\n");
 		  // One label for now...
-		  fprintf(asm_output, "LFB0:\n");
+		  fprintf(asm_output, ".LFB0:\n");
+
+		  fprintf(asm_output, "\t .cfi_startproc\n");
 		  fprintf(asm_output, "\t pushq   %%rbp\n"); 
 		  
 		  if(yyin == NULL)

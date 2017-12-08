@@ -210,7 +210,7 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 
     case FUNCTION_DEFINITION_1:   
 
-	  printf("\n------FUNCTION------\n"); 
+	  //printf("\n------FUNCTION------\n"); 
       func_name = get_func_name(t, &class_func);
 	  if (func_name == NULL)
 	  {
@@ -288,10 +288,13 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 				}
 				else
 				{
+					//printf("exit 5\n"); 
 					checkundeclared(t->kid[2]->kid[0], GLOBAL_TABLE); 
 			
 					// check type
 					type = find_type_in_list(t->kid[0]->leaf->text, scope->name);
+					if(type == 0)
+						type = 1;
 					type_func = find_type_in_list(t->kid[2]->kid[0]->leaf->text, "gt");
 					if(type != type_func)
 					{
@@ -313,7 +316,7 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 			// only finds the first thing in the additive expression
             //printf("exit 4\n"); 
 
-			checkundeclared(t->kid[2]->kid[0], scope); 
+			//checkundeclared(t->kid[2]->kid[0], scope); 
 		
 			
 			// trying to process expressions with more than two operands
@@ -362,10 +365,10 @@ void populate_symbol_table( struct tree *t , SymbolTable scope ) {
 				 if(!is_constructor)
 				 {
                     //printf("exit 1\n"); 
-					checkundeclared(t->kid[0], scope); 
+					//checkundeclared(t->kid[0], scope); 
 					// checking right hand side of assignment expression
 					//printf("exit 2\n"); 
-					checkundeclared(t->kid[2], scope);		
+					//checkundeclared(t->kid[2], scope);		
 			 		//printf("exit 3\n"); 	
 					type_assign_check(t, scope->name);
 				 }
@@ -733,7 +736,7 @@ void populate_init_decls(struct tree *t, SymbolTable scope, int type)
 				
 
 			 // for now
-			printf("---Inserting %s with mem addr %d and region: %d ---\n", t->leaf->text, t->leaf->address.offset, t->leaf->address.region);
+			//printf("---Inserting %s with mem addr %d and region: %d ---\n", t->leaf->text, t->leaf->address.offset, t->leaf->address.region);
 			insert_sym(t->leaf->text, scope, type);
 			
 			break;
@@ -786,7 +789,7 @@ void parameter_check(struct tree *t, SymbolTable ptable)
 				//printf("%s must be a param: %d\n", t->leaf->text, type2); 
 				if(t->leaf->category == IDENTIFIER && type2 == 0 && strcmp(t->leaf->text, local_tables[i]->name) != 0)
 				{
-					semanticerror("Incorrect parameter:", t); 
+					//semanticerror("Incorrect parameter:", t); 
 					break; 
 				}
 

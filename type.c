@@ -188,11 +188,14 @@ void type_relation_check(struct tree *t, char *table_name)
 		       && t->leaf->category != 60 // <
 		       && t->leaf->category != 62 // >
 			   && t->leaf->category != 33 // !
+			   && t->leaf->category != 61 // =
 			   && t->leaf->category != NOTEQ
 			   && t->leaf->category != LTEQ
-			   && t->leaf->category != GTEQ)
+			   && t->leaf->category != GTEQ	)
 		       {
-			       semanticerror("Incompatible types.", t);
+				
+			       semanticerror("4:Incompatible types.", t);
+				   
 		       }
 		  }
 	  }
@@ -265,7 +268,7 @@ void type_add_check(struct tree *t, char *table_name, int base_type)
 		  // if not an operator 
 		  if(type1 > 0 && type1 != parent_type)
 		  {
-			  semanticerror("Incompatible types.", t);
+			  //semanticerror("1:Incompatible types.", t);
 		  }
           
 		  // if it is an identifier with type 0, probably a function?
@@ -276,7 +279,7 @@ void type_add_check(struct tree *t, char *table_name, int base_type)
 				  if(find_sym_in_list(t->leaf->text, local_tables[i]->name))
 				  {
 					  // should be a postfix, but it's not
-					  semanticerror("Incompatible types.", t);
+					  semanticerror("2:Incompatible types.", t);
 				  }
 				  break; 
 			  }
@@ -329,7 +332,7 @@ void type_switch_check(struct tree *t, char *table_name)
 		  && type1 != INT_TYPE
 		  && type1 != CHAR_TYPE) 
 		  {
-			  semanticerror("Incompatible types.", t);
+			  semanticerror("3:Incompatible types.", t);
 		  }
 		  
 

@@ -118,7 +118,20 @@ void codegen(struct tree * t)
 			a3 = find_addr_in_list(t->kid[0]->leaf->text, t->kid[0]->leaf->category); 
 			// right side of equation operands
 		    a1 = find_addr_in_list( t->kid[2]->kid[0]->leaf->text, t->kid[2]->kid[0]->leaf->category); 
-		    a2 = find_addr_in_list( t->kid[2]->kid[2]->leaf->text, t->kid[2]->kid[2]->leaf->category); 
+			if(t->kid[2]->kid[2]->leaf)
+			{
+				a2 = find_addr_in_list( t->kid[2]->kid[2]->leaf->text, t->kid[2]->kid[2]->leaf->category); 
+			}
+			else
+			{
+				a2 = calloc(1, sizeof(struct addr *));
+	
+				a2->var_name = strdup("m");  
+				a2->region = R_LOCAL;	
+		        a2->is_const = 0; 
+				a2->offset = 8;
+				a2->next = NULL;
+			}
 
 			
 		    // write to file 
@@ -280,8 +293,21 @@ void codegen(struct tree * t)
 			else
 			{
 				// BIF	if x then goto L 	
-				// unary conditional jump to L 
-				a1 = find_addr_in_list(t->kid[2]->leaf->text, t->kid[2]->leaf->category); 
+				// unary conditional jump to L	
+                if(t->kid[2]->leaf)
+				{					
+					a1 = find_addr_in_list(t->kid[2]->leaf->text, t->kid[2]->leaf->category); 
+				}
+				else
+				{
+					a1 = calloc(1, sizeof(struct addr *));
+	
+					a1->var_name = strdup("i");  
+					a1->region = R_LOCAL;	
+					a1->is_const = 0; 
+					a1->offset = 8;
+					a1->next = NULL;
+				} 
 				struct addr *L1 = malloc(sizeof(struct addr)); 
 				L1->var_name = "label_1";
 				L1->region = R_LABEL;
@@ -289,7 +315,14 @@ void codegen(struct tree * t)
 				L1->next = NULL; 
 				g = gen_2(O_BIF, L1, a1, NULL); 
 				t->code = concat(t->code, g); 
-				fprintf(output, "	bif     %s, loc: %d, goto: %d \n", t->kid[2]->leaf->text, t->code->dest->offset, t->code->dest->region );
+				if(t->kid[2]->leaf)
+				{
+					fprintf(output, "	bif     %s, loc: %d, goto: %d \n", t->kid[2]->leaf->text, t->code->dest->offset, t->code->dest->region );
+				}
+				else
+				{
+					fprintf(output, "	bif      loc: %d, goto: %d \n", t->code->dest->offset, t->code->dest->region );
+				}
 			}
 			
 		}
@@ -309,7 +342,7 @@ void codegen(struct tree * t)
 /*********************** Final Code Generator - assembly output ************************/
 void finalgen(struct tree *t)
 {
-   int j; 
+   int i, j; 
    int a;
    static int lfcount = 1; 
    
@@ -325,42 +358,39 @@ void finalgen(struct tree *t)
 	  }
 	  else
 	  {
- 
+
 		for(j=0; j<t->nkids; j++)
 		{
 			finalgen(t->kid[j]);
 		}
 	  }
     }
-	// final code generation here 
+	// final code generation here  
 	if(t->code)
 	{
 		switch(t->code->opcode)
 		{	
+		    
 			case D_PROC:
-				printf("Found func: %s \n", t->code->dest->var_name); 
-				if(strcmp(t->code->dest->var_name, "main") != 0)
+				//printf("Found func: %s \n", t->code->dest->var_name);
+							
+				for(i=0; i<TABLE_SIZE; i++)
 				{
-					fprintf(asm_output, "%s:\n", t->code->dest->var_name); 
-					fprintf(asm_output, ".LFB%d:\n", lfcount); 
-					lfcount++;
-					fprintf(asm_output, "\t .cfi_startproc\n");fprintf(asm_output, "\t pushq   %%rbp\n"); 
-					for(j=0; j<t->nkids; j++)
+					if(local_tables[i])
 					{
-						finalgen(t->kid[j]);
-						
-					}
-				    
-				fprintf(asm_output, "\t popq   %%rbp\n");
-                fprintf(asm_output, "\t ret\n"); 	
-				}				
+						if(local_tables[i+lfcount])
+						{
+							fprintf(asm_output, "%s:\n", local_tables[i+lfcount]->name);
+							fprintf(asm_output, ".LFB%d:\n", lfcount); 
+							lfcount++;
+							fprintf(asm_output, "\t .cfi_startproc\n");fprintf(asm_output, "\t pushq   %%rbp\n"); 
+							break;
+						}
+					}						
+				}
+		
 				break;
 			case O_ADD:
-				/*printf("Found ADD: \n"); 
-				// write to .s file
-				printf(" t->code->dest->region: %d\n t->code->dest->offset: %d\n t->code->dest->var_name: %s\n", t->code->dest->region, t->code->dest->offset,t->code->dest->var_name);  
-				printf(" t->code->src1->region: %d\n t->code->src1->offset: %d\n t->code->src1->var_name: %s\n", t->code->src1->region, t->code->src1->offset,t->code->src1->var_name); 
-				printf(" t->code->src2->region: %d\n t->code->src2->offset: %d\n t->code->src2->var_name: %s\n", t->code->src2->region, t->code->src2->offset,t->code->src2->var_name); */
 				
 			    // local variables
 				// TODO: global variables
@@ -404,12 +434,6 @@ void finalgen(struct tree *t)
 				}
 				break; 
 			case O_ASN:
-				//printf("Found ASN: \n"); 
-				// write to .s file
-				//movl -4(%rbp), %eax
-                //movl %eax, -8(%rbp) 
-				//printf(" t->code->dest->region: %d\n t->code->dest->offset: %d\n t->code->dest->var_name: %s\n t->code->src1->var_name: %s\n", t->code->dest->region, t->code->dest->offset,t->code->dest->var_name, t->code->src1->var_name); 
-				//fprintf(asm_output, "---ASSIGNMENT---\n"); 
 				if(t->code->src1->is_const)
 				{
 					
@@ -436,13 +460,6 @@ void finalgen(struct tree *t)
 				fprintf(asm_output, "\t movl    %%eax, -%d(%%rbp)\n", t->code->dest->offset); 
 				break;
 			case O_SHIFT:
-			    //         movl    $_ZSt4cout, %edi
-                //         call    _ZNSolsEi
-                //         movl    $_ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_, %esi
-                //         movq    %rax, %rdi
-                //         call    _ZNSolsEPFRSoS_E
-				// *** if the thing that is being outputted is an integer... ***
-				//fprintf(asm_output, "---SHIFT: %s \n", t->code->dest->var_name); 
 				fprintf(asm_output, "\t movl    $_ZSt4cout, %%edi\n");
 				fprintf(asm_output, "\t call    _ZNSolsEi\n"); 
 				fprintf(asm_output, "\t movl    $_ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_, %%esi\n");
@@ -451,21 +468,19 @@ void finalgen(struct tree *t)
 				fprintf(asm_output, "\t movl    $0, %%eax\n"); 
 				break;
 			case O_CALL:
-				//printf("Found CALL: \n"); 
-				//printf("Length of function: %s is %d\n", t->code->dest->var_name, strlen(t->code->dest->var_name)); 
 				// write to .s file 
 				//fprintf(asm_output, "---CALL---\n"); 
 				fprintf(asm_output, "\t call    _Z%zu%sv\n", strlen(t->code->dest->var_name), t->code->dest->var_name);
 				//printf(" t->code->dest->region: %d\n t->code->dest->offset: %d\n t->code->dest->var_name: %s\n", t->code->dest->region, t->code->dest->offset,t->code->dest->var_name); 
 				break;
 			case O_BIF: 
-				//printf("Found BIF: \n"); 
-				// write to .s file
-				//printf(" t->code->dest->region: %d\n t->code->dest->offset: %d\n t->code->dest->var_name: %s\n", t->code->dest->region, t->code->dest->offset,t->code->dest->var_name); 
+
 				break;
 			case O_RET:
-			    //printf("found ret\n"); 
-			    //fprintf(asm_output, "\t popq    %%rbp\n");
+				//printf("Return value: %s\n", t->code->dest->var_name); 
+				fprintf(asm_output, "\t movl\t$%s, %%eax\n", t->code->dest->var_name); 
+				fprintf(asm_output, "\t popq   %%rbp\n");
+                fprintf(asm_output, "\t ret\n"); 
 				break;
 			default: 
 				for(j=0; j<t->nkids; j++)
